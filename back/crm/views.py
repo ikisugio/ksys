@@ -1,4 +1,5 @@
 from rest_framework import status, generics
+import re
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Company, Jigyosyo, JigyosyoTransaction, CustomUser
@@ -7,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.http import Http404
 from django.db.models import Q
 from django.contrib.auth.models import Group
+from rest_framework.pagination import PageNumberPagination
 
 
 class JigyosyoSearchView(APIView):
@@ -25,7 +27,8 @@ class JigyosyoSearchView(APIView):
                 Q(company__name__icontains=query) |
                 Q(transactions__content__icontains=query)  # ここを修正
             )
-            jigyosyos = Jigyosyo.objects.filter(search_criteria).distinct()
+            jigyosyos = Jigyosyo.objects.filter(
+                search_criteria).order_by('id').distinct()
         else:
             prefecture_name = request.user.groups.first().name
             search_criteria = (
@@ -35,9 +38,14 @@ class JigyosyoSearchView(APIView):
                 Q(transactions__content__icontains=query) &  # ここを修正
                 Q(address__icontains=prefecture_name)
             )
-            jigyosyos = Jigyosyo.objects.filter(search_criteria).distinct()
+            jigyosyos = Jigyosyo.objects.filter(
+                search_criteria).order_by('id').distinct()
 
-        serializer = JigyosyoSerializer(jigyosyos, many=True)
+        paginator = PageNumberPagination()
+        paginator.page_size = 50
+        paginated_jigyosyos = paginator.paginate_queryset(jigyosyos, request)
+
+        serializer = JigyosyoSerializer(paginated_jigyosyos, many=True)
         return Response(serializer.data)
 
 
@@ -58,7 +66,7 @@ class JigyosyoTransactionSearchView(APIView):
                 Q(jigyosyo__company__name__icontains=query)
             )
             transactions = JigyosyoTransaction.objects.filter(
-                search_criteria).distinct()
+                search_criteria).order_by('id').distinct()
         else:
             group = request.user.groups.first()
             if group is None:
@@ -73,10 +81,16 @@ class JigyosyoTransactionSearchView(APIView):
                 Q(jigyosyo__add_user__groups__name=prefecture_name)
             )
             transactions = JigyosyoTransaction.objects.filter(
-                search_criteria).distinct()
+                search_criteria).order_by('id').distinct()
 
-        serializer = JigyosyoTransactionSerializer(transactions, many=True)
-        return Response(serializer.data)
+        paginator = PageNumberPagination()
+        paginator.page_size = 50
+        paginated_transactions = paginator.paginate_queryset(
+            transactions, request)
+
+        serializer = JigyosyoTransactionSerializer(
+            paginated_transactions, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 
 class CustomUserListView(APIView):

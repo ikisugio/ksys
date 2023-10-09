@@ -20,6 +20,7 @@ import styled from "@emotion/styled";
 import { ThemeProvider, createTheme } from "@mui/material";
 
 const HEADER_HEIGHT = "64px";
+const DrawerWidth = 250; // Drawerの幅
 
 const customTheme = createTheme({
   palette: {
@@ -40,8 +41,6 @@ const customTheme = createTheme({
     },
   },
 });
-
-const DrawerWidth = 250; // Drawerの幅
 
 const MainContent = styled.div`
   transition: transform 0.3s ease, width 0.3s ease;
@@ -79,6 +78,7 @@ const StyledCard = styled(Card)`
 const StyledDrawer = styled(Drawer)`
   .MuiDrawer-paper {
     top: ${HEADER_HEIGHT};
+    border-top: none !important;
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     box-shadow: 0.1px 0.1px 0.5px rgba(0, 0, 0, 0.1);
@@ -133,6 +133,7 @@ const StyledListItem = styled(ListItemButton)`
   transition: background-color 0.3s, border-radius 0.3s;
 
   &:hover {
+    // background-color: ${(props) => props.theme.palette.primary.main};
     background-color: rgba(220, 220, 220, 0.6);
     border-radius: 15px;
   }

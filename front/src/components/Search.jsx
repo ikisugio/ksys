@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ListItem from "@mui/material/ListItem";
 import TextField from "@mui/material/TextField";
 import debounce from "lodash/debounce";
@@ -126,18 +126,18 @@ const CardItemText = styled(Typography)`
 `;
 
 const SearchContainer = styled.div`
-  flex: 1;
+  flex: 5;
   padding: 16px;
   position: sticky;
   top: 0;
   z-index: 10;
   background-color: white;
-  width: 30%;
+  // width: 40%;
   min-width: 300px;
 `;
 
 const ResultsContainer = styled.div`
-  flex: 2;
+  flex: 6;
   overflow-y: auto;
   padding: 16px;
   height: calc(100vh - 136px);
@@ -170,9 +170,7 @@ const ResultsCount = styled.div`
 
 function Search() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(1);
   const [results, setResults] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -181,66 +179,42 @@ function Search() {
     navigate(`/edit/${id}/`);
   };
 
-  const handleWheel = (e) => {
-    const container = document.getElementById("results-container");
-    if (container) {
-      // deltaYプロパティでマウスホイールの移動量を取得し、スクロール位置を更新
-      container.scrollTop += e.deltaY;
-    }
-  };
-
-  const fetchResults = async () => {
+  const handleSearch = debounce(async () => {
     setIsLoading(true);
-    const data = await fetchSearchResults(searchTerm, page);
+    const data = await fetchSearchResults(searchTerm, 1);
     setIsLoading(false);
+    setResults(data);
 
-    if (data && data.length === 0) {
-      setHasMore(false);
-    } else if (data) {
-      setResults((prevItems) => [...prevItems, ...data]);
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
+    localStorage.setItem("searchResults", JSON.stringify(data));
+    localStorage.setItem("searchTerm", searchTerm);
+  }, 300);
 
-  const debouncedFetchResults = debounce(fetchResults, 1000);
-
-  useEffect(() => {
-    setResults([]);
-    setPage(1);
-    setHasMore(true);
-    if (searchTerm.length >= 2) {
-      debouncedFetchResults();
-    }
-
-    const handleBeforeUnload = () => {
-      localStorage.removeItem("tempSearchTerm");
-    };
-
-    // ページがアンロードされる直前に tempSearchTerm をクリア
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      if (searchTerm) {
-        localStorage.setItem("tempSearchTerm", searchTerm);
-      }
-
-      // イベントリスナーを削除
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [searchTerm]);
-
-  useEffect(() => {
-    const tempSearchTerm = localStorage.getItem("tempSearchTerm");
-    if (tempSearchTerm && tempSearchTerm.length > 0) {
-      setSearchTerm(tempSearchTerm);
-    }
+  const handleSearchChange = useCallback((e) => {
+    setSearchTerm(e.target.value);
   }, []);
 
-  const handleKeyDown = (event) => {
-    if (event.keyCode === 13) {
-      fetchResults();
+  const handleKeyDown = useCallback(
+    async (event) => {
+      if (event.keyCode === 13) {
+        handleSearch();
+      }
+    },
+    [handleSearch]
+  );
+
+  // Load the search results and search term from local storage when the component mounts
+  useEffect(() => {
+    const savedResults = localStorage.getItem("searchResults");
+    const savedSearchTerm = localStorage.getItem("searchTerm");
+
+    if (savedResults) {
+      setResults(JSON.parse(savedResults));
     }
-  };
+
+    if (savedSearchTerm) {
+      setSearchTerm(savedSearchTerm);
+    }
+  }, []);
 
   return (
     <Container>
@@ -250,7 +224,7 @@ function Search() {
           label="Search"
           variant="outlined"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={handleSearchChange}
           onKeyDown={handleKeyDown}
           InputProps={{
             startAdornment: (
@@ -259,12 +233,9 @@ function Search() {
           }}
         />
         <ResultsCount>{results.length} 件の結果</ResultsCount>{" "}
-        {/* 検索件数の表示 */}
-        {isLoading && ( // 検索中にプログレスバーを表示
-          <LinearProgress />
-        )}
+        {isLoading && <LinearProgress />}
       </SearchContainer>
-      <ResultsContainer onWheel={handleWheel} id="results-container">
+      <ResultsContainer id="results-container">
         {results.map((item) => (
           <StyledCard key={item.id} variant="outlined">
             <EditButton
