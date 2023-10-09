@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
-import Search from "./components/Search";
+import JigyosyoSearch from "./components/JigyosyoSearch";
+import JigyosyoTransactionList from "./components/JigyosyoTransactionList";
 import Login from "./components/Login";
 import Edit from "./components/Edit";
 import {
@@ -129,6 +130,10 @@ const DrawerListContainer = styled.div`
   width: ${DrawerWidth}px;
 `;
 
+const BoldListItemText = styled(ListItemText)({
+  fontWeight: "bold",
+});
+
 const StyledListItem = styled(ListItemButton)`
   transition: background-color 0.3s, border-radius 0.3s;
 
@@ -153,6 +158,11 @@ function App() {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleAccountSwitch = () => {
+    setLoggedIn(!loggedIn); // ログイン状態を切り替え
+    setMenuOpen(false); // Drawerを閉じる
   };
 
   return (
@@ -186,31 +196,38 @@ function App() {
                   <StyledListItem
                     button
                     component={Link}
-                    to="/search"
+                    to="/jigyosyo-search"
                     onClick={toggleMenu}
                   >
-                    <ListItemText primary="Search" />
+                    <BoldListItemText primary="事業所検索" />
                   </StyledListItem>
-                  {loggedIn && (
-                    <StyledListItem
-                      button
-                      component={Link}
-                      to="/edit/1"
-                      onClick={toggleMenu}
-                    >
-                      <ListItemText primary="Edit" />
-                    </StyledListItem>
-                  )}
-                  {!loggedIn && (
-                    <StyledListItem
-                      button
-                      component={Link}
-                      to="/"
-                      onClick={toggleMenu}
-                    >
-                      <ListItemText primary="Login" />
-                    </StyledListItem>
-                  )}
+                  <StyledListItem
+                    button
+                    component={Link}
+                    to="/jigyosyo-create"
+                    onClick={toggleMenu}
+                  >
+                    <BoldListItemText primary="事業所作成" />
+                  </StyledListItem>
+                  <StyledListItem
+                    button
+                    component={Link}
+                    to="/jigyosyo-transaction-list"
+                    onClick={toggleMenu}
+                  >
+                    <BoldListItemText primary="訪問履歴一覧" />
+                  </StyledListItem>
+                  <StyledListItem
+                    button
+                    component={Link}
+                    to="/jigyosyo-transaction-create"
+                    onClick={toggleMenu}
+                  >
+                    <BoldListItemText primary="訪問履歴作成" />
+                  </StyledListItem>
+                  <StyledListItem button onClick={handleAccountSwitch}>
+                    <BoldListItemText primary="アカウント切替" />
+                  </StyledListItem>
                 </List>
               </DrawerListContainer>
             </StyledDrawer>
@@ -221,11 +238,17 @@ function App() {
             />
             <MainContent menuOpen={menuOpen}>
               {" "}
-              {/* ここでメインコンテンツをラップします */}
               <AppContainer>
                 <Routes>
                   <Route path="/edit/:id" element={<Edit />} />
-                  <Route path="/search" element={<Search />} />
+                  <Route
+                    path="/jigyosyo-search"
+                    element={<JigyosyoSearch />}
+                  />{" "}
+                  <Route
+                    path="/jigyosyo-transaction-search"
+                    element={<JigyosyoTransactionList />}
+                  />{" "}
                   <Route
                     path="/"
                     element={<Login onLoginSuccess={() => setLoggedIn(true)} />}

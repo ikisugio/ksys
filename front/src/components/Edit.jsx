@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { getTodoById, updateTodo } from "../services/apiService";
+import { getTodoById, updateTodo } from "../services/JigyosyoSearchService";
 
 function EditTodo() {
   const { id } = useParams();
