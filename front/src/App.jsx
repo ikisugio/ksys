@@ -25,7 +25,7 @@ const HEADER_HEIGHT = "64px";
 const customTheme = createTheme({
   palette: {
     primary: {
-      main: "rgba(120, 100, 255, 0.7)", // 薄い紫色
+      main: "rgba(120, 100, 255, 0.7)",
     },
   },
   components: {
@@ -34,7 +34,7 @@ const customTheme = createTheme({
         root: {
           transition: "box-shadow 0.2s",
           "&:hover": {
-            boxShadow: "0px 0px 10px rgba(120, 100, 255, 0.2)", // 薄い紫色の影
+            boxShadow: "0px 0px 10px rgba(120, 100, 255, 0.2)",
           },
         },
       },
@@ -42,7 +42,7 @@ const customTheme = createTheme({
   },
 });
 
-const DrawerWidth = 250; // Drawerの幅
+const DrawerWidth = 250;
 
 const MainContent = styled.div`
   transition: transform 0.3s ease, width 0.3s ease;
@@ -57,7 +57,7 @@ const MainContent = styled.div`
 `;
 
 const StyledAppBar = styled(AppBar)`
-  background-color: #ffffff; // 背景を白に設定
+  background-color: #ffffff;
   box-shadow: 0.1px 0.1px 0.1px rgba(0, 0, 0, 0.1);
   &:hover {
     box-shadow: 0px 0px 10px rgba(0, 0, 200, 0.1);
@@ -107,7 +107,7 @@ const GlobalScrollbarStyles = styled.div`
     border-radius: 5px;
   }
   &::-webkit-scrollbar-track {
-    background-color: rgba(120, 100, 255, 0.1); // もう少し薄い紫色
+    background-color: rgba(120, 100, 255, 0.1);
   }
 
   // Firefox 対応
@@ -117,13 +117,11 @@ const GlobalScrollbarStyles = styled.div`
 `;
 
 const AppContainer = styled.div`
-  height: calc(
-    100vh - ${HEADER_HEIGHT}
-  ); // ビューポートの高さからヘッダーの高さを引いた値
-  display: flex; // Flexboxを有効にする
-  align-items: center; // 垂直方向に中央揃え
-  justify-content: center; // 水平方向に中央揃え
-  padding-top: ${HEADER_HEIGHT}; // ヘッダーの高さ分、上部にパディングを追加
+  height: calc(100vh - ${HEADER_HEIGHT});
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: ${HEADER_HEIGHT};
 `;
 
 const DrawerListContainer = styled.div`
@@ -161,8 +159,8 @@ function App() {
   };
 
   const handleAccountSwitch = () => {
-    setLoggedIn(!loggedIn); // ログイン状態を切り替え
-    setMenuOpen(false); // Drawerを閉じる
+    setLoggedIn(!loggedIn);
+    setMenuOpen(false);
   };
 
   return (
@@ -225,7 +223,12 @@ function App() {
                   >
                     <BoldListItemText primary="訪問履歴作成" />
                   </StyledListItem>
-                  <StyledListItem button onClick={handleAccountSwitch}>
+                  <StyledListItem
+                    button
+                    component={Link}
+                    to="/login"
+                    onClick={toggleMenu}
+                  >
                     <BoldListItemText primary="アカウント切替" />
                   </StyledListItem>
                 </List>
@@ -246,11 +249,11 @@ function App() {
                     element={<JigyosyoSearch />}
                   />{" "}
                   <Route
-                    path="/jigyosyo-transaction-search"
+                    path="/jigyosyo-transaction-list"
                     element={<JigyosyoTransactionList />}
                   />{" "}
                   <Route
-                    path="/"
+                    path="/login"
                     element={<Login onLoginSuccess={() => setLoggedIn(true)} />}
                   />
                 </Routes>

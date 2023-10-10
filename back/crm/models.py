@@ -52,7 +52,23 @@ class Jigyosyo(models.Model):
     kourou_jigyosyo_url = models.CharField(
         max_length=255, null=True, blank=True)
     kourou_release_datetime = models.DateTimeField(null=True, blank=True)
-    add_user = models.CharField(max_length=255, null=True, blank=True)
+    add_user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        related_name="added_jigyosyos",
+        null=True,
+        blank=True
+    )
+    children = models.ManyToManyField(
+        'self',
+        blank=True,
+        related_name='parental_objects',
+        symmetrical=False
+    )
+    @property
+    def parents(self):
+        return self.parents_object.all()
+    free_description = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -72,7 +88,13 @@ class Company(models.Model):
     repr_position = models.CharField(max_length=255, null=True, blank=True)
     established_date = models.DateField(null=True, blank=True)
     release_datetime = models.DateTimeField(null=True, blank=True)
-    add_user = models.CharField(max_length=200)
+    add_user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        related_name="added_companies",
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.name
@@ -84,6 +106,13 @@ class JigyosyoTransaction(models.Model):
     )
     visit_datetime = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
+    add_user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        related_name="added_transactions",
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return f"訪問履歴: {(self.jigyosyo.name if self.jigyosyo else 'No Jigyosyo')} - {self.visit_datetime.strftime('%Y-%m-%d %H:%M:%S')}"

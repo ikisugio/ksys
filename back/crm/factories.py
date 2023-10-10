@@ -64,7 +64,7 @@ class CompanyFactory(DjangoModelFactory):
     add_user = factory.LazyAttribute(
         lambda _: get_random_user() or CustomUserFactory())
 
-
+     
 class JigyosyoFactory(DjangoModelFactory):
     class Meta:
         model = Jigyosyo
@@ -84,6 +84,19 @@ class JigyosyoFactory(DjangoModelFactory):
     kourou_release_datetime = factory.LazyAttribute(
         lambda _: timezone.make_aware(faker.date_time_this_year()))
     add_user = factory.LazyAttribute(lambda _: f'USER_{uuid.uuid4()}')
+    
+    free_description = factory.LazyAttribute(lambda _: faker.text(max_nb_chars=200))
+    
+    @factory.post_generation
+    def add_children(self, create, extracted, **kwargs):
+        if not create:
+            return
+        if extracted:
+            for child in extracted:
+                self.children.add(child)
+        else:
+            default_child = JigyosyoFactory()
+            self.children.add(default_child)
 
 
 class JigyosyoTransactionFactory(DjangoModelFactory):

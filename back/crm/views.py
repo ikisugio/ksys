@@ -2,7 +2,15 @@ from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Company, Jigyosyo, JigyosyoTransaction, CustomUser
-from .serializers import CompanySerializer, JigyosyoSerializer, JigyosyoTransactionSerializer, CustomUserSerializer, UserRegistrationSerializer
+from .serializers import (
+    CompanySerializer,
+    JigyosyoSerializer,
+    JigyosyoMergeSerializer,
+    JigyosyoSplitSerializer,
+    JigyosyoTransactionSerializer,
+    CustomUserSerializer,
+    UserRegistrationSerializer,
+)
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.http import Http404
 from django.db.models import Q
@@ -193,9 +201,9 @@ class JigyosyoListView(APIView):
 
     def get(self, request):
         if request.user.is_superuser:
-            jigyosyos = Jigyosyo.objects.all()
+            jigyosyos = Jigyosyo.objects.filter(merged_into__isnull=True, split_into__isnull=True)
         else:
-            jigyosyos = Jigyosyo.objects.filter(add_user=request.user.username)
+            jigyosyos = Jigyosyo.objects.filter(add_user=request.user.username, merged_into__isnull=True, split_into__isnull=True)
         serializer = JigyosyoSerializer(jigyosyos, many=True)
         return Response(serializer.data)
 
@@ -240,7 +248,45 @@ class JigyosyoDetailView(APIView):
         jigyosyo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# JigyosyoTransaction Views
+
+class JigyosyoMergeSplitView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def merge(self, jigyosyo, merge_into):
+        # Merge logic: Add related jigyosyos and delete the current one
+        merge_into.related_jigyosyos.add(jigyosyo)
+        jigyosyo.delete()
+
+    def split(self, data):
+        new_jigyosyo = Jigyosyo.objects.create(**data)
+        return new_jigyosyo
+
+    def post(self, request, pk):
+        jigyosyo = Jigyosyo.objects.get(pk=pk)
+        action_type = request.data.get('action_type')
+
+        if request.user.username != jigyosyo.add_user and not request.user.is_superuser:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        if action_type == 'merge':
+            serializer = JigyosyoMergeSerializer(data=request.data)
+            if serializer.is_valid():
+                merge_into = serializer.validated_data['merge_into']
+                self.merge(jigyosyo, merge_into)
+                return Response({'status': 'merged successfully'}, status=status.HTTP_200_OK)
+
+        elif action_type == 'split':
+            serializer = JigyosyoSplitSerializer(data=request.data)
+            if serializer.is_valid():
+                new_data = serializer.validated_data['new_jigyosyo_data']
+                new_jigyosyo = self.split(new_data)
+                new_serializer = JigyosyoSerializer(new_jigyosyo)
+                return Response(new_serializer.data, status=status.HTTP_201_CREATED)
+
+        else:
+            return Response({'error': 'Invalid action_type'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class JigyosyoTransactionListView(APIView):

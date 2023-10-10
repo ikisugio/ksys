@@ -34,6 +34,12 @@ class JigyosyoSerializer(serializers.ModelSerializer):
         model = Jigyosyo
         fields = "__all__"
 
+class JigyosyoMergeSerializer(serializers.Serializer):
+    merge_into = serializers.PrimaryKeyRelatedField(queryset=Jigyosyo.objects.all())
+
+class JigyosyoSplitSerializer(serializers.Serializer):
+    new_jigyosyo_data = JigyosyoSerializer()
+
 
 class JigyosyoTransactionSerializer(serializers.ModelSerializer):
     jigyosyo = JigyosyoSerializer(read_only=True)

@@ -1,14 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
-import { Card, CardContent } from "@mui/material";
+import { Card, CardContent, Snackbar } from "@mui/material";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
 
 const FormItem = styled.div`
   margin-bottom: 1rem;
+`;
+
+const ErrorMsg = styled.div`
+  color: rgba(255, 0, 0, 0.6);
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  opacity: ${(props) => (props.hidden ? 0 : 1)};
+  transform: ${(props) =>
+    props.hidden ? "translateY(-1rem)" : "translateY(0)"};
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
 `;
 
 const Label = styled.div`
@@ -18,13 +30,19 @@ const Label = styled.div`
   color: #555;
 `;
 
+const StyledAlert = styled(Alert)`
+  white-space: pre-line;
+  max-width: 260px;
+  font-size: 0.8rem;
+`;
+
 const StyledCard = styled(Card)`
   width: 400px;
   padding: 2rem 1rem;
   max-height: 80%; // カードの最大高さを80%に制限
   overflow-y: auto; // 必要に応じてスクロールバーを表示
   border-radius: 0.5rem;
-  border: 1px solid lightgray;
+  border: 1.1px solid rgba(0, 0, 0, 0.2);
   box-shadow: 0px 0px 0.5px rgba(0, 0, 0, 0.1);
 `;
 
@@ -58,11 +76,42 @@ const FormContainer = styled.div`
 function Login({ onLoginSuccess }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false); // ローディング状態を追加
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [usernameError, setUsernameError] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const regex = /^[a-zA-Z0-9-_]+$/;
+    if (!regex.test(username) && username !== "") {
+      setSnackbarMessage(
+        "半角の「英数字、ハイフン、アンダースコア」のみ使用可能"
+      );
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      setUsernameError(true);
+    } else {
+      setUsernameError(false);
+    }
+  }, [username]);
+
   const handleLogin = async () => {
-    setLoading(true); // ローディング開始
+    if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+      setError(
+        "Username can only contain letters, numbers, hyphens, and underscores."
+      );
+      setSnackbarOpen(true);
+      setSnackbarSeverity("error");
+      setSnackbarMessage(
+        "半角の「英数字、ハイフン、アンダースコア」のみ使用可能"
+      );
+      return;
+    }
+
+    setLoading(true);
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/token/", {
         username: username,
@@ -71,11 +120,23 @@ function Login({ onLoginSuccess }) {
       localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
       onLoginSuccess();
-      navigate("/search");
+      navigate("/jigyosyo-search");
+      setSnackbarOpen(true);
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Login successful");
     } catch (error) {
       console.error(error);
+      setSnackbarOpen(true);
+      setSnackbarSeverity("error");
+      setSnackbarMessage("ログインに失敗しました");
     } finally {
-      setLoading(false); // ローディング終了
+      setLoading(false);
+    }
+  };
+
+  const handleKeyUp = (event) => {
+    if (event.key === "Enter") {
+      handleLogin();
     }
   };
 
@@ -83,7 +144,7 @@ function Login({ onLoginSuccess }) {
     <StyledCard>
       <CardContent>
         <FlexContainer>
-          <FormContainer>
+          <FormContainer onKeyUp={handleKeyUp}>
             <FormItem>
               <Label>Username</Label>
               <TextField
@@ -92,6 +153,7 @@ function Login({ onLoginSuccess }) {
                 onChange={(e) => setUsername(e.target.value)}
                 variant="outlined"
                 size="small"
+                error={!!usernameError}
               />
             </FormItem>
             <FormItem>
@@ -115,9 +177,21 @@ function Login({ onLoginSuccess }) {
             {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
           </StyledButton>
         </FlexContainer>
+        <Snackbar
+          open={snackbarOpen}
+          onClose={() => setSnackbarOpen(false)}
+          autoHideDuration={3000}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        >
+          <StyledAlert
+            onClose={() => setSnackbarOpen(false)}
+            severity={snackbarSeverity}
+          >
+            {snackbarMessage}
+          </StyledAlert>
+        </Snackbar>
       </CardContent>
     </StyledCard>
   );
 }
-
 export default Login;
