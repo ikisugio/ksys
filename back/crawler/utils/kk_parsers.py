@@ -1,10 +1,10 @@
 import re
-import utils.dicts, utils.times
-from utils.parsers import BS4, Selenium
+from . import dicts, times
+from .parsers import BS4, Selenium
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-from etc import configs
+from ..etc import configs
 
 
 class KK_Selenium:
@@ -21,7 +21,7 @@ class KK_Selenium:
 
         # pref => 都道府県
         pref_list = natl_top_soup.select("#zenkokuMap area")
-        url_list_rcs = utils.dicts.attr_dict(pref_list, "alt", "href")
+        url_list_rcs = dicts.attr_dict(pref_list, "alt", "href")
         cgi_query = "?action_kouhyou_pref_search_condition_index=true"
         pref_url_dict = {
             k: natl_top_url[:-1] + v + cgi_query for k, v in url_list_rcs.items()
@@ -40,7 +40,7 @@ class KK_Selenium:
             time = self.wait_time
         # CookieのPHPSESSIDフィールドを削除 <= URLで直アクのため
         # self.driver.delete_cookie("PHPSESSID")
-        utils.times.wait(time)
+        times.wait(time)
         return None
 
     def all_search_pref_page(self):
@@ -83,11 +83,14 @@ class KK_Selenium:
         return jigyosyo_name_list
 
     def make_crawl_list_dict(self, soup):
-        jigyosyo_code = soup.select_one(".jigyosyoCd").text
-        _jigyosyo_name = soup.select_one(".jigyosyoName").text
-        jigyosyo_name = re.sub(r"[\u3000]", "_", _jigyosyo_name)
+        jigyosyo_code = soup.select_one(".jigyosyoCd").text.strip()
+        _jigyosyo_name = soup.select_one(".jigyosyoName").text.strip()
+        SPACE_HALF = "\u0020"
+        SPACE_FULL = "\u3000"
+        UNDERSCORE_FULL = "\uff3f"
+        jigyosyo_name = re.sub(fr"[{SPACE_HALF}{SPACE_FULL}]+", UNDERSCORE_FULL, _jigyosyo_name)
         jigyosyoUrl = self.url + soup.select_one(".detailBtn")["href"][1:]
-        fetch_date = utils.times.today(configs.DATE_FORMAT)
+        fetch_date = times.today(configs.DATE_FORMAT)
 
         crawl_list_dict = {
             "crawl_list__jigyosyo_code": jigyosyo_code,

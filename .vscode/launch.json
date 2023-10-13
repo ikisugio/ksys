@@ -1,0 +1,12 @@
+{
+    "name": "Django: Runserver",
+    "type": "python",
+    "request": "launch",
+    "program": "${workspaceFolder}/back/manage.py",
+    "args": [
+        "runserver",
+        "--noreload",
+        "--nothreading"
+    ],
+    "django": true
+}

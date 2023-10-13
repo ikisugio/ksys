@@ -10,9 +10,10 @@ def from_jp_time(date_string):
     if match:
         year, month, day, hour, minute = map(int, match.groups())
         # Use timezone.datetime instead of datetime
-        dt = timezone.datetime(year, month, day, hour, minute)
-        print(f"~~~~~~~~~~~~~~~{dt}~~~~~~~~~~~~~~~~~~~~~~~~")
-        return dt
+        dt_naive = timezone.datetime(year, month, day, hour, minute)
+        dt_aware = timezone.make_aware(dt_naive)
+        print(f"~~~~~~~~~~~~~~~{dt_aware}~~~~~~~~~~~~~~~~~~~~~~~~")
+        return dt_aware
     else:
         # 入力が期待する形式でない場合にはNoneを返す
         return None

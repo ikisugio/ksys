@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import unicodedata
-from django.utils import timezone  # 変更: datetime のインポートを削除し、timezone をインポート
+from django.utils import timezone
 from ..utils import iso8601
 from ..utils.adnorm import full_norm
 from ..etc import configs
@@ -17,7 +17,7 @@ def convert_url(url):
 def get_soup(url):
     try:
         response = requests.get(url, timeout=10)
-        response.raise_for_status()  # エラーレスポンスを確認
+        response.raise_for_status()
         return BeautifulSoup(response.content, "html.parser")
     except requests.RequestException as e:
         print(f"Request error for URL {url}: {e}")
@@ -58,17 +58,18 @@ def fetch_company_detail(data_url):
             if th == "法人番号" and not td:
                 details[mappings[th]] = ""
             elif th == "設立年月日":
-                details[mappings[th]] = timezone.now().strptime(  # 変更: datetime.now() を timezone.now() に変更
-                    td, "%Y/%m/%d").date()
-                print("ssss")
+                details[mappings[th]] = timezone.now().strptime(td, "%Y/%m/%d").date()
             elif th == "（ふりがな）":
                 if soup_td.get("diffid") == "diff-c3":
                     details["company__name_kana"] = td.replace("\u3000", " ")
                 elif soup_td.get("diffid") == "diff-c4":
                     details["company__name"] = td.replace("\u3000", " ")
             elif th == "法人等の設立年月日":
-                def to_date(x): return timezone.now().strptime(  # 変更: datetime.strptime() を timezone.now().strptime() に変更
-                    x, "%Y/%m/%d").date()
+                def to_date(x):
+                    if not x:
+                        return None
+                    return timezone.now().strptime(x, "%Y/%m/%d").date()
+
                 details[mappings[th]] = to_date(td.replace("\u3000", " "))
             else:
                 details[mappings[th]] = td.replace("\u3000", " ")
@@ -93,10 +94,9 @@ def fetch_jigyosyo_detail(base_data_url):
             soup.find("p").text.split()[0]
         ),
         "jigyosyo__code": detail_data_url.split("JigyosyoCd=")[1].split("-")[0],
-        "crawl_detail__fetch_datetime": datetime.now().replace(microsecond=0),
+        "crawl_detail__fetch_datetime": timezone.now().replace(microsecond=0),
     }
 
-    # キーと対応する検索文字列のマップ
     key_map = {
         "jigyosyo__tel": "電話番号",
         "jigyosyo__fax": "FAX番号",
@@ -104,19 +104,16 @@ def fetch_jigyosyo_detail(base_data_url):
         "jigyosyo__repr_position": "職名",
     }
 
-    # キーごとにテキストを検索し、正規化してdetailsに追加
     for key, search_text in key_map.items():
         raw_text = soup.find(string=search_text).find_next().text.strip()
         details[key] = unicodedata.normalize("NFKC", raw_text)
 
-    # 所在地の情報を取得
     def extract_and_normalize_address(soup):
         address_tag = soup.find(string="所在地").find_next().find_next()
         raw_address = address_tag.text.strip()
         postal_code = raw_address.split("\u3000")[0].replace("〒", "").strip()
         address = raw_address.replace("〒" + postal_code, "").strip()
 
-        # 正規化
         normalized_postal_code = unicodedata.normalize("NFKC", postal_code)
         normalized_address = unicodedata.normalize("NFKC", address)
 
@@ -146,19 +143,21 @@ def fetch_detail(base_data_url):
     print("fetch ~~~~~~~~~~~~~~")
     print(jigyosyo_details)
     print(company_details)
+    
+    detail_data = {**jigyosyo_details, **company_details}
+    print(f"\ndetail_data\n@@@@@@@@@@@@@@@@@\n{detail_data}\n@@@@@@@@@@@\n")
 
-    return {**jigyosyo_details, **company_details}
+    return detail_data
 
 
 # def bulk_insert_jigyosyo(data_list):
 #     Jigyosyo.BULK_INSERT_MODE = True
 #     for data in data_list:
-#         update_or_create_detail_info(data)  # この関数内でJigyosyoのデータを追加または更新します
+#         db_helpers.update_or_create_detail_info(data)
 #     Jigyosyo.BULK_INSERT_MODE = False
 
 
 def run():
-    # CrawlListからすべてのURLを取得
     crawl_list_entries = CrawlList.objects.all()
 
     for crawl_list_entry in crawl_list_entries:
@@ -169,10 +168,11 @@ def run():
 
     # all_details_data = []
 
-    # for crawl_list_entry in crawl_list_entries:
-    #     base_data_url = crawl_list_entry.kourou_jigyosyo_url
-    #     detail_data = fetch_detail(base_data_url)
-    #     all_details_data.append(detail_data)
+    for crawl_list_entry in crawl_list_entries:
+        base_data_url = crawl_list_entry.kourou_jigyosyo_url
+        detail_data = fetch_detail(base_data_url)
+        db_helpers.update_or_create_detail_info(detail_data)
+        
+        # all_details_data.append(detail_data)
 
-    # # 取得した詳細データをデータベースに一括挿入または更新
     # bulk_insert_jigyosyo(all_details_data)

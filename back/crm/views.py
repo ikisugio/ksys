@@ -21,27 +21,30 @@ class JigyosyoSearchView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        query = request.query_params.get('q', None)
+        query = request.query_params.get("q", None)
 
         if not query:
-            return Response({"detail": "Query parameter q is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Query parameter q is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        if request.user.groups.filter(name='本部').exists():
+        if request.user.groups.filter(name="本部").exists():
             search_criteria = (
-                Q(name__icontains=query) |
-                Q(type__icontains=query) |
-                Q(company__name__icontains=query) |
-                Q(transactions__content__icontains=query)  # ここを修正
+                Q(name__icontains=query)
+                | Q(type__icontains=query)
+                | Q(company__name__icontains=query)
+                | Q(transactions__content__icontains=query)  # ここを修正
             )
             jigyosyos = Jigyosyo.objects.filter(search_criteria).distinct()
         else:
             prefecture_name = request.user.groups.first().name
             search_criteria = (
-                Q(name__icontains=query) |
-                Q(type__icontains=query) |
-                Q(company__name__icontains=query) |
-                Q(transactions__content__icontains=query) &  # ここを修正
-                Q(address__icontains=prefecture_name)
+                Q(name__icontains=query)
+                | Q(type__icontains=query)
+                | Q(company__name__icontains=query)
+                | Q(transactions__content__icontains=query)
+                & Q(address__icontains=prefecture_name)  # ここを修正
             )
             jigyosyos = Jigyosyo.objects.filter(search_criteria).distinct()
 
@@ -53,35 +56,43 @@ class JigyosyoTransactionSearchView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        query = request.query_params.get('q', None)
+        query = request.query_params.get("q", None)
 
         if not query:
-            return Response({"detail": "Query parameter q is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Query parameter q is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        if request.user.groups.filter(name='本部').exists():
+        if request.user.groups.filter(name="本部").exists():
             search_criteria = (
-                Q(content__icontains=query) |
-                Q(jigyosyo__name__icontains=query) |
-                Q(jigyosyo__type__icontains=query) |
-                Q(jigyosyo__company__name__icontains=query)
+                Q(content__icontains=query)
+                | Q(jigyosyo__name__icontains=query)
+                | Q(jigyosyo__type__icontains=query)
+                | Q(jigyosyo__company__name__icontains=query)
             )
             transactions = JigyosyoTransaction.objects.filter(
-                search_criteria).distinct()
+                search_criteria
+            ).distinct()
         else:
             group = request.user.groups.first()
             if group is None:
                 # Handle the case where the group is None, e.g., return an error response
-                return Response({"detail": "User is not associated with any group."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"detail": "User is not associated with any group."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             prefecture_name = request.user.groups.first().name
             search_criteria = (
-                Q(content__icontains=query) |
-                Q(jigyosyo__name__icontains=query) |
-                Q(jigyosyo__type__icontains=query) |
-                Q(jigyosyo__company__name__icontains=query) &
-                Q(jigyosyo__add_user__groups__name=prefecture_name)
+                Q(content__icontains=query)
+                | Q(jigyosyo__name__icontains=query)
+                | Q(jigyosyo__type__icontains=query)
+                | Q(jigyosyo__company__name__icontains=query)
+                & Q(jigyosyo__update_user__groups__name=prefecture_name)
             )
             transactions = JigyosyoTransaction.objects.filter(
-                search_criteria).distinct()
+                search_criteria
+            ).distinct()
 
         serializer = JigyosyoTransactionSerializer(transactions, many=True)
         return Response(serializer.data)
@@ -149,14 +160,14 @@ class CompanyListView(APIView):
         if request.user.is_superuser:
             companies = Company.objects.all()
         else:
-            companies = Company.objects.filter(add_user=request.user.username)
+            companies = Company.objects.filter(update_user=request.user.username)
         serializer = CompanySerializer(companies, many=True)
         return Response(serializer.data)
 
     def post(self, request):
         serializer = CompanySerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(add_user=request.user.username)
+            serializer.save(update_user=request.user.username)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -172,14 +183,20 @@ class CompanyDetailView(APIView):
 
     def get(self, request, pk):
         company = self.get_object(pk)
-        if request.user.username != company.add_user and not request.user.is_superuser:
+        if (
+            request.user.username != company.update_user
+            and not request.user.is_superuser
+        ):
             return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = CompanySerializer(company)
         return Response(serializer.data)
 
     def put(self, request, pk):
         company = self.get_object(pk)
-        if request.user.username != company.add_user and not request.user.is_superuser:
+        if (
+            request.user.username != company.update_user
+            and not request.user.is_superuser
+        ):
             return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = CompanySerializer(company, data=request.data)
         if serializer.is_valid():
@@ -189,7 +206,10 @@ class CompanyDetailView(APIView):
 
     def delete(self, request, pk):
         company = self.get_object(pk)
-        if request.user.username != company.add_user and not request.user.is_superuser:
+        if (
+            request.user.username != company.update_user
+            and not request.user.is_superuser
+        ):
             return Response(status=status.HTTP_403_FORBIDDEN)
         company.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -201,16 +221,22 @@ class JigyosyoListView(APIView):
 
     def get(self, request):
         if request.user.is_superuser:
-            jigyosyos = Jigyosyo.objects.filter(merged_into__isnull=True, split_into__isnull=True)
+            jigyosyos = Jigyosyo.objects.filter(
+                merged_into__isnull=True, split_into__isnull=True
+            )
         else:
-            jigyosyos = Jigyosyo.objects.filter(add_user=request.user.username, merged_into__isnull=True, split_into__isnull=True)
+            jigyosyos = Jigyosyo.objects.filter(
+                update_user=request.user.username,
+                merged_into__isnull=True,
+                split_into__isnull=True,
+            )
         serializer = JigyosyoSerializer(jigyosyos, many=True)
         return Response(serializer.data)
 
     def post(self, request):
         serializer = JigyosyoSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(add_user=request.user.username)
+            serializer.save(update_user=request.user.username)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -226,14 +252,20 @@ class JigyosyoDetailView(APIView):
 
     def get(self, request, pk):
         jigyosyo = self.get_object(pk)
-        if request.user.username != jigyosyo.add_user and not request.user.is_superuser:
+        if (
+            request.user.username != jigyosyo.update_user
+            and not request.user.is_superuser
+        ):
             return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = JigyosyoSerializer(jigyosyo)
         return Response(serializer.data)
 
     def put(self, request, pk):
         jigyosyo = self.get_object(pk)
-        if request.user.username != jigyosyo.add_user and not request.user.is_superuser:
+        if (
+            request.user.username != jigyosyo.update_user
+            and not request.user.is_superuser
+        ):
             return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = JigyosyoSerializer(jigyosyo, data=request.data)
         if serializer.is_valid():
@@ -243,7 +275,10 @@ class JigyosyoDetailView(APIView):
 
     def delete(self, request, pk):
         jigyosyo = self.get_object(pk)
-        if request.user.username != jigyosyo.add_user and not request.user.is_superuser:
+        if (
+            request.user.username != jigyosyo.update_user
+            and not request.user.is_superuser
+        ):
             return Response(status=status.HTTP_403_FORBIDDEN)
         jigyosyo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -263,28 +298,35 @@ class JigyosyoMergeSplitView(APIView):
 
     def post(self, request, pk):
         jigyosyo = Jigyosyo.objects.get(pk=pk)
-        action_type = request.data.get('action_type')
+        action_type = request.data.get("action_type")
 
-        if request.user.username != jigyosyo.add_user and not request.user.is_superuser:
+        if (
+            request.user.username != jigyosyo.update_user
+            and not request.user.is_superuser
+        ):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        if action_type == 'merge':
+        if action_type == "merge":
             serializer = JigyosyoMergeSerializer(data=request.data)
             if serializer.is_valid():
-                merge_into = serializer.validated_data['merge_into']
+                merge_into = serializer.validated_data["merge_into"]
                 self.merge(jigyosyo, merge_into)
-                return Response({'status': 'merged successfully'}, status=status.HTTP_200_OK)
+                return Response(
+                    {"status": "merged successfully"}, status=status.HTTP_200_OK
+                )
 
-        elif action_type == 'split':
+        elif action_type == "split":
             serializer = JigyosyoSplitSerializer(data=request.data)
             if serializer.is_valid():
-                new_data = serializer.validated_data['new_jigyosyo_data']
+                new_data = serializer.validated_data["new_jigyosyo_data"]
                 new_jigyosyo = self.split(new_data)
                 new_serializer = JigyosyoSerializer(new_jigyosyo)
                 return Response(new_serializer.data, status=status.HTTP_201_CREATED)
 
         else:
-            return Response({'error': 'Invalid action_type'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Invalid action_type"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -297,7 +339,8 @@ class JigyosyoTransactionListView(APIView):
             transactions = JigyosyoTransaction.objects.all()
         else:
             transactions = JigyosyoTransaction.objects.filter(
-                jigyosyo__add_user=request.user.username)
+                jigyosyo__update_user=request.user.username
+            )
         serializer = JigyosyoTransactionSerializer(transactions, many=True)
         return Response(serializer.data)
 
@@ -320,17 +363,22 @@ class JigyosyoTransactionDetailView(APIView):
 
     def get(self, request, pk):
         transaction = self.get_object(pk)
-        if request.user.username != transaction.jigyosyo.add_user and not request.user.is_superuser:
+        if (
+            request.user.username != transaction.jigyosyo.update_user
+            and not request.user.is_superuser
+        ):
             return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = JigyosyoTransactionSerializer(transaction)
         return Response(serializer.data)
 
     def put(self, request, pk):
         transaction = self.get_object(pk)
-        if request.user.username != transaction.jigyosyo.add_user and not request.user.is_superuser:
+        if (
+            request.user.username != transaction.jigyosyo.update_user
+            and not request.user.is_superuser
+        ):
             return Response(status=status.HTTP_403_FORBIDDEN)
-        serializer = JigyosyoTransactionSerializer(
-            transaction, data=request.data)
+        serializer = JigyosyoTransactionSerializer(transaction, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -338,7 +386,10 @@ class JigyosyoTransactionDetailView(APIView):
 
     def delete(self, request, pk):
         transaction = self.get_object(pk)
-        if request.user.username != transaction.jigyosyo.add_user and not request.user.is_superuser:
+        if (
+            request.user.username != transaction.jigyosyo.update_user
+            and not request.user.is_superuser
+        ):
             return Response(status=status.HTTP_403_FORBIDDEN)
         transaction.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -28,7 +28,7 @@ def run():
             for jigyosyo_info in jigyosyo_info_dict:
                 jigyosyo_info["fetch_datetime"] = current_datetime
                 # Update function name to custom_update_or_create_crawl_list
-                db_helpers.custom_update_or_create_crawl_list(jigyosyo_info)
+                db_helpers.update_or_create_crawl_list(jigyosyo_info)
 
             jigyosyo_natl_list.append(jigyosyo_info_dict)
             natl_kk_selenium._wait()

@@ -15,15 +15,10 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **kwargs):
-        arg_value = kwargs["arg"]
+        arg_value = kwargs.get("arg", None)
         if arg_value:
-            scrape_detail.run(arg_value)
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"Function executed with argument: {arg_value}")
-            )
+            message = f"Function executed with argument: {arg_value}"
         else:
-            scrape_detail.run()
-            self.stdout.write(
-                self.style.SUCCESS(f"Function executed without an argument")
-            )
+            message = "Function executed without an argument"
+        self.stdout.write(self.style.SUCCESS(message))
+        scrape_detail.run()
