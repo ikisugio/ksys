@@ -32,7 +32,6 @@ class KK_Selenium:
                 k: v for k, v in pref_url_dict.items() if k in filter_list
             }
 
-        # print(pref_url_dict)
         return filtered_pref_url_dict
 
     def _wait(self, time=None):
@@ -71,6 +70,7 @@ class KK_Selenium:
         return None
 
     def get_crawl_list_page(self, num=50):
+        print("get_crawl_list_page")
         self.select_list_number(str(num))
         jigyosyo_all = self.driver.find_elements(By.CSS_SELECTOR, "#resultList > li")
         jigyosyo_html_list = list(
@@ -88,7 +88,9 @@ class KK_Selenium:
         SPACE_HALF = "\u0020"
         SPACE_FULL = "\u3000"
         UNDERSCORE_FULL = "\uff3f"
-        jigyosyo_name = re.sub(fr"[{SPACE_HALF}{SPACE_FULL}]+", UNDERSCORE_FULL, _jigyosyo_name)
+        jigyosyo_name = re.sub(
+            rf"[{SPACE_HALF}{SPACE_FULL}]+", UNDERSCORE_FULL, _jigyosyo_name
+        )
         jigyosyoUrl = self.url + soup.select_one(".detailBtn")["href"][1:]
         fetch_date = times.today(configs.DATE_FORMAT)
 

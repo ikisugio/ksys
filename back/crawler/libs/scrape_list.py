@@ -3,6 +3,10 @@ from ..utils import kk_parsers
 from ..libs import db_helpers
 from ..etc import configs
 import time
+import logs.factories
+
+
+logger = logs.factories.create_debug_logger(__name__)
 
 
 def run():
@@ -22,7 +26,9 @@ def run():
         while is_next:
             natl_kk_selenium._wait()
             jigyosyo_info_dict = natl_kk_selenium.get_crawl_list_page()
-            current_datetime = timezone.now()  # Replace datetime.now() with timezone.now()
+            current_datetime = (
+                timezone.now()
+            )  # Replace datetime.now() with timezone.now()
 
             print(jigyosyo_info_dict)
             for jigyosyo_info in jigyosyo_info_dict:
@@ -33,6 +39,7 @@ def run():
             jigyosyo_natl_list.append(jigyosyo_info_dict)
             natl_kk_selenium._wait()
             print(jigyosyo_natl_list)
+            logger.debug(jigyosyo_natl_list)
             is_next = natl_kk_selenium.go_next_list_page()
 
     print(jigyosyo_natl_list)

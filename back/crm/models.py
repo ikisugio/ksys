@@ -1,13 +1,16 @@
+from enum import unique
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
 )
 from django.core.validators import EmailValidator
-from crm.mixins import HistoryMixin
+from crm.managers import CustomUserManager, CustomHistoryManager
+from crm.mixins import SaveUserMixin
+from simple_history.models import HistoricalRecords
 
 
-class CustomUser(HistoryMixin, AbstractBaseUser, PermissionsMixin):
+class CustomUser(AbstractBaseUser, PermissionsMixin, SaveUserMixin):
     email = models.EmailField(
         blank=False,
         null=False,
@@ -24,12 +27,14 @@ class CustomUser(HistoryMixin, AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=True)
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
+    objects = CustomUserManager()
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.username
 
 
-class Company(HistoryMixin, models.Model):
+class Company(models.Model, SaveUserMixin):
     company_code = models.CharField(max_length=255, null=True, blank=True)
     shubetsu = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True)
@@ -43,12 +48,16 @@ class Company(HistoryMixin, models.Model):
     repr_position = models.CharField(max_length=255, null=True, blank=True)
     established_date = models.DateField(null=True, blank=True)
     release_datetime = models.DateTimeField(null=True, blank=True)
+    history = HistoricalRecords()
+
+    class Meta:
+        unique_together = ("name", "address")
 
     def __str__(self):
         return self.name
 
 
-class CompanyManagement(HistoryMixin, models.Model):
+class CompanyManagement(models.Model, SaveUserMixin):
     company = models.OneToOneField(
         "Company",
         related_name="management",
@@ -57,10 +66,11 @@ class CompanyManagement(HistoryMixin, models.Model):
         blank=True,
     )
     description = models.TextField(null=True, blank=True)
+    history = HistoricalRecords()
 
 
-class Jigyosyo(HistoryMixin, models.Model):
-    jigyosyo_code = models.CharField(max_length=255)
+class Jigyosyo(models.Model, SaveUserMixin):
+    jigyosyo_code = models.CharField(max_length=255, unique=True)
     company = models.ForeignKey(
         "Company",
         on_delete=models.SET_NULL,
@@ -78,12 +88,14 @@ class Jigyosyo(HistoryMixin, models.Model):
     repr_position = models.CharField(max_length=255, null=True, blank=True)
     kourou_jigyosyo_url = models.CharField(max_length=255, null=True, blank=True)
     kourou_release_datetime = models.DateTimeField(null=True, blank=True)
+    history = HistoricalRecords()
+    objects = CustomHistoryManager()
 
     def __str__(self):
         return self.name
 
 
-class JigyosyoManagement(HistoryMixin, models.Model):
+class JigyosyoManagement(models.Model, SaveUserMixin):
     jigyosyo = models.OneToOneField(
         "Jigyosyo",
         related_name="management",
@@ -111,9 +123,10 @@ class JigyosyoManagement(HistoryMixin, models.Model):
         null=True,
         blank=True,
     )
+    history = HistoricalRecords()
 
 
-class JigyosyoTransaction(HistoryMixin, models.Model):
+class JigyosyoTransaction(models.Model, SaveUserMixin):
     jigyosyo = models.ForeignKey(
         "Jigyosyo",
         related_name="transactions",
@@ -123,6 +136,7 @@ class JigyosyoTransaction(HistoryMixin, models.Model):
     )
     visit_datetime = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
+    history = HistoricalRecords()
 
     def __str__(self):
         return f"訪問履歴: {(self.jigyosyo.name if self.jigyosyo else 'No Jigyosyo')} - {self.visit_datetime.strftime('%Y-%m-%d %H:%M:%S')}"

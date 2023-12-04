@@ -1,5 +1,6 @@
 from simple_history.manager import HistoryManager
 from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth import get_user_model
 
 
 class CustomUserManager(BaseUserManager):
@@ -18,13 +19,22 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomHistoryManager(HistoryManager):
+    def __init__(self, model=None, *args, **kwargs):
+        super().__init__(model=model, *args, **kwargs)
+
     def update_or_create_with_user(self, user=None, **kwargs):
+        if user is None:
+            User = get_user_model()
+            user, _ = User.objects.get_or_create(username="system")
         jigyosyo_code = kwargs.get("jigyosyo_code")
         defaults = kwargs.get("defaults", {})
+        print("--|||||||||||||-----------{}---------|||||-----".format(jigyosyo_code))
         obj, created = self.update_or_create(
             jigyosyo_code=jigyosyo_code, defaults=defaults
         )
-        if user is not None:
-            with obj.history.override_user(user):
-                obj.save()
+
+        latest_history = obj.history.latest()
+        latest_history.history_user = user
+        latest_history.save()
+
         return obj, created

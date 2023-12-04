@@ -1,20 +1,22 @@
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag, NavigableString
 import unicodedata
 from django.utils import timezone
+from datetime import date, datetime
+from typing import Any, Callable
 from ..utils import iso8601
 from ..utils.adnorm import full_norm
-from ..etc import configs
 from ..libs import db_helpers
 from ..models import CrawlList
-from crm.models import Company, Jigyosyo
+
+# from crm.models import Company, Jigyosyo
 
 
-def convert_url(url):
+def convert_url(url: str) -> str:
     return url.replace("kani", "kihon")
 
 
-def get_soup(url):
+def get_soup(url: str) -> BeautifulSoup | None:
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
@@ -27,14 +29,28 @@ def get_soup(url):
         return None
 
 
-def fetch_company_detail(data_url):
-    soup = get_soup(data_url)
+def fetch_company_detail(data_url: str) -> dict[str, str | date | datetime | None]:
+    soup: BeautifulSoup | None = get_soup(data_url)
     if not soup:
+        print("not found soup")
         return {}
-    company_soup = soup.find("div", id="tableGroup-1").find("table")
-    details = {}
 
-    mappings = {
+    company_div_find: Tag | NavigableString | None = soup.find("div", id="tableGroup-1")
+    if isinstance(company_div_find, Tag):
+        company_div: Tag = company_div_find
+    else:
+        print("company_div is not a Tag or not found")
+        return {}
+
+    company_table_div: Tag | NavigableString | None = company_div.find("table")
+    if isinstance(company_table_div, Tag):
+        company_table: Tag = company_table_div
+    else:
+        print("company_table is not a Tag or not found")
+        return {}
+
+    details: dict[str, str | date | datetime | None] = {}
+    mappings: dict[str, str] = {
         "法人番号": "company__code",
         "法人等の種類": "company__type",
         "名称": "company__name",
@@ -48,7 +64,7 @@ def fetch_company_detail(data_url):
         "法人等の設立年月日": "company__established_date",
     }
 
-    for soup_td in company_soup.find_all("td"):
+    for soup_td in company_table.find_all("td"):
         soup_th = soup_td.find_previous("th")
 
         th = soup_th.text.split(",")[0].strip()
@@ -58,19 +74,22 @@ def fetch_company_detail(data_url):
             if th == "法人番号" and not td:
                 details[mappings[th]] = ""
             elif th == "設立年月日":
-                details[mappings[th]] = timezone.now().strptime(td, "%Y/%m/%d").date()
+                details[mappings[th]] = datetime.strptime(td, "%Y/%m/%d").date()
             elif th == "（ふりがな）":
                 if soup_td.get("diffid") == "diff-c3":
                     details["company__name_kana"] = td.replace("\u3000", " ")
                 elif soup_td.get("diffid") == "diff-c4":
                     details["company__name"] = td.replace("\u3000", " ")
             elif th == "法人等の設立年月日":
-                def to_date(x):
-                    if not x:
-                        return None
-                    return timezone.now().strptime(x, "%Y/%m/%d").date()
 
-                details[mappings[th]] = to_date(td.replace("\u3000", " "))
+                def to_date(date_string: str) -> date | None:
+                    if not date_string:
+                        return None
+                    return datetime.strptime(date_string, "%Y/%m/%d").date()
+
+                date_string = td.replace("\u3000", " ")
+                details[mappings[th]] = to_date(date_string)
+
             else:
                 details[mappings[th]] = td.replace("\u3000", " ")
 
@@ -83,21 +102,33 @@ def fetch_company_detail(data_url):
     return details
 
 
-def fetch_jigyosyo_detail(base_data_url):
+def fetch_jigyosyo_detail(
+    base_data_url: str,
+) -> dict[str, str | date | datetime | None]:
     detail_data_url = convert_url(base_data_url)
+
     soup = get_soup(detail_data_url)
     if not soup:
+        print("detail soup not found")
         return {}
 
-    details = {
-        "jigyosyo__release_datetime": iso8601.from_jp_time(
-            soup.find("p").text.split()[0]
-        ),
+    p_tag_find: Tag | NavigableString | None = soup.find("p")
+    if p_tag_find is not None:
+        p_tag: Tag | NavigableString = p_tag_find
+        jigyosyo__release_datetime: datetime | None = iso8601.from_jp_time(
+            p_tag.text.split()[0]
+        )
+    else:
+        print("p_tag not found")
+        jigyosyo__release_datetime: datetime | None = None
+
+    details: dict[str, str | datetime | None] = {
+        "jigyosyo__release_datetime": jigyosyo__release_datetime,
         "jigyosyo__code": detail_data_url.split("JigyosyoCd=")[1].split("-")[0],
         "crawl_detail__fetch_datetime": timezone.now().replace(microsecond=0),
     }
 
-    key_map = {
+    key_map: dict[str, str] = {
         "jigyosyo__tel": "電話番号",
         "jigyosyo__fax": "FAX番号",
         "jigyosyo__repr_name": "氏名",
@@ -105,10 +136,16 @@ def fetch_jigyosyo_detail(base_data_url):
     }
 
     for key, search_text in key_map.items():
-        raw_text = soup.find(string=search_text).find_next().text.strip()
-        details[key] = unicodedata.normalize("NFKC", raw_text)
+        found_element = soup.find(string=search_text)
+        if found_element is not None:
+            next_element = found_element.find_next()
+            if next_element is not None:
+                raw_text = next_element.text.strip()
+                details[key] = unicodedata.normalize("NFKC", raw_text)
+            else:
+                details[key] = None
 
-    def extract_and_normalize_address(soup):
+    def extract_and_normalize_address(soup: BeautifulSoup) -> tuple[str, str]:
         address_tag = soup.find(string="所在地").find_next().find_next()
         raw_address = address_tag.text.strip()
         postal_code = raw_address.split("\u3000")[0].replace("〒", "").strip()
@@ -119,21 +156,21 @@ def fetch_jigyosyo_detail(base_data_url):
 
         return normalized_postal_code, normalized_address
 
-    jigyosyo_postal_code, jigyosyo_address = extract_and_normalize_address(
-        soup)
+    jigyosyo_postal_code, jigyosyo_address = extract_and_normalize_address(soup)
     details["jigyosyo__postal_code"] = jigyosyo_postal_code
     details["jigyosyo__address"] = full_norm(jigyosyo_address)
 
-    erase_space = (
-        lambda x: x.replace(" ", "").replace(
-            "\u3000", "") if type(x) == str else x
+    erase_space: Callable[[Any], str | date | datetime | None] = (
+        lambda x: x.replace(" ", "").replace("\u3000", "") if type(x) == str else x
     )
-    details = {k: erase_space(v) for k, v in details.items()}
+    detail_jigyosyo_data: dict[str, str | date | datetime | None] = {
+        k: erase_space(v) for k, v in details.items()
+    }
 
-    return details
+    return detail_jigyosyo_data
 
 
-def fetch_detail(base_data_url):
+def fetch_detail(base_data_url: str):
     detail_data_url = convert_url(base_data_url)
     print(f"~~~~~~~~~~~{detail_data_url}~~~~~~~~~~~~~~~~~")
 
@@ -143,18 +180,11 @@ def fetch_detail(base_data_url):
     print("fetch ~~~~~~~~~~~~~~")
     print(jigyosyo_details)
     print(company_details)
-    
+
     detail_data = {**jigyosyo_details, **company_details}
     print(f"\ndetail_data\n@@@@@@@@@@@@@@@@@\n{detail_data}\n@@@@@@@@@@@\n")
 
     return detail_data
-
-
-# def bulk_insert_jigyosyo(data_list):
-#     Jigyosyo.BULK_INSERT_MODE = True
-#     for data in data_list:
-#         db_helpers.update_or_create_detail_info(data)
-#     Jigyosyo.BULK_INSERT_MODE = False
 
 
 def run():
@@ -165,14 +195,3 @@ def run():
         detail_data = fetch_detail(base_data_url)
 
         db_helpers.update_or_create_detail_info(detail_data)
-
-    # all_details_data = []
-
-    for crawl_list_entry in crawl_list_entries:
-        base_data_url = crawl_list_entry.kourou_jigyosyo_url
-        detail_data = fetch_detail(base_data_url)
-        db_helpers.update_or_create_detail_info(detail_data)
-        
-        # all_details_data.append(detail_data)
-
-    # bulk_insert_jigyosyo(all_details_data)
