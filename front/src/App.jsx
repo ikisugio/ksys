@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
 import JigyosyoSearch from "./components/JigyosyoSearch";
 import JigyosyoTransactionList from "./components/JigyosyoTransactionList";
 import Login from "./components/Login";
-import Edit from "./components/Edit";
+import Edit from "./components/JigyosyoEdit";
 import {
   AppBar,
   Toolbar,
