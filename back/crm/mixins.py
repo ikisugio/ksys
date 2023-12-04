@@ -1,22 +1,16 @@
-from django.db import models
-from crm.managers import CustomHistoryManager
 from simple_history.models import HistoricalRecords
 
 
-class HistoryMixin(models.Model):
-    history = HistoricalRecords()
-    objects = CustomHistoryManager()
+class SaveUserMixin:
+    # history = HistoricalRecords()
 
+    def save(self, *args, **kwargs):
+        history_user_id = kwargs.pop("history_user_id", None)
+        print(f"history_user_id MIXIN_SAVE ================> {history_user_id}")
+        print(f"kwargs ================> {kwargs}")
+        super().save(*args, **kwargs)
 
-# class UpdateMixin(models.Model):
-#     update_user = models.ForeignKey(
-#         "CustomUser",
-#         related_name="updated_%(class)s",
-#         on_delete=models.SET_NULL,
-#         null=True,
-#         blank=True,
-#     )
-#     update_time = models.DateTimeField(auto_now=True)
-
-#     class Meta:
-#         abstract = True
+        if history_user_id is not None:
+            latest_history = self.history.latest()
+            latest_history.history_user_id = history_user_id
+            latest_history.save()

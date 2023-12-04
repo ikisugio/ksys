@@ -1,3 +1,4 @@
+from turtle import up
 from django.db import transaction
 from datetime import timedelta
 from crawler.models import CrawlList, CrawlDetail
@@ -10,9 +11,10 @@ from crm.models import (
 )
 from django.utils import timezone
 import traceback
-
+from crm.models import CustomUser
 
 system_user = CustomUser.objects.get(username="system")
+system_user_id = system_user.id
 
 
 def update_or_create_crawl_list(_crawl_list_data):
@@ -20,10 +22,16 @@ def update_or_create_crawl_list(_crawl_list_data):
         k.replace("crawl_list__", ""): v for k, v in _crawl_list_data.items()
     }
 
+    # 'fetch_datetime' フィールドを辞書から削除する
+    crawl_list_data.pop("fetch_datetime", None)
+
     instance, created = CrawlList.objects.update_or_create(
         jigyosyo_code=crawl_list_data.get("jigyosyo_code"),
         defaults=crawl_list_data,
     )
+
+    instance.save(history_user_id=system_user_id)
+
     return instance, created
 
 
@@ -64,11 +72,10 @@ def update_or_create_detail_info(detail_data):
 
         print(f"company_management_data ====================> {company_data}")
 
-        company_instance, _ = custom_update_or_create(
-            Company,
-            defaults=company_data,
+        company_instance, _ = Company.objects.update_or_create(
             name=company_data["name"],
             address=company_data["address"],
+            defaults=company_data,
         )
 
         # 2. Create or update Jigyosyo instance with reference to Company instance
@@ -89,7 +96,7 @@ def update_or_create_detail_info(detail_data):
             "name": crawl_list_instance.jigyosyo_name,
             "kourou_jigyosyo_url": crawl_list_instance.kourou_jigyosyo_url,
             "kourou_release_datetime": detail_data.get("jigyosyo__release_datetime"),
-            "crawl_list_instance": crawl_list_instance,
+            # "crawl_list_instance": crawl_list_instance,
             "company": company_instance,
         }
 
@@ -97,15 +104,27 @@ def update_or_create_detail_info(detail_data):
             f"\n\n begin jigyosyo_data ====================> {jigyosyo_data} \n\n end\n\n"
         )
 
-        Jigyosyo.objects.update_or_create_with_user(
-            user=system_user,
+        # Jigyosyo.objects.update_or_create_with_user(
+        #     user=system_user,
+        #     jigyosyo_code=jigyosyo_data["jigyosyo_code"],
+        #     defaults=jigyosyo_data,
+        # )
+
+        # # 3. Update or create other related data
+        # CrawlDetail.objects.update_or_create_with_user(
+        #     user=system_user,
+        #     crawl_list=crawl_list_instance,
+        #     defaults={"fetch_datetime": timezone.now()},
+        # )
+
+        Jigyosyo.objects.update_or_create(
             jigyosyo_code=jigyosyo_data["jigyosyo_code"],
-            defaults=jigyosyo_data,
+            defaults={**jigyosyo_data},
         )
 
-        # 3. Update or create other related data
-        CrawlDetail.objects.update_or_create_with_user(
-            user=system_user,
+        Jigyosyo.history
+
+        CrawlDetail.objects.update_or_create(
             crawl_list=crawl_list_instance,
             defaults={"fetch_datetime": timezone.now()},
         )
@@ -117,20 +136,20 @@ def update_or_create_detail_info(detail_data):
     return None
 
 
-@transaction.atomic
-def custom_update_or_create(model, defaults=None, **kwargs):
-    defaults = defaults or {}
-    instance = model.objects.filter(**kwargs).first()
+# @transaction.atomic
+# def custom_update_or_create(model, defaults=None, **kwargs):
+#     defaults = defaults or {}
+#     instance = model.objects.filter(**kwargs).first()
 
-    if instance:
-        # Update the object's fields
-        for key, value in defaults.items():
-            setattr(instance, key, value)
-        instance.save()
-        return instance, False
+#     if instance:
+#         # Update the object's fields
+#         for key, value in defaults.items():
+#             setattr(instance, key, value)
+#         instance.save()
+#         return instance, False
 
-    else:
-        # If the object does not exist, create it
-        params = {**kwargs, **defaults}
-        instance = model.objects.create(**params)
-        return instance, True
+#     else:
+#         # If the object does not exist, create it
+#         params = {**kwargs, **defaults}
+#         instance = model.objects.create(**params)
+#         return instance, True
