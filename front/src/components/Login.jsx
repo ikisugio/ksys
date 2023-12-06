@@ -25,7 +25,7 @@ const ErrorMsg = styled.div`
 
 const Label = styled.div`
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 500;
   margin-bottom: 0.5rem;
   color: #555;
 `;
@@ -146,7 +146,7 @@ function Login({ onLoginSuccess }) {
         <FlexContainer>
           <FormContainer onKeyUp={handleKeyUp}>
             <FormItem>
-              <Label>Username</Label>
+              <Label>ユーザー名</Label>
               <TextField
                 fullWidth
                 value={username}
@@ -157,7 +157,7 @@ function Login({ onLoginSuccess }) {
               />
             </FormItem>
             <FormItem>
-              <Label>Password</Label>
+              <Label>パスワード</Label>
               <TextField
                 fullWidth
                 type="password"

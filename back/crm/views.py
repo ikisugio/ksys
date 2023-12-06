@@ -34,7 +34,7 @@ class JigyosyoSearchView(APIView):
                 Q(name__icontains=query)
                 | Q(type__icontains=query)
                 | Q(company__name__icontains=query)
-                | Q(transactions__content__icontains=query)  # ここを修正
+                | Q(transactions__content__icontains=query)
             )
             jigyosyos = Jigyosyo.objects.filter(search_criteria).distinct()
         else:
@@ -44,7 +44,7 @@ class JigyosyoSearchView(APIView):
                 | Q(type__icontains=query)
                 | Q(company__name__icontains=query)
                 | Q(transactions__content__icontains=query)
-                & Q(address__icontains=prefecture_name)  # ここを修正
+                & Q(address__icontains=prefecture_name)
             )
             jigyosyos = Jigyosyo.objects.filter(search_criteria).distinct()
 
