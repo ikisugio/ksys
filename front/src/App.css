@@ -1,0 +1,25 @@
+.unselectable {
+  -webkit-user-select: none; /* Safari用 */
+  -moz-user-select: none; /* Firefox用 */
+  -ms-user-select: none; /* Internet Explorer/Edge用 */
+  user-select: none; /* 標準の構文 */
+}
+
+
+.listItemContent {
+  display: flex;
+  justify-content: space-between; /* 左右に要素を分散 */
+  width: 100%; /* コンテナの幅を最大に */
+}
+
+.actionName {
+  text-align: right; /* 右詰め */
+}
+
+.targetName {
+  text-align: left; /* 左詰め */
+}
+
+.css-10hburv-MuiTypography-root {
+  font-weight: 500 !important;
+}

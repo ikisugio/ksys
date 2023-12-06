@@ -19,8 +19,9 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import styled from "@emotion/styled";
 import { ThemeProvider, createTheme } from "@mui/material";
+import "./App.css";
 
-const HEADER_HEIGHT = "64px";
+const HEADER_HEIGHT = "66px";
 
 const customTheme = createTheme({
   palette: {
@@ -42,7 +43,7 @@ const customTheme = createTheme({
   },
 });
 
-const DrawerWidth = 250;
+const DrawerWidth = 220;
 
 const MainContent = styled.div`
   transition: transform 0.3s ease, width 0.3s ease;
@@ -57,7 +58,8 @@ const MainContent = styled.div`
 `;
 
 const StyledAppBar = styled(AppBar)`
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
   box-shadow: 0.1px 0.1px 0.1px rgba(0, 0, 0, 0.1);
   &:hover {
     box-shadow: 0px 0px 10px rgba(0, 0, 200, 0.1);
@@ -68,6 +70,7 @@ const StyledAppBar = styled(AppBar)`
 
 const StyledTypography = styled(Typography)`
   color: #555; // 文字色を灰色に設定
+  margin-left: 20px;
 `;
 
 const StyledCard = styled(Card)`
@@ -80,16 +83,15 @@ const StyledCard = styled(Card)`
 const StyledDrawer = styled(Drawer)`
   .MuiDrawer-paper {
     top: ${HEADER_HEIGHT};
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
+    border-top: none !important;
     box-shadow: 0.1px 0.1px 0.5px rgba(0, 0, 0, 0.1);
-    border: 0.1px solid rgba(0, 0, 0, 0.1);
-    width: ${DrawerWidth}px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    width: ${DrawerWidth}px !important;
     // background-color: rgba(63, 81, 181, 0.05);
     background-color: rgba(63, 81, 181, 0);
     &:hover {
       border: 0.03px solid lightgray;
-      box-shadow: 5px 5px 5px rgba(0, 0, 200, 0.03);
+      box-shadow: 1px 1px 1px rgba(0, 0, 200, 0.1);
     }
   }
   .MuiBackdrop-root {
@@ -128,9 +130,9 @@ const DrawerListContainer = styled.div`
   width: ${DrawerWidth}px;
 `;
 
-const BoldListItemText = styled(ListItemText)({
-  fontWeight: "bold",
-});
+const BoldListItemText = styled(ListItemText)`
+  font-weight: bold !important;
+`;
 
 const StyledListItem = styled(ListItemButton)`
   transition: background-color 0.3s, border-radius 0.3s;
@@ -178,8 +180,12 @@ function App() {
                 >
                   <MenuIcon style={{ color: "#555" }} />
                 </IconButton>
-                <StyledTypography variant="h6" style={{ flexGrow: 1 }}>
-                  Welcome to Our Search App
+                <StyledTypography
+                  variant="h6"
+                  style={{ flexGrow: 1 }}
+                  className="unselectable"
+                >
+                  事業所管理システム
                 </StyledTypography>
               </Toolbar>
             </StyledAppBar>
@@ -194,26 +200,10 @@ function App() {
                   <StyledListItem
                     button
                     component={Link}
-                    to="/jigyosyo-search"
-                    onClick={toggleMenu}
-                  >
-                    <BoldListItemText primary="事業所検索" />
-                  </StyledListItem>
-                  <StyledListItem
-                    button
-                    component={Link}
-                    to="/jigyosyo-create"
-                    onClick={toggleMenu}
-                  >
-                    <BoldListItemText primary="事業所作成" />
-                  </StyledListItem>
-                  <StyledListItem
-                    button
-                    component={Link}
                     to="/jigyosyo-transaction-list"
                     onClick={toggleMenu}
                   >
-                    <BoldListItemText primary="訪問履歴一覧" />
+                    <BoldListItemText primary={`訪問履歴\u3000一覧`} />
                   </StyledListItem>
                   <StyledListItem
                     button
@@ -221,7 +211,23 @@ function App() {
                     to="/jigyosyo-transaction-create"
                     onClick={toggleMenu}
                   >
-                    <BoldListItemText primary="訪問履歴作成" />
+                    <BoldListItemText primary={`訪問履歴\u3000作成`} />
+                  </StyledListItem>
+                  <StyledListItem
+                    button
+                    component={Link}
+                    to="/jigyosyo-search"
+                    onClick={toggleMenu}
+                  >
+                    <BoldListItemText primary={`事業所\u3000\u3000検索`} />
+                  </StyledListItem>
+                  <StyledListItem
+                    button
+                    component={Link}
+                    to="/jigyosyo-create"
+                    onClick={toggleMenu}
+                  >
+                    <BoldListItemText primary={`事業所\u3000\u3000追加`} />
                   </StyledListItem>
                   <StyledListItem
                     button
@@ -229,7 +235,31 @@ function App() {
                     to="/login"
                     onClick={toggleMenu}
                   >
-                    <BoldListItemText primary="アカウント切替" />
+                    <BoldListItemText primary="よくある質問・回答" />
+                  </StyledListItem>
+                  <StyledListItem
+                    button
+                    component={Link}
+                    to="/login"
+                    onClick={toggleMenu}
+                  >
+                    <BoldListItemText primary="要望・問い合わせ" />
+                  </StyledListItem>
+                  <StyledListItem
+                    button
+                    component={Link}
+                    to="/login"
+                    onClick={toggleMenu}
+                  >
+                    <BoldListItemText primary="更新情報" />
+                  </StyledListItem>
+                  <StyledListItem
+                    button
+                    component={Link}
+                    to="/login"
+                    onClick={toggleMenu}
+                  >
+                    <BoldListItemText primary="ユーザー切替" />
                   </StyledListItem>
                 </List>
               </DrawerListContainer>
