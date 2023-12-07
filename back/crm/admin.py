@@ -1,6 +1,10 @@
 from django.contrib import admin
 from .models import CustomUser, Jigyosyo, Company, JigyosyoTransaction
+from crawler.models import CrawlList, CrawlDetail
 
+
+class CrawlListAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in CrawlList._meta.fields]
 
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = [field.name for field in CustomUser._meta.fields if field.name != "password"]
@@ -15,6 +19,7 @@ class JigyosyoTransactionAdmin(admin.ModelAdmin):
     list_display = [field.name for field in JigyosyoTransaction._meta.fields]
 
 
+admin.site.register(CrawlList, CrawlListAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Jigyosyo, JigyosyoAdmin)
 admin.site.register(Company, CompanyAdmin)

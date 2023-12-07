@@ -8,8 +8,12 @@ from ..utils import iso8601
 from ..utils.adnorm import full_norm
 from ..libs import db_helpers
 from ..models import CrawlList
+import time
+from logs import factories as log_factories
 
 # from crm.models import Company, Jigyosyo
+
+logger = log_factories.create_debug_logger(__name__)
 
 
 def convert_url(url: str) -> str:
@@ -56,8 +60,8 @@ def fetch_company_detail(data_url: str) -> dict[str, str | date | datetime | Non
         "名称": "company__name",
         "（ふりがな）": "company__name_kana",
         "所在地": "company__address",
-        "電話番号": "company__tel",
-        "ＦＡＸ番号": "company__fax",
+        "電話番号": "company__tel_number",
+        "ＦＡＸ番号": "company__fax_number",
         "ホームページ": "company__url",
         "氏名": "company__repr_name",
         "職名": "company__repr_position",
@@ -69,6 +73,10 @@ def fetch_company_detail(data_url: str) -> dict[str, str | date | datetime | Non
 
         th = soup_th.text.split(",")[0].strip()
         td = soup_td.text.replace(" ", "").replace("\u3000", "")
+        
+        # logger.debug(f"soup_th: {soup_th}")
+        # logger.debug(f"th: {th}")
+        # logger.debug(f"td: {td}")
 
         if th in mappings:
             if th == "法人番号" and not td:
@@ -98,7 +106,7 @@ def fetch_company_detail(data_url: str) -> dict[str, str | date | datetime | Non
                 details["company__postal_code"] = td.replace("〒", "").strip()
             elif soup_td.get("diffid") == "diff-c8":
                 details["company__address"] = full_norm(td)
-
+    # logger.debug(f"details: {details}")
     return details
 
 
@@ -129,8 +137,8 @@ def fetch_jigyosyo_detail(
     }
 
     key_map: dict[str, str] = {
-        "jigyosyo__tel": "電話番号",
-        "jigyosyo__fax": "FAX番号",
+        "jigyosyo__tel_number": "電話番号",
+        "jigyosyo__fax_number": "FAX番号",
         "jigyosyo__repr_name": "氏名",
         "jigyosyo__repr_position": "職名",
     }
@@ -159,6 +167,7 @@ def fetch_jigyosyo_detail(
     jigyosyo_postal_code, jigyosyo_address = extract_and_normalize_address(soup)
     details["jigyosyo__postal_code"] = jigyosyo_postal_code
     details["jigyosyo__address"] = full_norm(jigyosyo_address)
+    details["jigyosyo__type"] = soup.find(string="介護サービスの種類").find_next().text.strip()
 
     erase_space: Callable[[Any], str | date | datetime | None] = (
         lambda x: x.replace(" ", "").replace("\u3000", "") if type(x) == str else x
@@ -184,6 +193,7 @@ def fetch_detail(base_data_url: str):
     detail_data = {**jigyosyo_details, **company_details}
     print(f"\ndetail_data\n@@@@@@@@@@@@@@@@@\n{detail_data}\n@@@@@@@@@@@\n")
 
+    # logger.debug(f"detail_data: {detail_data}")
     return detail_data
 
 
@@ -195,3 +205,5 @@ def run():
         detail_data = fetch_detail(base_data_url)
 
         db_helpers.update_or_create_detail_info(detail_data)
+        
+        time.sleep(1)

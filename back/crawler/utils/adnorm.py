@@ -27,14 +27,15 @@ def replace_address(input_string: str) -> str:
 
 
 def full_norm(address: str) -> str:
-    normalized_address: dict[str, str] = normalize(address)  # type: ignore
-    joined_address = (
-        normalized_address["pref"]
-        + normalized_address["city"]
-        + normalized_address["town"]
-        + normalized_address["addr"]
-    )
-    hankaku_address = jaconv.z2h(joined_address, digit=True, ascii=False)
-    assert isinstance(hankaku_address, str)
-    addr = replace_address(hankaku_address)
+    # normalized_address: dict[str, str] = normalize(address)  # type: ignore
+    # joined_address = (
+    #     normalized_address["pref"]
+    #     + normalized_address["city"]
+    #     + normalized_address["town"]
+    #     + normalized_address["addr"]
+    # )
+    # hankaku_address = jaconv.z2h(joined_address, digit=True, ascii=False)
+    # assert isinstance(hankaku_address, str)
+    # addr = replace_address(hankaku_address)
+    addr = address
     return addr
