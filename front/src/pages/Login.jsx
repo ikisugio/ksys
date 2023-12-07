@@ -7,6 +7,7 @@ import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
+import { useAuth } from "@/hooks/AuthContext";
 
 const FormItem = styled.div`
   margin-bottom: 1rem;
@@ -82,6 +83,7 @@ function Login({ onLoginSuccess }) {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [usernameError, setUsernameError] = useState("");
+  const { setIsLoggedIn } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -120,7 +122,8 @@ function Login({ onLoginSuccess }) {
       localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
       onLoginSuccess();
-      navigate("/jigyosyo-search");
+      setIsLoggedIn(true);
+      navigate("/transaction/list");
       setSnackbarOpen(true);
       setSnackbarSeverity("success");
       setSnackbarMessage("Login successful");
