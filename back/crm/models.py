@@ -35,7 +35,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, SaveUserMixin):
 
 
 class Company(models.Model, SaveUserMixin):
-    company_code = models.CharField(max_length=255, null=True, blank=True)
+    company_code = models.CharField(max_length=255, null=True, blank=True, unique=True)
     shubetsu = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     name_kana = models.CharField(max_length=255, null=True, blank=True)
