@@ -1,3 +1,7 @@
+body {
+  font-family: 'Inter', sans-serif;
+}
+
 .unselectable {
   -webkit-user-select: none; /* Safari用 */
   -moz-user-select: none; /* Firefox用 */

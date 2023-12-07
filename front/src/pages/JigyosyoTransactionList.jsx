@@ -1,7 +1,5 @@
-import React from "react";
-
 const JigyosyoSearch = () => {
-  return <div>JigyosyoSearch</div>;
+  return <div>Transaction List</div>;
 };
 
 export default JigyosyoSearch;
