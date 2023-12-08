@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import Jigyosyo, Company, CustomUser, JigyosyoTransaction
+from .models import (
+    CustomUser,
+    Company,
+    Jigyosyo,
+    JigyosyoManagement,
+    JigyosyoTransaction,
+)
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -28,10 +34,26 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class JigyosyoSerializer(serializers.ModelSerializer):
-    company = CompanySerializer(read_only=True)
+    company = CompanySerializer()
 
     class Meta:
         model = Jigyosyo
+        fields = "__all__"
+
+
+class JigyosyoManagementSerializer(serializers.ModelSerializer):
+    jigyosyo = JigyosyoSerializer()
+
+    class Meta:
+        model = JigyosyoManagement
+        fields = "__all__"
+
+
+class JigyosyoTransactionSerializer(serializers.ModelSerializer):
+    management = JigyosyoManagementSerializer()
+
+    class Meta:
+        model = JigyosyoTransaction
         fields = "__all__"
 
 
@@ -41,11 +63,3 @@ class JigyosyoMergeSerializer(serializers.Serializer):
 
 class JigyosyoSplitSerializer(serializers.Serializer):
     new_jigyosyo_data = JigyosyoSerializer()
-
-
-class JigyosyoTransactionSerializer(serializers.ModelSerializer):
-    jigyosyo = JigyosyoSerializer(read_only=True)
-
-    class Meta:
-        model = JigyosyoTransaction
-        fields = "__all__"

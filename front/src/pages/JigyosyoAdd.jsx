@@ -1,5 +1,5 @@
 const JigyosyoAdd = () => {
-  return <div>JigyosyoAdd</div>;
+  return <div>JigyosyoAddaaa</div>;
 };
 
 export default JigyosyoAdd;

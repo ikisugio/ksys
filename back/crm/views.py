@@ -1,12 +1,13 @@
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Company, Jigyosyo, JigyosyoTransaction, CustomUser
+from .models import Company, Jigyosyo, JigyosyoManagement, JigyosyoTransaction, CustomUser
 from .serializers import (
     CompanySerializer,
     JigyosyoSerializer,
     JigyosyoMergeSerializer,
     JigyosyoSplitSerializer,
+    JigyosyoManagementSerializer,
     JigyosyoTransactionSerializer,
     CustomUserSerializer,
     UserRegistrationSerializer,
@@ -218,20 +219,30 @@ class CompanyDetailView(APIView):
 # Jigyosyo Views
 class JigyosyoListView(APIView):
     permission_classes = [IsAuthenticated]
-
+    
     def get(self, request):
         if request.user.is_superuser:
-            jigyosyos = Jigyosyo.objects.filter(
-                merged_into__isnull=True, split_into__isnull=True
-            )
+            jigyosyos = Jigyosyo.objects.all()
         else:
             jigyosyos = Jigyosyo.objects.filter(
-                update_user=request.user.username,
-                merged_into__isnull=True,
-                split_into__isnull=True,
+                update_user=request.user.username
             )
         serializer = JigyosyoSerializer(jigyosyos, many=True)
         return Response(serializer.data)
+
+    # def get(self, request):
+    #     if request.user.is_superuser:
+    #         jigyosyos = Jigyosyo.objects.filter(
+    #             merged_into__isnull=True, split_into__isnull=True
+    #         )
+    #     else:
+    #         jigyosyos = Jigyosyo.objects.filter(
+    #             update_user=request.user.username,
+    #             merged_into__isnull=True,
+    #             split_into__isnull=True,
+    #         )
+    #     serializer = JigyosyoSerializer(jigyosyos, many=True)
+    #     return Response(serializer.data)
 
     def post(self, request):
         serializer = JigyosyoSerializer(data=request.data)
@@ -249,7 +260,7 @@ class JigyosyoDetailView(APIView):
             return Jigyosyo.objects.get(pk=pk)
         except Jigyosyo.DoesNotExist:
             raise Http404
-
+        
     def get(self, request, pk):
         jigyosyo = self.get_object(pk)
         if (
@@ -330,6 +341,70 @@ class JigyosyoMergeSplitView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class JigyosyoManagementListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        if request.user.is_superuser:
+            managements = JigyosyoManagement.objects.all()
+        else:
+            managements = JigyosyoManagement.objects.filter(
+                jigyosyo__update_user=request.user.username
+            )
+        serializer = JigyosyoManagementSerializer(managements, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = JigyosyoManagementSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class JigyosyoManagementDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return JigyosyoManagement.objects.get(pk=pk)
+        except JigyosyoManagement.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        management = self.get_object(pk)
+        if (
+            request.user.username != management.jigyosyo.update_user
+            and not request.user.is_superuser
+        ):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        serializer = JigyosyoManagementSerializer(management)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        management = self.get_object(pk)
+        if (
+            request.user.username != management.jigyosyo.update_user
+            and not request.user.is_superuser
+        ):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        serializer = JigyosyoManagementSerializer(management, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        management = self.get_object(pk)
+        if (
+            request.user.username != management.jigyosyo.update_user
+            and not request.user.is_superuser
+        ):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        management.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
 
 class JigyosyoTransactionListView(APIView):
     permission_classes = [IsAuthenticated]

@@ -70,7 +70,7 @@ class CompanyManagement(models.Model, SaveUserMixin):
 
 
 class Jigyosyo(models.Model, SaveUserMixin):
-    jigyosyo_code = models.CharField(max_length=255, unique=True)
+    jigyosyo_code = models.CharField(max_length=255, unique=True, null=True, blank=True)
     company = models.ForeignKey(
         "Company",
         on_delete=models.SET_NULL,

@@ -47,8 +47,29 @@ def update_or_create_detail_info(detail_data):
         # ).first()
 
         print(f"\n\n\n+++++++++++++++{detail_data}+++++++++++\n\n\n")
-        
-        
+
+        company_fields = [
+            company_meta_field.name
+            for company_meta_field in Company._meta.get_fields()
+            if company_meta_field.name != "jigyosyos"
+        ]
+
+        company_data = {
+            **{
+                company_field: detail_data.get(f"company__{company_field}")
+                for company_field in company_fields
+            },
+            "company_code": detail_data.get("company__code"),
+            "release_datetime": detail_data.get("jigyosyo__release_datetime"),
+        }
+        print(f"company_data ====================> {company_data}")
+
+        company_instance, _ = Company.objects.update_or_create(
+            name=company_data["name"],
+            address=company_data["address"],
+            defaults=company_data,
+        )
+
         relation_fields = ["management", "transactions"]
 
         jigyosyo_fields = [
@@ -77,29 +98,6 @@ def update_or_create_detail_info(detail_data):
         Jigyosyo.objects.update_or_create(
             jigyosyo_code=jigyosyo_data["jigyosyo_code"],
             defaults={**jigyosyo_data},
-        )
-        
-
-        company_fields = [
-            company_meta_field.name
-            for company_meta_field in Company._meta.get_fields()
-            if company_meta_field.name != "jigyosyos"
-        ]
-
-        company_data = {
-            **{
-                company_field: detail_data.get(f"company__{company_field}")
-                for company_field in company_fields
-            },
-            "company_code": detail_data.get("company__code"),
-            "release_datetime": detail_data.get("jigyosyo__release_datetime"),
-        }
-        print(f"company_data ====================> {company_data}")
-
-        company_instance, _ = Company.objects.update_or_create(
-            name=company_data["name"],
-            address=company_data["address"],
-            defaults=company_data,
         )
 
     except Exception as e:
