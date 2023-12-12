@@ -80,7 +80,6 @@ export const AppContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: ${HEADER_HEIGHT};
 `;
 
 export const DrawerListContainer = styled.div`

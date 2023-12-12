@@ -102,21 +102,19 @@ const JigyosyoSearch = () => {
   };
 
   return (
-    <div>
+    <div style={{ marginTop: "10vh" }}>
       <SearchBar
         query={query}
         onQueryChange={(e) => setQuery(e.target.value)}
         onSearch={handleSearchSubmit}
       />
       {isLoading && <LinearProgress />}
-      <div style={{ height: 500, width: "100%" }}>
-        <MyDataGrid
-          rows={data}
-          columns={columns}
-          loading={isLoading}
-          onRowClick={handleRowClick}
-        />
-      </div>
+      <MyDataGrid
+        rows={data}
+        columns={columns}
+        loading={isLoading}
+        onRowClick={handleRowClick}
+      />
       <Drawer
         anchor="right"
         open={selectedRow != null}

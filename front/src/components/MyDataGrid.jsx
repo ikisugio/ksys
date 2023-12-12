@@ -1,4 +1,4 @@
-import { useTheme } from "@mui/material/styles";
+import { useTheme, alpha } from "@mui/material/styles";
 import { useState } from "react";
 import { DataGrid, GridOverlay } from "@mui/x-data-grid";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -50,9 +50,36 @@ const MyDataGrid = ({ rows, columns, loading }) => {
     setDrawerWidth(newValue);
   };
 
+  const hoveredColor = alpha(theme.palette.primary.main, 0.8);
+  const selectedColor = alpha(theme.palette.primary.main, 0.4);
+  //   const hoveredColor = alpha(theme.palette.primary.main, 0.9);
+  //   const selectedColor = alpha(theme.palette.primary.main, 0.4);
+
   return (
     <div>
-      <div style={{ height: 500, width: "1000px", overflowX: "auto" }}>
+      <div style={{ height: "75vh", width: "90vw", overflowX: "auto" }}>
+        <style>
+          {`
+          ::-webkit-scrollbar {
+            width: 12px;  /* スクロールバーの幅 */
+            height: 12px;
+          }
+
+          ::-webkit-scrollbar-track {
+            background: #f1f1f1;  /* トラックの背景色 */
+            border-radius: 10px;  /* トラックの角丸設定 */
+          }
+
+          ::-webkit-scrollbar-thumb {
+            background: #888;  /* サムの背景色 */
+            border-radius: 10px;  /* サムの角丸設定 */
+          }
+
+          ::-webkit-scrollbar-thumb:hover {
+            background: #555;  /* サムの背景色（ホバー時） */
+          }
+        `}
+        </style>
         <DataGrid
           localeText={jaJP.components.MuiDataGrid.defaultProps.localeText}
           rows={rows}
@@ -66,11 +93,30 @@ const MyDataGrid = ({ rows, columns, loading }) => {
           }}
           sx={{
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#678",
-              color: "#fafafa",
+              backgroundColor: "#333",
+              color: "#fff",
             },
             "& .MuiDataGrid-row:nth-of-type(odd)": {
-              backgroundColor: "#f0f0f0",
+              backgroundColor: "#eee",
+            },
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: hoveredColor,
+              color: theme.palette.primary.contrastText,
+              "&.Mui-selected": {
+                backgroundColor: hoveredColor,
+              },
+            },
+            "& .MuiDataGrid-row.Mui-selected": {
+              backgroundColor: selectedColor,
+            },
+            "& .MuiCheckbox-root": {
+              color: "#333", // チェックボックスの色を黄色に設定
+            },
+            "& .MuiCheckbox-root.Mui-checked": {
+              color: "#333", // チェックされた状態のチェックボックスの色も黄色に設定
+            },
+            "& .MuiDataGrid-columnHeaderCheckbox .MuiCheckbox-root": {
+              color: "white", // ヘッダーのチェックボックスの色を黄色に設定
             },
           }}
         />
