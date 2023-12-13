@@ -4,17 +4,9 @@ import { DataGrid, GridOverlay } from "@mui/x-data-grid";
 import LinearProgress from "@mui/material/LinearProgress";
 import CircularProgress from "@mui/material/CircularProgress";
 import { jaJP } from "@mui/x-data-grid";
-import { Paper } from "@mui/material";
-import Button from "@mui/material/Button";
-import Slider from "@mui/material/Slider";
+import DetailViewDrawer from "./DetailViewDrawer";
+import { DETAIL_VIEW_WIDTH_RATIO } from "@/constants/styles";
 
-// function CustomLoadingOverlay1() {
-//   return (
-//     <GridOverlay>
-//       <LinearProgress />
-//     </GridOverlay>
-//   );
-// }
 
 function CustomLoadingOverlay() {
   return (
@@ -36,7 +28,7 @@ function CustomLoadingOverlay() {
 const MyDataGrid = ({ rows, columns, loading }) => {
   const theme = useTheme();
   const [selectedRow, setSelectedRow] = useState(null);
-  const [drawerWidth, setDrawerWidth] = useState(50);
+  const [drawerWidth, setDrawerWidth] = useState(DETAIL_VIEW_WIDTH_RATIO);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleRowClick = (params) => {
@@ -51,9 +43,7 @@ const MyDataGrid = ({ rows, columns, loading }) => {
   };
 
   const hoveredColor = alpha(theme.palette.primary.main, 0.8);
-  const selectedColor = alpha(theme.palette.primary.main, 0.4);
-  //   const hoveredColor = alpha(theme.palette.primary.main, 0.9);
-  //   const selectedColor = alpha(theme.palette.primary.main, 0.4);
+  const selectedColor = alpha(theme.palette.primary.main, 0.3);
 
   return (
     <div>
@@ -78,9 +68,11 @@ const MyDataGrid = ({ rows, columns, loading }) => {
           ::-webkit-scrollbar-thumb:hover {
             background: #555;  /* サムの背景色（ホバー時） */
           }
+
         `}
         </style>
         <DataGrid
+          resizableColumns={true}
           localeText={jaJP.components.MuiDataGrid.defaultProps.localeText}
           rows={rows}
           columns={columns}
@@ -88,12 +80,15 @@ const MyDataGrid = ({ rows, columns, loading }) => {
           checkboxSelection
           loading={loading}
           onRowClick={handleRowClick}
+          getRowClassName={(params) => {
+            return params.id === selectedRow ? "selectedRow" : "";
+          }}
           components={{
             LoadingOverlay: CustomLoadingOverlay,
           }}
           sx={{
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#333",
+              backgroundColor: "#444",
               color: "#fff",
             },
             "& .MuiDataGrid-row:nth-of-type(odd)": {
@@ -110,41 +105,37 @@ const MyDataGrid = ({ rows, columns, loading }) => {
               backgroundColor: selectedColor,
             },
             "& .MuiCheckbox-root": {
-              color: "#333", // チェックボックスの色を黄色に設定
+              color: "#333",
             },
             "& .MuiCheckbox-root.Mui-checked": {
-              color: "#333", // チェックされた状態のチェックボックスの色も黄色に設定
+              color: "#333",
             },
             "& .MuiDataGrid-columnHeaderCheckbox .MuiCheckbox-root": {
-              color: "white", // ヘッダーのチェックボックスの色を黄色に設定
+              color: "white",
             },
+            "& .MuiDataGrid-cell": {
+              borderRight: "1px solid #ccc",
+            },
+            "& .MuiDataGrid-cell:focus": {
+              outline: "none",
+            },
+            "& .MuiDataGrid-cell:selected": {
+              borderRight: "10px #fff",
+            },
+            "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within":
+              {
+                outline: "none",
+              },
           }}
         />
         {isDrawerOpen && (
-          <Paper
-            style={{
-              width: `${drawerWidth}%`,
-              height: "80%",
-              position: "fixed",
-              right: 0,
-              bottom: 0,
-              overflow: "auto",
-              transition: "transform 0.3s ease-in-out",
-              transform: isDrawerOpen ? "translateX(0)" : "translateX(100%)",
-            }}
-          >
-            <Button onClick={handleDrawerClose}>閉じる</Button>
-            <Slider
-              value={drawerWidth}
-              onChange={handleSliderChange}
-              min={20}
-              max={80}
-              style={{ width: "90%", margin: "0 auto" }}
-            />
-            <div style={{ padding: 20 }}>
-              {selectedRow && JSON.stringify(selectedRow, null, 2)}
-            </div>
-          </Paper>
+          <DetailViewDrawer
+            isDrawerOpen={isDrawerOpen}
+            handleDrawerClose={handleDrawerClose}
+            drawerWidth={drawerWidth}
+            handleSliderChange={handleSliderChange}
+            selectedRow={selectedRow}
+          />
         )}
       </div>
     </div>

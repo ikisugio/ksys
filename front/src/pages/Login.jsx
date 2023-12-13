@@ -21,7 +21,7 @@ const ErrorMsg = styled.div`
   opacity: ${(props) => (props.hidden ? 0 : 1)};
   transform: ${(props) =>
     props.hidden ? "translateY(-1rem)" : "translateY(0)"};
-  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 `;
 
 const Label = styled.div`

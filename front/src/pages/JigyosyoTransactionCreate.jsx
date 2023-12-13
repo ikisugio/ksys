@@ -3,8 +3,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import RichTextEditor from "@/components/RichTextEditor";
 
 function JigyosyoTransactionCreate() {
   const [text, setText] = useState("");
@@ -16,7 +15,6 @@ function JigyosyoTransactionCreate() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // ここでフォームの送信処理を行う
     console.log("Form submitted");
   };
 
@@ -39,12 +37,7 @@ function JigyosyoTransactionCreate() {
         </Typography>
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: "20px" }}>
-            <ReactQuill
-              theme="snow"
-              value={text}
-              onChange={setText}
-              style={{ height: "250px", marginBottom: "20px" }}
-            />
+            <RichTextEditor text={text} setText={setText} />
           </div>
           <div
             style={{

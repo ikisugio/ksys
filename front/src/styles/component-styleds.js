@@ -7,14 +7,14 @@ import {
   ListItemText,
   ListItemButton,
 } from "@mui/material";
-import { HEADER_HEIGHT, DrawerWidth } from "@/constants/styles";
+import { HEADER_HEIGHT, DRAWER_WIDTH } from "@/constants/styles";
 
 export const MainContent = styled.div`
   transition: transform 0.3s ease, width 0.3s ease;
   width: ${(props) =>
-    props.menuOpen ? `calc(100% - ${DrawerWidth}px)` : "100%"};
+    props.menuOpen ? `calc(100% - ${DRAWER_WIDTH}) * 1.0` : "100%"};
   transform: ${(props) =>
-    props.menuOpen ? `translateX(${DrawerWidth}px)` : "translateX(0)"};
+    props.menuOpen ? `translateX(${DRAWER_WIDTH})` : "translateX(0)"};
 `;
 
 export const StyledAppBar = styled(AppBar)`
@@ -46,8 +46,8 @@ export const StyledDrawer = styled(Drawer)`
     border-top: none !important;
     box-shadow: 0.1px 0.1px 0.5px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(0, 0, 0, 0.1);
-    width: ${DrawerWidth}px !important;
     background-color: rgba(63, 81, 181, 0);
+    width: ${DRAWER_WIDTH};
     &:hover {
       border: 0.03px solid lightgray;
       box-shadow: 1px 1px 1px rgba(0, 0, 200, 0.1);
@@ -83,7 +83,7 @@ export const AppContainer = styled.div`
 `;
 
 export const DrawerListContainer = styled.div`
-  width: ${DrawerWidth}px;
+  width: ${DRAWER_WIDTH};
 `;
 
 export const BoldListItemText = styled(ListItemText)`
@@ -103,4 +103,5 @@ export const StyledListItem = styled(ListItemButton)`
   }
   margin-left: 15px;
   margin-right: 15px;
+  width: calc(${DRAWER_WIDTH} * 0.8);
 `;
