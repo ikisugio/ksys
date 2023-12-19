@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    JigyosyoSearchView,
+    JigyosyoManagementSearchView,
     JigyosyoListView,
     JigyosyoDetailView,
     JigyosyoManagementListView,
@@ -20,7 +20,11 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
-    path("search/jigyosyo/", JigyosyoSearchView.as_view(), name="jigyosyo-search"),
+    path(
+        "search/jigyosyo/",
+        JigyosyoManagementSearchView.as_view(),
+        name="jigyosyo-search",
+    ),
     path(
         "search/jigyosyo-transaction/",
         JigyosyoTransactionSearchView.as_view(),

@@ -1,7 +1,13 @@
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Company, Jigyosyo, JigyosyoManagement, JigyosyoTransaction, CustomUser
+from .models import (
+    Company,
+    Jigyosyo,
+    JigyosyoManagement,
+    JigyosyoTransaction,
+    CustomUser,
+)
 from .serializers import (
     CompanySerializer,
     JigyosyoSerializer,
@@ -18,38 +24,35 @@ from django.db.models import Q
 from django.contrib.auth.models import Group
 
 
-class JigyosyoSearchView(APIView):
+class JigyosyoManagementSearchView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         query = request.query_params.get("q", None)
-
         if not query:
             return Response(
                 {"detail": "Query parameter q is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        common_search_criteria = (
+            Q(jigyosyo__name__icontains=query)
+            | Q(jigyosyo__type__icontains=query)
+            | Q(jigyosyo__company__name__icontains=query)
+            | Q(transactions__content__icontains=query)
+        )
+
         if request.user.groups.filter(name="本部").exists():
-            search_criteria = (
-                Q(name__icontains=query)
-                | Q(type__icontains=query)
-                | Q(company__name__icontains=query)
-                | Q(transactions__content__icontains=query)
-            )
-            jigyosyos = Jigyosyo.objects.filter(search_criteria).distinct()
+            search_criteria = common_search_criteria
         else:
             prefecture_name = request.user.groups.first().name
-            search_criteria = (
-                Q(name__icontains=query)
-                | Q(type__icontains=query)
-                | Q(company__name__icontains=query)
-                | Q(transactions__content__icontains=query)
-                & Q(address__icontains=prefecture_name)
+            search_criteria = common_search_criteria & Q(
+                address__icontains=prefecture_name
             )
-            jigyosyos = Jigyosyo.objects.filter(search_criteria).distinct()
 
-        serializer = JigyosyoSerializer(jigyosyos, many=True)
+        managements = JigyosyoManagement.objects.filter(search_criteria).distinct()
+
+        serializer = JigyosyoManagementSerializer(managements, many=True)
         return Response(serializer.data)
 
 
@@ -219,14 +222,12 @@ class CompanyDetailView(APIView):
 # Jigyosyo Views
 class JigyosyoListView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def get(self, request):
         if request.user.is_superuser:
             jigyosyos = Jigyosyo.objects.all()
         else:
-            jigyosyos = Jigyosyo.objects.filter(
-                update_user=request.user.username
-            )
+            jigyosyos = Jigyosyo.objects.filter(update_user=request.user.username)
         serializer = JigyosyoSerializer(jigyosyos, many=True)
         return Response(serializer.data)
 
@@ -260,7 +261,7 @@ class JigyosyoDetailView(APIView):
             return Jigyosyo.objects.get(pk=pk)
         except Jigyosyo.DoesNotExist:
             raise Http404
-        
+
     def get(self, request, pk):
         jigyosyo = self.get_object(pk)
         if (
@@ -404,7 +405,7 @@ class JigyosyoManagementDetailView(APIView):
             return Response(status=status.HTTP_403_FORBIDDEN)
         management.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
 
 class JigyosyoTransactionListView(APIView):
     permission_classes = [IsAuthenticated]

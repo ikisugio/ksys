@@ -128,7 +128,7 @@ class JigyosyoManagement(models.Model, SaveUserMixin):
 
 class JigyosyoTransaction(models.Model, SaveUserMixin):
     jigyosyo = models.ForeignKey(
-        "Jigyosyo",
+        "JigyosyoManagement",
         related_name="transactions",
         on_delete=models.SET_NULL,
         null=True,
