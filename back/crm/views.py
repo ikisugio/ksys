@@ -1,14 +1,14 @@
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import (
+from crm.models import (
     Company,
     Jigyosyo,
     JigyosyoManagement,
     JigyosyoTransaction,
     CustomUser,
 )
-from .serializers import (
+from crm.serializers import (
     CompanySerializer,
     JigyosyoSerializer,
     JigyosyoMergeSerializer,
@@ -36,10 +36,9 @@ class JigyosyoManagementSearchView(APIView):
             )
 
         common_search_criteria = (
-            Q(jigyosyo__name__icontains=query)
-            | Q(jigyosyo__type__icontains=query)
-            | Q(jigyosyo__company__name__icontains=query)
-            | Q(transactions__content__icontains=query)
+            Q(name__icontains=query)
+            | Q(type__icontains=query)
+            | Q(company__name__icontains=query)
         )
 
         if request.user.groups.filter(name="本部").exists():
@@ -50,10 +49,11 @@ class JigyosyoManagementSearchView(APIView):
                 address__icontains=prefecture_name
             )
 
-        managements = JigyosyoManagement.objects.filter(search_criteria).distinct()
+        jigyosyos = Jigyosyo.objects.filter(search_criteria).prefetch_related('management').distinct()
 
-        serializer = JigyosyoManagementSerializer(managements, many=True)
+        serializer = JigyosyoSerializer(jigyosyos, many=True)
         return Response(serializer.data)
+
 
 
 class JigyosyoTransactionSearchView(APIView):

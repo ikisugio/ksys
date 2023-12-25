@@ -110,11 +110,6 @@ class JigyosyoManagement(models.Model, SaveUserMixin):
         symmetrical=False,
         blank=True,
     )
-
-    @property
-    def parents(self):
-        return self.parental_objects.all()
-
     description = models.CharField(max_length=200, null=True, blank=True)
     crawl_list = models.ForeignKey(
         "crawler.CrawlList",
@@ -124,7 +119,11 @@ class JigyosyoManagement(models.Model, SaveUserMixin):
         blank=True,
     )
     history = HistoricalRecords()
+    
 
+    
+    
+    
 
 class JigyosyoTransaction(models.Model, SaveUserMixin):
     jigyosyo = models.ForeignKey(
