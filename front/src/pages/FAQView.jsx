@@ -1,10 +1,11 @@
-import DrawerToggleButton from "@/components/DrawerToggleButton";
+import SliderButton from "@/components/SlideDrawerV2"
+
+
 
 const FaqView = () => {
   return (
     <div>
-      FAQ placeholder222
-      <DrawerToggleButton></DrawerToggleButton>
+      <SliderButton></SliderButton>
     </div>
   );
 };

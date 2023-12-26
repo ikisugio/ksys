@@ -29,3 +29,28 @@ body {
 .css-10hburv-MuiTypography-root {
   font-weight: 500 !important;
 }
+
+
+:root {
+  --primary-main: rgba(120, 100, 255, 0.3);
+  --primary-dark: rgba(120, 100, 255, 0.5); /* 濃い色を少し調整 */
+}
+
+/* スクロールバーのスタイル適用 */
+::-webkit-scrollbar {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-main) !important;
+  border-radius: 5px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark) !important;
+}

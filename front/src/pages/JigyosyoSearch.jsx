@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { Box, Chip, Menu, MenuItem } from '@mui/material';
 import axiosInstance from "@/services/axios";
 import { API_URL } from "@/constants/urls";
 import MyDataGrid from "@/components/MyDataGrid";
 import SearchBar from "@/components/SearchBar";
-import LinearProgress from "@mui/material/LinearProgress";
+import SliderFilter from "@/components/SliderFilter";
 import Drawer from "@mui/material/Drawer";
 
 const JigyosyoSearch = () => {
@@ -11,6 +12,12 @@ const JigyosyoSearch = () => {
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const filters = ["事業所タイプ", "都道府県", "訪問回数", "フィルター4", "フィルター1", "フィルター2", "フィルター3", "フィルター4"];
+
+  const handleFilterSelect = (filterValue) => {
+    console.log("Selected Filter: ", filterValue);
+    // フィルター処理の実装
+  };
 
   const handleRowClick = (params) => {
     console.log("Row clicked: ", params.row);
@@ -80,7 +87,7 @@ const JigyosyoSearch = () => {
     },
     { field: "companyCode", headerName: "法人コード", width: 130 },
     { field: "companyName", headerName: "法人名", width: 150 },
-    { field: "companyKana", headerName: "法人名（カナ）", width: 150 },
+    { field: "companyKana", headerName: "法人名（かな）", width: 150 },
     { field: "companyPostalCode", headerName: "法人〶", width: 90 },
     { field: "companyAddress", headerName: "法人住所", width: 200 },
     { field: "companyTel", headerName: "法人電話番号", width: 110 },
@@ -102,13 +109,20 @@ const JigyosyoSearch = () => {
   };
 
   return (
-    <div style={{ marginTop: "10vh" }}>
-      <SearchBar
-        query={query}
-        onQueryChange={(e) => setQuery(e.target.value)}
-        onSearch={handleSearchSubmit}
-      />
-      {isLoading && <LinearProgress />}
+    <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+      <div style={{ marginTop: "10vh", width: '100%', maxWidth: '1200px' }}> 
+      <Box sx={{ display: 'flex', justifyContent: 'space-evenly', marginBottom: 2, alignItems: 'center'}}>
+        <Box sx={{ width: '47%' }}>
+          <SearchBar
+            query={query}
+            onQueryChange={(e) => setQuery(e.target.value)}
+            onSearch={handleSearchSubmit}
+          />
+        </Box>
+        <Box sx={{ width: '47%' }}>
+          <SliderFilter filters={filters} onSelect={handleFilterSelect} />
+        </Box>
+      </Box>
       <MyDataGrid
         rows={data}
         columns={columns}
@@ -128,7 +142,9 @@ const JigyosyoSearch = () => {
         )}
       </Drawer>
     </div>
+    </Box>
   );
 };
+
 
 export default JigyosyoSearch;

@@ -1,0 +1,12 @@
+.toggle-button {
+  /* ボタンの共通スタイル */
+}
+
+.toggle-button::before {
+  content: "|";
+  transition: content 0.5s ease;
+}
+
+.toggle-button.hovered::before {
+  content: ">";
+}
