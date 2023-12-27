@@ -10,13 +10,12 @@ import {
 } from "@mui/material";
 
 export const MainContent = styled.div`
-  margin-top: 60px;
   transition: transform 0.3s ease, width 0.3s ease;
   width: ${(props) =>
     props.menuOpen ? `calc(100% - ${DRAWER_WIDTH}) * 1.0` : "100%"};
   transform: ${(props) =>
     props.menuOpen ? `translateX(${DRAWER_WIDTH})` : "translateX(0)"};
-  overflow: auto; /* 必要に応じてスクロールバーを表示 */
+  overflow: auto;
 `;
 
 export const StyledAppBar = styled(AppBar)`
@@ -60,12 +59,6 @@ export const StyledDrawer = styled(Drawer)`
   }
 `;
 
-export const AppLayout = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-`;
-
 export const GlobalScrollbarStyles = styled.div`
   &::-webkit-scrollbar {
     width: 16px;
@@ -84,7 +77,7 @@ export const GlobalScrollbarStyles = styled.div`
 `;
 
 export const AppContainer = styled.div`
-  height: calc(100vh - ${HEADER_HEIGHT});
+  height: 110vh;
   display: flex;
   align-items: center;
   justify-content: center;

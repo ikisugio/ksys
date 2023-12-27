@@ -3,7 +3,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
-const DrawerCard = ({ title, data }) => {
+const TimelineCard = ({ title, data }) => {
   const cardStyle = {
     margin: "10px",
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
@@ -21,4 +21,4 @@ const DrawerCard = ({ title, data }) => {
   );
 };
 
-export default DrawerCard;
+export default TimelineCard;

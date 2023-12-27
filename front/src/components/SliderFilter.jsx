@@ -28,7 +28,6 @@ const SliderFilter = ({ filters, onSelect }) => {
         display: "flex",
         gap: 1,
         padding: 1,
-        marginBottom: "1.5vh",
       }}
     >
       {filters.map((filter, index) => (
@@ -50,7 +49,7 @@ const SliderFilter = ({ filters, onSelect }) => {
                   width: "0px",
                   marginLeft: "10px",
                   "& .MuiSvgIcon-root": {
-                    fontSize: "1rem", // アイコンのフォントサイズを調整してアイコン自体のサイズを小さくする
+                    fontSize: "1rem",
                   },
                 }}
               >

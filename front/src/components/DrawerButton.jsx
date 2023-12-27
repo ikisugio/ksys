@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import MyTimeline from "@/components/MyTimeline";
+import DrawerCard from "@/components/DrawerCard";
+import TimelineCard from "@/components/TimelineCard";
 
-const DrawerButton = ({ isOpen, data, onClose }) => {
+const DrawerButton = ({ isOpen, leftData, rightData, onClose }) => {
   const [isButtonHovered, setIsButtonHovered] = useState(false);
+  console.log("rightData:", rightData);
 
   const drawerStyle = {
-    width: "1000px",
+    width: "85vw",
     height: "100%",
     top: 0,
     position: "fixed",
@@ -15,7 +19,7 @@ const DrawerButton = ({ isOpen, data, onClose }) => {
     backgroundColor: "#f0f0f0",
     color: "#333",
     transition: "right 3s ease-in-out !important",
-    padding: "20px",
+    padding: "10px",
     zIndex: 100,
     borderLeft: "1px solid rgba(0,0,0,0.2)",
     borderTop: "none",
@@ -46,29 +50,38 @@ const DrawerButton = ({ isOpen, data, onClose }) => {
     transition: "color 0.5s ease",
   };
 
-  return (
-    <div>
-      <div style={drawerStyle}>
-        <button
-          style={toggleButtonStyle}
-          onClick={onClose}
-          onMouseOver={() => setIsButtonHovered(true)}
-          onMouseOut={() => setIsButtonHovered(false)}
-        >
-          {isButtonHovered ? ">" : "|"}
-        </button>
+  const columnStyle = {
+    flex: 1,
+    maxHeight: "90vh",
+    overflowY: "auto",
+    padding: "10px",
+  };
 
-        {data &&
-          Object.keys(data).map((key) => (
-            <Card key={key} style={{ margin: "10px" }}>
-              <CardContent>
-                <Typography variant="h6" component="div">
-                  {key}
-                </Typography>
-                <Typography variant="body1">{data[key]}</Typography>
-              </CardContent>
-            </Card>
-          ))}
+  const leftColumnOuterStyle = {
+    ...columnStyle,
+    flex: "0 1 40%",
+    direction: "rtl", // 親要素を RTL に設定
+  };
+
+  const leftColumnInnerStyle = {
+    direction: "ltr", // 子要素を LTR に設定
+    width: "100%",
+  };
+
+  return (
+    <div style={drawerStyle}>
+      <div style={{ display: "flex", height: "100%" }}>
+        <div style={leftColumnOuterStyle}>
+          <div style={leftColumnInnerStyle}>
+            {leftData &&
+              Object.keys(leftData).map((key) => (
+                <DrawerCard key={key} title={key} data={leftData[key]} />
+              ))}
+          </div>
+        </div>
+        <div style={columnStyle}>
+          <MyTimeline events={rightData} />
+        </div>
       </div>
     </div>
   );
