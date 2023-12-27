@@ -1,7 +1,7 @@
 // components/SliderFilter.jsx
-import React, { useState } from 'react';
-import { Box, Chip, Menu, MenuItem, IconButton } from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import React, { useState } from "react";
+import { Box, Chip, Menu, MenuItem, IconButton } from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 const SliderFilter = ({ filters, onSelect }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -22,20 +22,49 @@ const SliderFilter = ({ filters, onSelect }) => {
   };
 
   return (
-    <Box sx={{ overflowX: 'auto', display: 'flex', gap: 1, alignItems: 'center', padding: 1 }}>
+    <Box
+      sx={{
+        overflowX: "auto",
+        display: "flex",
+        gap: 1,
+        padding: 1,
+        marginBottom: "1.5vh",
+      }}
+    >
       {filters.map((filter, index) => (
-        <Chip 
+        <Chip
           key={index}
           label={
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
               {filter}
-              <IconButton size="small">
+              <IconButton
+                size="small"
+                sx={{
+                  padding: "0px",
+                  width: "0px",
+                  marginLeft: "10px",
+                  "& .MuiSvgIcon-root": {
+                    fontSize: "1rem", // アイコンのフォントサイズを調整してアイコン自体のサイズを小さくする
+                  },
+                }}
+              >
                 <ArrowDropDownIcon />
               </IconButton>
             </Box>
           }
           onClick={(e) => handleFilterClick(e, filter)}
-          sx={{ borderRadius: '4px', paddingRight: '4px', paddingLeft: '4px', width: 'auto' }}
+          sx={{
+            borderRadius: "4px",
+            paddingRight: "4px",
+            paddingLeft: "4px",
+            width: "auto",
+          }}
         />
       ))}
       <Menu
@@ -43,12 +72,18 @@ const SliderFilter = ({ filters, onSelect }) => {
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
         MenuListProps={{ sx: { maxHeight: 300 } }}
-        PaperProps={{ sx: { boxShadow: 'none', border: '1px solid lightgray' } }}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        PaperProps={{
+          sx: { boxShadow: "none", border: "1px solid lightgray" },
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItem onClick={() => handleFilterSelect('選択肢1')}>選択肢1</MenuItem>
-        <MenuItem onClick={() => handleFilterSelect('選択肢2')}>選択肢2</MenuItem>
+        <MenuItem onClick={() => handleFilterSelect("選択肢1")}>
+          選択肢1
+        </MenuItem>
+        <MenuItem onClick={() => handleFilterSelect("選択肢2")}>
+          選択肢2
+        </MenuItem>
         {/* 他の選択肢も同様に追加 */}
       </Menu>
     </Box>

@@ -6,8 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { jaJP } from "@mui/x-data-grid";
 import DetailViewDrawer from "./DetailViewDrawer";
 import { DETAIL_VIEW_WIDTH_RATIO } from "@/constants/styles";
-import DrawerButton from "@/components/SlideDrawerV2";
-
+import DrawerButton from "@/components/DrawerButton";
 
 function CustomLoadingOverlay() {
   return (
@@ -48,37 +47,38 @@ const MyDataGrid = ({ rows, columns, loading }) => {
   };
 
   const renderSlideDrawerButton = (params) => (
-    <button onClick={() => handleRowClick(params)}>
-      Open Drawer
-    </button>
+    <button onClick={() => handleRowClick(params)}>Open Drawer</button>
   );
 
   const renderDrawerButton = (params) => (
-    <button onClick={() => handleRowClick(params.row)}>
-      Open Drawer
-    </button>
+    <button onClick={() => handleRowClick(params.row)}>Open Drawer</button>
   );
-
 
   const extendedColumns = [
     {
-      field: 'openDrawer',
-      headerName: '',
+      field: "openDrawer",
+      headerName: "",
       renderCell: renderDrawerButton,
       width: 100,
       sortable: false,
-      filterable: false
+      filterable: false,
     },
-    ...columns // 他の列定義
+    ...columns, // 他の列定義
   ];
-
 
   const hoveredColor = alpha(theme.palette.primary.main, 0.8);
   const selectedColor = alpha(theme.palette.primary.main, 0.3);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '75vh' }}>
-      <div style={{ width: '90vw', overflowX: 'auto' }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        width: "100%",
+        height: "73vh",
+      }}
+    >
+      <div style={{ width: "90vw", overflowX: "auto" }}>
         <style>
           {`
           ::-webkit-scrollbar {
@@ -103,15 +103,16 @@ const MyDataGrid = ({ rows, columns, loading }) => {
         `}
         </style>
 
-        <div style={{ height: '4px' }}>
+        <div style={{ height: "4px" }}>
           {loading ? <LinearProgress /> : null}
         </div>
-        <div style={{ height: 'calc(100% - 4px)' }}>
+        <div style={{ height: "calc(100% - 13px)" }}>
           <DataGrid
             resizableColumns={true}
             localeText={jaJP.components.MuiDataGrid.defaultProps.localeText}
             rows={rows}
             columns={columns}
+            rowHeight={45}
             pageSize={5}
             checkboxSelection
             loading={loading}
@@ -124,8 +125,14 @@ const MyDataGrid = ({ rows, columns, loading }) => {
             }}
             sx={{
               "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: "#444",
+                backgroundColor: "#555",
                 color: "#fff",
+                minHeight: "45px !important",
+                height: "45px !important",
+              },
+              "& .MuiDataGrid-footerContainer": {
+                height: "35px",
+                minHeight: "35px",
               },
               "& .MuiDataGrid-row:nth-of-type(odd)": {
                 backgroundColor: "#eee",

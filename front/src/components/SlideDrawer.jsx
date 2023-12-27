@@ -16,7 +16,6 @@ const SlideDrawer = () => {
           width: "250px",
           height: "100%",
           position: "fixed",
-          top: 0,
           right: isOpen ? 0 : "-250px", // Drawerの開閉に応じて位置を変更
           transition: "right 0.5s", // スムーズな移動のためのトランジション
           zIndex: 1000,

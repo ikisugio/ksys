@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
 
-const SlideDrawerV2 = ({ isOpen, data, onClose }) => {
+const DrawerButton = ({ isOpen, data, onClose }) => {
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
   const drawerStyle = {
     width: "1000px",
     height: "100%",
+    top: 0,
     position: "fixed",
-    top: 60,
     right: isOpen ? 0 : "-1050px",
     backgroundColor: "#f0f0f0",
     color: "#333",
@@ -29,10 +29,9 @@ const SlideDrawerV2 = ({ isOpen, data, onClose }) => {
     overflowY: "auto",
   };
 
-
   const toggleButtonStyle = {
     position: "absolute",
-    left: "-30px", 
+    left: "-30px",
     top: "50%",
     transform: "translateY(-50%)",
     height: "100%",
@@ -49,10 +48,6 @@ const SlideDrawerV2 = ({ isOpen, data, onClose }) => {
 
   return (
     <div>
-      <button onClick={onClose}>
-        Close Drawer
-      </button>
-
       <div style={drawerStyle}>
         <button
           style={toggleButtonStyle}
@@ -63,21 +58,20 @@ const SlideDrawerV2 = ({ isOpen, data, onClose }) => {
           {isButtonHovered ? ">" : "|"}
         </button>
 
-        {data && Object.keys(data).map((key) => (
-          <Card key={key} style={{ margin: '10px' }}>
-            <CardContent>
-              <Typography variant="h6" component="div">
-                {key}
-              </Typography>
-              <Typography variant="body1">
-                {data[key]}
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
+        {data &&
+          Object.keys(data).map((key) => (
+            <Card key={key} style={{ margin: "10px" }}>
+              <CardContent>
+                <Typography variant="h6" component="div">
+                  {key}
+                </Typography>
+                <Typography variant="body1">{data[key]}</Typography>
+              </CardContent>
+            </Card>
+          ))}
       </div>
     </div>
   );
 };
 
-export default SlideDrawerV2;
+export default DrawerButton;

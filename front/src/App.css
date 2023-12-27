@@ -2,7 +2,9 @@ body {
   font-family: 'Inter', sans-serif;
   overflow-y: hidden;
   overflow-x: hidden;
+  min-height: 100vh;
 }
+
 
 .unselectable {
   -webkit-user-select: none; /* Safari用 */
@@ -45,6 +47,7 @@ body {
 ::-webkit-scrollbar-track {
   background: #f1f1f1 !important;
 }
+
 
 ::-webkit-scrollbar-thumb {
   background: var(--primary-main) !important;

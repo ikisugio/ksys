@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Chip, Menu, MenuItem } from '@mui/material';
+import { Box, Chip, Menu, MenuItem } from "@mui/material";
 import axiosInstance from "@/services/axios";
 import { API_URL } from "@/constants/urls";
 import MyDataGrid from "@/components/MyDataGrid";
@@ -12,7 +12,16 @@ const JigyosyoSearch = () => {
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  const filters = ["事業所タイプ", "都道府県", "訪問回数", "フィルター4", "フィルター1", "フィルター2", "フィルター3", "フィルター4"];
+  const filters = [
+    "事業所タイプ",
+    "都道府県",
+    "訪問回数",
+    "フィルター4",
+    "フィルター1",
+    "フィルター2",
+    "フィルター3",
+    "フィルター4",
+  ];
 
   const handleFilterSelect = (filterValue) => {
     console.log("Selected Filter: ", filterValue);
@@ -109,42 +118,41 @@ const JigyosyoSearch = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-      <div style={{ marginTop: "10vh", width: '100%', maxWidth: '1200px' }}> 
-      <Box sx={{ display: 'flex', justifyContent: 'space-evenly', marginBottom: 2, alignItems: 'center'}}>
-        <Box sx={{ width: '47%' }}>
-          <SearchBar
-            query={query}
-            onQueryChange={(e) => setQuery(e.target.value)}
-            onSearch={handleSearchSubmit}
-          />
-        </Box>
-        <Box sx={{ width: '47%' }}>
-          <SliderFilter filters={filters} onSelect={handleFilterSelect} />
-        </Box>
-      </Box>
-      <MyDataGrid
-        rows={data}
-        columns={columns}
-        loading={isLoading}
-        onRowClick={handleRowClick}
-      />
-      <Drawer
-        anchor="right"
-        open={selectedRow != null}
-        onClose={() => setSelectedRow(null)}
-        style={{ width: "50%" }}
+    <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "1200px",
+        }}
       >
-        {selectedRow && (
-          <div style={{ padding: 20, width: "50%" }}>
-            {JSON.stringify(selectedRow, null, 2)}
-          </div>
-        )}
-      </Drawer>
-    </div>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            marginBottom: "5px",
+          }}
+        >
+          <Box sx={{ width: "45%" }}>
+            <SearchBar
+              query={query}
+              onQueryChange={(e) => setQuery(e.target.value)}
+              onSearch={handleSearchSubmit}
+            />
+          </Box>
+          <Box sx={{ width: "45%", borderRadius: "30px !important" }}>
+            <SliderFilter filters={filters} onSelect={handleFilterSelect} />
+          </Box>
+        </Box>
+        <MyDataGrid
+          rows={data}
+          columns={columns}
+          loading={isLoading}
+          onRowClick={handleRowClick}
+        />
+      </div>
     </Box>
   );
 };
-
 
 export default JigyosyoSearch;

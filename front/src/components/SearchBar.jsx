@@ -7,15 +7,16 @@ import { styled } from "@mui/material/styles";
 const RoundedTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
     borderRadius: "25px",
+    height: "50px",
+  },
+  "& .MuiInputLabel-root": {
+    top: "-3px",
   },
 });
 
 const SearchBar = ({ query, onQueryChange, onSearch }) => {
   return (
-    <form
-      onSubmit={onSearch}
-      style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
-    >
+    <form onSubmit={onSearch} style={{ display: "flex" }}>
       <RoundedTextField
         label="Search"
         variant="outlined"

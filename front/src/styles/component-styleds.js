@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { HEADER_HEIGHT, DRAWER_WIDTH } from "@/constants/styles";
 import {
   AppBar,
   Typography,
@@ -7,14 +8,15 @@ import {
   ListItemText,
   ListItemButton,
 } from "@mui/material";
-import { HEADER_HEIGHT, DRAWER_WIDTH } from "@/constants/styles";
 
 export const MainContent = styled.div`
+  margin-top: 60px;
   transition: transform 0.3s ease, width 0.3s ease;
   width: ${(props) =>
     props.menuOpen ? `calc(100% - ${DRAWER_WIDTH}) * 1.0` : "100%"};
   transform: ${(props) =>
     props.menuOpen ? `translateX(${DRAWER_WIDTH})` : "translateX(0)"};
+  overflow: auto; /* 必要に応じてスクロールバーを表示 */
 `;
 
 export const StyledAppBar = styled(AppBar)`
@@ -56,6 +58,12 @@ export const StyledDrawer = styled(Drawer)`
   .MuiBackdrop-root {
     display: none;
   }
+`;
+
+export const AppLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 `;
 
 export const GlobalScrollbarStyles = styled.div`

@@ -1,11 +1,9 @@
-import SliderButton from "@/components/SlideDrawerV2"
-
-
+import DrawerButton from "@/components/DrawerButton";
 
 const FaqView = () => {
   return (
     <div>
-      <SliderButton></SliderButton>
+      <DrawerButton></DrawerButton>
     </div>
   );
 };
