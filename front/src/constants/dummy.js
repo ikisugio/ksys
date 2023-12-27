@@ -1,0 +1,155 @@
+export const dummyTransactionData = [
+  {
+    datetime: "2023-01-01 09:00",
+    person: "Person A",
+    location: "Location 1",
+    details: "Event details 1",
+  },
+  {
+    datetime: "2023-01-02 10:30",
+    person: "Person B",
+    location: "Location 2",
+    details: "Event details 2",
+  },
+  {
+    datetime: "2023-01-03 12:00",
+    person: "Person C",
+    location: "Location 3",
+    details: "Event details 3",
+  },
+  {
+    datetime: "2023-01-04 14:00",
+    person: "Person D",
+    location: "Location 4",
+    details: "Event details 4",
+  },
+  {
+    datetime: "2023-01-05 17:00",
+    person: "Person D",
+    location: "Location 2",
+    details: "Event details 5",
+  },
+];
+
+export const dummyTransactionDataLong = [
+  {
+    datetime: "2023-11-24 12:11",
+    person: "加藤",
+    location: "株式会社テック",
+    details: "サービス契約",
+  },
+  {
+    datetime: "2023-11-18 12:11",
+    person: "小林",
+    location: "株式会社サンプル",
+    details: "サービス契約",
+  },
+  {
+    datetime: "2023-10-09 12:11",
+    person: "加藤",
+    location: "株式会社イノベーション",
+    details: "サービス契約",
+  },
+  {
+    datetime: "2023-10-01 12:11",
+    person: "佐藤",
+    location: "株式会社サンプル",
+    details: "マーケティング協力",
+  },
+  {
+    datetime: "2023-09-09 12:11",
+    person: "佐藤",
+    location: "株式会社サンプル",
+    details: "サービス契約",
+  },
+  {
+    datetime: "2023-08-16 12:11",
+    person: "中村",
+    location: "株式会社イノベーション",
+    details: "商品購入",
+  },
+  {
+    datetime: "2023-07-29 12:11",
+    person: "伊藤",
+    location: "株式会社サンプル",
+    details: "システム開発",
+  },
+  {
+    datetime: "2023-07-01 12:11",
+    person: "加藤",
+    location: "株式会社テック",
+    details: "マーケティング協力",
+  },
+  {
+    datetime: "2023-06-26 12:11",
+    person: "渡辺",
+    location: "株式会社サンプル",
+    details: "システム開発",
+  },
+  {
+    datetime: "2023-06-21 12:11",
+    person: "加藤",
+    location: "株式会社イノベーション",
+    details: "コンサルティング提供",
+  },
+  {
+    datetime: "2023-05-18 12:11",
+    person: "佐藤",
+    location: "株式会社イノベーション",
+    details: "商品購入",
+  },
+  {
+    datetime: "2023-04-28 12:11",
+    person: "伊藤",
+    location: "株式会社サンプル",
+    details: "システム開発",
+  },
+  {
+    datetime: "2023-03-25 12:11",
+    person: "加藤",
+    location: "株式会社グローバル",
+    details: "マーケティング協力",
+  },
+  {
+    datetime: "2023-03-25 12:11",
+    person: "小林",
+    location: "株式会社グローバル",
+    details: "商品購入",
+  },
+  {
+    datetime: "2023-03-14 12:11",
+    person: "伊藤",
+    location: "株式会社データソリューション",
+    details: "商品購入",
+  },
+  {
+    datetime: "2023-02-18 12:11",
+    person: "佐藤",
+    location: "株式会社サンプル",
+    details: "コンサルティング提供",
+  },
+  {
+    datetime: "2023-02-13 12:11",
+    person: "高橋",
+    location: "株式会社グローバル",
+    details: "システム開発",
+  },
+  {
+    datetime: "2023-02-07 12:11",
+    person: "佐藤",
+    location: "株式会社サンプル",
+    details: "システム開発",
+  },
+  {
+    datetime: "2023-02-06 12:11",
+    person: "渡辺",
+    location: "株式会社サンプル",
+    details: "マーケティング協力",
+  },
+  {
+    datetime: "2023-01-05 12:11",
+    person: "加藤",
+    location: "株式会社データソリューション",
+    details: "コンサルティング提供",
+  },
+];

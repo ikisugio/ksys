@@ -64,7 +64,7 @@ const DrawerButton = ({ isOpen, leftData, rightData, onClose }) => {
   };
 
   const leftColumnInnerStyle = {
-    direction: "ltr", // 子要素を LTR に設定
+    direction: "ltr",
     width: "100%",
   };
 
@@ -73,10 +73,9 @@ const DrawerButton = ({ isOpen, leftData, rightData, onClose }) => {
       <div style={{ display: "flex", height: "100%" }}>
         <div style={leftColumnOuterStyle}>
           <div style={leftColumnInnerStyle}>
-            {leftData &&
-              Object.keys(leftData).map((key) => (
-                <DrawerCard key={key} title={key} data={leftData[key]} />
-              ))}
+            {leftData.map(({ title, data }) => (
+              <DrawerCard key={title} title={title} data={data} />
+            ))}
           </div>
         </div>
         <div style={columnStyle}>

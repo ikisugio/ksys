@@ -6,64 +6,29 @@ import MyDataGrid from "@/components/MyDataGrid";
 import SearchBar from "@/components/SearchBar";
 import SliderFilter from "@/components/SliderFilter";
 import Drawer from "@mui/material/Drawer";
+import { searchDataColumns } from "@/constants/columns";
+import { dummyTransactionData } from "@/constants/dummy";
+import { filterLabels } from "@/constants/labels";
+
+const transactionData = dummyTransactionData;
 
 const JigyosyoSearch = () => {
   const [data, setData] = useState([]);
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  const filters = [
-    "事業所タイプ",
-    "都道府県",
-    "訪問回数",
-    "フィルター4",
-    "フィルター1",
-    "フィルター2",
-    "フィルター3",
-    "フィルター4",
-  ];
-
-  const dummyData = [
-    {
-      datetime: "2023-01-01 09:00",
-      person: "Person A",
-      location: "Location 1",
-      details: "Event details 1",
-    },
-    {
-      datetime: "2023-01-02 10:30",
-      person: "Person B",
-      location: "Location 2",
-      details: "Event details 2",
-    },
-    {
-      datetime: "2023-01-03 12:00",
-      person: "Person C",
-      location: "Location 3",
-      details: "Event details 3",
-    },
-    {
-      datetime: "2023-01-04 14:00",
-      person: "Person D",
-      location: "Location 4",
-      details: "Event details 4",
-    },
-    {
-      datetime: "2023-01-05 17:00",
-      person: "Person D",
-      location: "Location 2",
-      details: "Event details 5",
-    },
-  ];
 
   const handleFilterSelect = (filterValue) => {
     console.log("Selected Filter: ", filterValue);
-    // フィルター処理の実装
   };
 
   const handleRowClick = (params) => {
-    console.log("Row clicked: ", params.row);
+    console.log("tokc");
     setSelectedRow(params.row);
+    if (params.row) {
+      setSelectedRow(params.row);
+      console.log("Transformed data: ", transformDataForDisplay(params.row));
+    }
   };
 
   const fetchData = (searchTerm) => {
@@ -107,40 +72,6 @@ const JigyosyoSearch = () => {
       });
   };
 
-  const columns = [
-    { field: "jigyosyoCode", headerName: "事業所コード", width: 110 },
-    { field: "jigyosyoName", headerName: "事業所名", width: 220 },
-    { field: "jigyosyoType", headerName: "事業所タイプ", width: 150 },
-    { field: "jigyosyoPostalCode", headerName: "事業所〶", width: 90 },
-    { field: "jigyosyoAddress", headerName: "事業所住所", width: 200 },
-    { field: "jigyosyoTel", headerName: "事業所TEL", width: 110 },
-    { field: "jigyosyoFax", headerName: "事業所FAX", width: 110 },
-    { field: "jigyosyoReprName", headerName: "事業所代表者", width: 100 },
-    {
-      field: "jigyosyoReprPosition",
-      headerName: "代表者役職",
-      width: 120,
-    },
-    { field: "jigyosyoUrl", headerName: "事業所URL", width: 150 },
-    {
-      field: "jigyosyoReleaseDatetime",
-      headerName: "厚労公開日時",
-      width: 150,
-    },
-    { field: "companyCode", headerName: "法人コード", width: 130 },
-    { field: "companyName", headerName: "法人名", width: 150 },
-    { field: "companyKana", headerName: "法人名（かな）", width: 150 },
-    { field: "companyPostalCode", headerName: "法人〶", width: 90 },
-    { field: "companyAddress", headerName: "法人住所", width: 200 },
-    { field: "companyTel", headerName: "法人電話番号", width: 110 },
-    { field: "companyFax", headerName: "法人FAX番号", width: 110 },
-    { field: "companyUrl", headerName: "法人URL", width: 150 },
-    { field: "companyReprName", headerName: "法人代表者", width: 100 },
-    { field: "companyReprPosition", headerName: "代表者役職", width: 120 },
-    { field: "companyEstablishedDate", headerName: "設立日", width: 100 },
-    { field: "companyReleaseDatetime", headerName: "厚労公開日時", width: 150 },
-  ];
-
   const handleSearchChange = (event) => {
     setQuery(event.target.value);
   };
@@ -148,6 +79,62 @@ const JigyosyoSearch = () => {
   const handleSearchSubmit = (event) => {
     event.preventDefault();
     fetchData(query);
+  };
+
+  const headerMapping = searchDataColumns.reduce((acc, col) => {
+    acc[col.field] = col.headerName;
+    return acc;
+  }, {});
+
+  const transformDataForDisplay = (data) => {
+    if (!data || typeof data !== "object") {
+      return [];
+    }
+
+    return Object.entries(data).map(([key, value], index) => {
+      let displayValue = value;
+
+      // 日時のフォーマットを変更
+      if (key.includes("Datetime")) {
+        const date = new Date(value);
+        displayValue = date.toLocaleString("ja-JP");
+      }
+
+      // URLをリンクとして表示
+      if (key.includes("Url")) {
+        displayValue = (
+          <a href={value} target="_blank" rel="noopener noreferrer">
+            {value}
+          </a>
+        );
+      }
+
+      if (key === "jigyosyoAddress" || key === "companyAddress") {
+        const encodedAddress = encodeURIComponent(value);
+        const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+        displayValue = (
+          <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
+            {value}
+          </a>
+        );
+      }
+
+      if (key === "jigyosyoCode") {
+        const jigyosyoUrl = `https://www.kaigokensaku.mhlw.go.jp/01/index.php?action_kouhyou_detail_006_kihon=true&JigyosyoCd=${value}-00&ServiceCd=150`;
+        displayValue = (
+          <a href={jigyosyoUrl} target="_blank" rel="noopener noreferrer">
+            {value}
+          </a>
+        );
+      }
+
+      const headerName = headerMapping[key] || key;
+      return {
+        key: `${headerName}-${index}`,
+        title: headerName,
+        data: displayValue,
+      };
+    });
   };
 
   return (
@@ -174,17 +161,24 @@ const JigyosyoSearch = () => {
             />
           </Box>
           <Box sx={{ width: "45%" }}>
-            <SliderFilter filters={filters} onSelect={handleFilterSelect} />
+            <SliderFilter
+              filters={filterLabels}
+              onSelect={handleFilterSelect}
+            />
           </Box>
         </Box>
         <MyDataGrid
           rows={data}
-          columns={columns}
+          columns={searchDataColumns}
           loading={isLoading}
           onRowClick={handleRowClick}
+          transformDataForDisplay={transformDataForDisplay}
         />
         {selectedRow && (
-          <DrawerButton leftData={selectedRow} rightData={dummyData} />
+          <DrawerButton
+            leftData={transformDataForDisplay(selectedRow)}
+            rightData={transactionData}
+          />
         )}
       </div>
     </Box>
