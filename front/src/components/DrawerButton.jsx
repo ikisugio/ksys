@@ -60,13 +60,28 @@ const DrawerButton = ({ isOpen, leftData, rightData, onClose }) => {
   const leftColumnOuterStyle = {
     ...columnStyle,
     flex: "0 1 40%",
-    direction: "rtl", // 親要素を RTL に設定
+    direction: "rtl",
   };
 
   const leftColumnInnerStyle = {
     direction: "ltr",
     width: "100%",
   };
+
+  const addButtonStyle = {
+    position: "absolute",
+    right: "10px",
+    bottom: "10px",
+  };
+
+  const handleAddClick = () => {
+    if (leftData.length > 0) {
+      const firstId = leftData[0].id;
+      console.log("Selected ID:", firstId);
+    }
+  };
+
+  const jigyosyoId = leftData[0].data;
 
   return (
     <div style={drawerStyle}>
@@ -79,7 +94,7 @@ const DrawerButton = ({ isOpen, leftData, rightData, onClose }) => {
           </div>
         </div>
         <div style={columnStyle}>
-          <MyTimeline events={rightData} />
+          <MyTimeline events={rightData} target={jigyosyoId} />
         </div>
       </div>
     </div>
