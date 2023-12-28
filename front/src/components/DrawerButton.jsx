@@ -89,7 +89,7 @@ const DrawerButton = ({ isOpen, leftData, rightData, onClose }) => {
         <div style={leftColumnOuterStyle}>
           <div style={leftColumnInnerStyle}>
             {leftData.map(({ title, data }) => (
-              <DrawerCard key={title} title={title} data={data} />
+              <DrawerCard key={title} title={title} initialData={data} />
             ))}
           </div>
         </div>

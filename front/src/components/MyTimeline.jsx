@@ -69,6 +69,8 @@ const MyTimeline = ({ events, target }) => {
     },
   };
 
+  
+
   return (
     <CustomBox>
       <CustomTimeline>

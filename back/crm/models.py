@@ -8,6 +8,7 @@ from django.core.validators import EmailValidator
 from crm.managers import CustomUserManager, CustomHistoryManager
 from crm.mixins import SaveUserMixin
 from simple_history.models import HistoricalRecords
+from crm import constants
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin, SaveUserMixin):
@@ -119,11 +120,7 @@ class JigyosyoManagement(models.Model, SaveUserMixin):
         blank=True,
     )
     history = HistoricalRecords()
-    
 
-    
-    
-    
 
 class JigyosyoTransaction(models.Model, SaveUserMixin):
     jigyosyo = models.ForeignKey(
@@ -133,9 +130,12 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
         null=True,
         blank=True,
     )
-    visit_datetime = models.DateTimeField(auto_now_add=True)
+    visit_datetime = models.DateField()
     content = models.TextField()
-    history = HistoricalRecords()
+    history = HistoricalRecorsds()
+    keikei_kubun = models.CharField(
+        max_length=100, choices=constants.KEIKEI_KUBUN_CHOICES
+    )
 
     def __str__(self):
         return f"訪問履歴: {(self.jigyosyo.name if self.jigyosyo else 'No Jigyosyo')} - {self.visit_datetime.strftime('%Y-%m-%d %H:%M:%S')}"
