@@ -89,6 +89,11 @@ class Jigyosyo(models.Model, SaveUserMixin):
     repr_position = models.CharField(max_length=255, null=True, blank=True)
     kourou_jigyosyo_url = models.CharField(max_length=255, null=True, blank=True)
     kourou_release_datetime = models.DateTimeField(null=True, blank=True)
+    number_of_member = models.PositiveIntegerField(null=True, blank=True)
+    exists_koyou_sekininsha = models.BooleanField(null=True, blank=True)
+    is_use_kaigo_machine_subsidy = models.BooleanField(null=True, blank=True)
+    is_use_other_subsidy = models.BooleanField(null=True, blank=True)
+
     history = HistoricalRecords()
     objects = CustomHistoryManager()
 
@@ -123,7 +128,7 @@ class JigyosyoManagement(models.Model, SaveUserMixin):
 
 
 class JigyosyoTransaction(models.Model, SaveUserMixin):
-    jigyosyo = models.ForeignKey(
+    management = models.ForeignKey(
         "JigyosyoManagement",
         related_name="transactions",
         on_delete=models.SET_NULL,
@@ -132,10 +137,71 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
     )
     visit_datetime = models.DateField()
     content = models.TextField()
-    history = HistoricalRecorsds()
+    history = HistoricalRecords()
     keikei_kubun = models.CharField(
         max_length=100, choices=constants.KEIKEI_KUBUN_CHOICES
     )
+    support_status = models.CharField(
+        max_length=100, choices=constants.SUPPORT_STATUS_CHOICES
+    )
+    support_means = models.CharField(
+        max_length=100, choices=constants.SUPPORT_MEANS_CHOICES
+    )
+    is_recruiting_on_hw = models.BooleanField(null=True, blank=True)
+    is_recruiting_on_expect_hw = models.BooleanField(null=True, blank=True)
+    is_going_to_recruit = models.BooleanField(null=True, blank=True)
+    is_accepting_intern = models.BooleanField(null=True, blank=True)
+    will_inform_hw = models.BooleanField(null=True, blank=True)
+    will_inform_prefecture = models.BooleanField(null=True, blank=True)
+    will_inform_others = models.BooleanField(null=True, blank=True)
+    done_explain_support = models.BooleanField(null=True, blank=True)
+    done_knowing_problem = models.BooleanField(null=True, blank=True)
+
+    management_is_sanjo = models.BooleanField(default=False)
+    management_description = models.CharField(max_length=200, null=True, blank=True)
+
+    jigyosyo_code = models.CharField(max_length=255, null=True, blank=True)
+    jigyosyo_type = models.CharField(max_length=255, null=True, blank=True)
+    jigyosyo_name = models.CharField(max_length=255, null=True, blank=True)
+    jigyosyo_postal_code = models.CharField(max_length=255, null=True, blank=True)
+    jigyosyo_address = models.CharField(max_length=255, null=True, blank=True)
+    jigyosyo_tel_number = models.CharField(max_length=255, null=True, blank=True)
+    jigyosyo_fax_number = models.CharField(max_length=255, null=True, blank=True)
+    jigyosyo_repr_name = models.CharField(max_length=255, null=True, blank=True)
+    jigyosyo_repr_position = models.CharField(max_length=255, null=True, blank=True)
+    jigyosyo_kourou_url = models.CharField(max_length=255, null=True, blank=True)
+    jigyosyo_kourou_release_datetime = models.DateTimeField(null=True, blank=True)
+    jigyosyo_number_of_member = models.PositiveIntegerField(null=True, blank=True)
+    jigyosyo_exists_koyou_sekininsha = models.BooleanField(null=True, blank=True)
+    jigyosyo_is_use_kaigo_machine_subsidy = models.BooleanField(null=True, blank=True)
+    jigyosyo_is_use_other_subsidy = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
-        return f"訪問履歴: {(self.jigyosyo.name if self.jigyosyo else 'No Jigyosyo')} - {self.visit_datetime.strftime('%Y-%m-%d %H:%M:%S')}"
+        return f"訪問履歴: {(self.jigyosyo_name if self.jigyosyo_name else 'No Jigyosyo')} - {self.visit_datetime.strftime('%Y-%m-%d')}"
+
+    def save(self, *args, **kwargs):
+        if self.management:
+            self.management_is_sanjo = self.management.is_sanjo
+            self.management_description = self.management.description
+
+            jigyosyo = self.management.jigyosyo
+            if jigyosyo:
+                self.jigyosyo_code = jigyosyo.jigyosyo_code
+                self.jigyosyo_type = jigyosyo.type
+                self.jigyosyo_name = jigyosyo.name
+                self.jigyosyo_postal_code = jigyosyo.postal_code
+                self.jigyosyo_address = jigyosyo.address
+                self.jigyosyo_tel_number = jigyosyo.tel_number
+                self.jigyosyo_fax_number = jigyosyo.fax_number
+                self.jigyosyo_repr_name = jigyosyo.repr_name
+                self.jigyosyo_repr_position = jigyosyo.repr_position
+                self.jigyosyo_kourou_url = jigyosyo.kourou_jigyosyo_url
+                self.jigyosyo_kourou_release_datetime = jigyosyo.kourou_release_datetime
+                self.jigyosyo_number_of_member = jigyosyo.number_of_member
+                self.jigyosyo_exists_koyou_sekininsha = jigyosyo.exists_koyou_sekininsha
+                self.jigyosyo_is_use_kaigo_machine_subsidy = (
+                    jigyosyo.is_use_kaigo_machine_subsidy
+                )
+                self.jigyosyo_is_use_other_subsidy = jigyosyo.is_use_other_subsidy
+
+        super().save(*args, **kwargs)
