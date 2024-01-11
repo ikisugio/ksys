@@ -1,63 +1,115 @@
 import React, { useState } from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import RichTextEditor from "@/components/RichTextEditor";
+import {
+  TextField,
+  Grid,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import {
+  TRANSACTION_FIELDS,
+  AUXILIARY_FIELDS,
+} from "@/constants/transaction-fields";
 
-function JigyosyoTransactionCreate() {
-  const [text, setText] = useState("");
-  const [file, setFile] = useState(null);
+function JigyosyoTransactionForm() {
+  const [formData, setFormData] = useState({});
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+  const handleChange = (e) => {
+    const { name, value, checked, type } = e.target;
+    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Form submitted");
+  const createInputField = (field) => {
+    switch (field.type) {
+      case "text":
+      case "date":
+      case "file":
+        return (
+          <TextField
+            key={field.name}
+            name={field.name}
+            label={field.label}
+            type={field.type}
+            value={formData[field.name] || ""}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+          />
+        );
+      case "select":
+        return (
+          <Select
+            key={field.name}
+            name={field.name}
+            label={field.label}
+            value={formData[field.name] || ""}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+          >
+            {field.options.map((option, index) => (
+              <MenuItem key={index} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+        );
+      case "checkbox":
+        return (
+          <FormControlLabel
+            key={field.name}
+            control={
+              <Checkbox
+                name={field.name}
+                checked={!!formData[field.name]}
+                onChange={handleChange}
+              />
+            }
+            label={field.label}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
   };
 
   return (
-    <Card
-      style={{
-        margin: "20px",
-        border: "1px solid #ddd",
-        boxShadow: "none",
-        maxWidth: "100%",
-      }}
-    >
-      <CardContent>
-        <Typography
-          variant="h5"
-          component="h2"
-          style={{ marginBottom: "20px" }}
-        >
-          訪問履歴作成
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: "20px" }}>
-            <RichTextEditor text={text} setText={setText} />
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Button variant="contained" component="label">
-              ファイル添付
-              <input type="file" hidden onChange={handleFileChange} />
-            </Button>
-            <Button type="submit" variant="contained" color="primary">
-              送信
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+    <form onSubmit={handleSubmit}>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          {" "}
+          {/* 左カラム */}
+          {AUXILIARY_FIELDS.filter((field) => field.isDisplay).map(
+            createInputField
+          )}
+        </Grid>
+        <Grid item xs={6}>
+          {" "}
+          {/* 右カラム */}
+          {TRANSACTION_FIELDS.filter((field) => field.isDisplay).map(
+            createInputField
+          )}
+        </Grid>
+      </Grid>
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        style={{ marginTop: 20 }}
+      >
+        保存
+      </Button>
+    </form>
   );
 }
 
-export default JigyosyoTransactionCreate;
+export default JigyosyoTransactionForm;

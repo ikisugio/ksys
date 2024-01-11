@@ -1,4 +1,3 @@
-from enum import unique
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -135,73 +134,237 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
         null=True,
         blank=True,
     )
-    visit_datetime = models.DateField()
-    content = models.TextField()
+    visit_date = models.DateField(null=True, blank=True)
+    visit_memo = models.TextField(null=True, blank=True)
+    file = models.FileField(null=True, blank=True)
     history = HistoricalRecords()
+
     keikei_kubun = models.CharField(
-        max_length=100, choices=constants.KEIKEI_KUBUN_CHOICES
+        max_length=100, choices=constants.KEIKEI_KUBUN_CHOICES, null=True, blank=True
     )
     support_status = models.CharField(
-        max_length=100, choices=constants.SUPPORT_STATUS_CHOICES
+        max_length=100, choices=constants.SUPPORT_STATUS_CHOICES, null=True, blank=True
     )
     support_means = models.CharField(
-        max_length=100, choices=constants.SUPPORT_MEANS_CHOICES
+        max_length=100, choices=constants.SUPPORT_MEANS_CHOICES, null=True, blank=True
     )
-    is_recruiting_on_hw = models.BooleanField(null=True, blank=True)
-    is_recruiting_on_expect_hw = models.BooleanField(null=True, blank=True)
-    is_going_to_recruit = models.BooleanField(null=True, blank=True)
-    is_accepting_intern = models.BooleanField(null=True, blank=True)
-    will_inform_hw = models.BooleanField(null=True, blank=True)
-    will_inform_prefecture = models.BooleanField(null=True, blank=True)
-    will_inform_others = models.BooleanField(null=True, blank=True)
-    done_explain_support = models.BooleanField(null=True, blank=True)
-    done_knowing_problem = models.BooleanField(null=True, blank=True)
+    is_recruiting_on_hw = models.BooleanField(
+        null=True, blank=True, verbose_name="ＨＷに募集中"
+    )
+    is_recruiting_on_expect_hw = models.BooleanField(
+        null=True, blank=True, verbose_name="ＨＷ以外に募集予定"
+    )
+    is_going_to_recruit = models.BooleanField(
+        null=True, blank=True, verbose_name="募集予定"
+    )
+    is_accepting_intern = models.BooleanField(
+        null=True, blank=True, verbose_name="介護実習の受入"
+    )
+    will_inform_hw = models.BooleanField(
+        null=True, blank=True, verbose_name="労働局（ＨＷ）への伝達"
+    )
+    will_inform_prefecture = models.BooleanField(
+        null=True, blank=True, verbose_name="都道府県への伝達"
+    )
+    will_inform_others = models.BooleanField(
+        null=True, blank=True, verbose_name="その他の関係機関への伝達"
+    )
+    done_explain_support = models.BooleanField(
+        null=True, blank=True, verbose_name="支援メニューの説明"
+    )
+    done_knowing_problem = models.BooleanField(
+        null=True, blank=True, verbose_name="課題の把握"
+    )
+    with_tool_utilization = models.BooleanField(
+        null=True, blank=True, verbose_name="ツールの活用"
+    )
+    with_employment_consultant = models.BooleanField(
+        null=True, blank=True, verbose_name="雇用コンサルと同行"
+    )
+    with_health_counselor = models.BooleanField(
+        null=True, blank=True, verbose_name="ヘルスカウンセラーと同行"
+    )
+    with_training_coordinator = models.BooleanField(
+        null=True, blank=True, verbose_name="研修コーディネーターと同行"
+    )
+    with_alone_on_hw = models.BooleanField(
+        null=True, blank=True, verbose_name="労働局委託で単独"
+    )
+    with_staff_on_hw = models.BooleanField(
+        null=True, blank=True, verbose_name="労働局委託で職員と同行"
+    )
 
-    management_is_sanjo = models.BooleanField(default=False)
-    management_description = models.CharField(max_length=200, null=True, blank=True)
+    koyou_job_posting_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="雇用管理にかかる求人求職の相談"
+    )
+    koyou_job_posting_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="雇用管理にかかる求人求職の情報"
+    )
+    koyou_working_conditions_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="労働条件の相談"
+    )
+    koyou_working_conditions_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="労働条件の情報"
+    )
+    koyou_welfare_benefits_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="福利厚生の相談"
+    )
+    koyou_welfare_benefits_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="福利厚生の情報"
+    )
+    koyou_workplace_communication_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="職場のコミュニケーションの相談"
+    )
+    koyou_workplace_communication_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="職場のコミュニケーションの情報"
+    )
+    koyou_subsidies_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="助成金の相談"
+    )
+    koyou_subsidies_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="助成金の情報"
+    )
+    koyou_care_services_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="介護サービスの相談"
+    )
+    koyou_care_services_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="介護サービスの情報"
+    )
+    koyou_workplace_environment_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="職場環境の相談"
+    )
+    koyou_workplace_environment_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="職場環境の情報"
+    )
+    koyou_skill_development_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="能力開発の相談"
+    )
+    koyou_skill_development_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="能力開発の情報"
+    )
+    koyou_employment_management_responsibility_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="雇用管理責任者関係の相談"
+    )
+    koyou_employment_management_responsibility_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="雇用管理責任者関係の情報"
+    )
+    koyou_other_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="雇用管理に係るその他の相談"
+    )
+    koyou_other_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="雇用管理に係るその他の情報"
+    )
 
-    jigyosyo_code = models.CharField(max_length=255, null=True, blank=True)
-    jigyosyo_type = models.CharField(max_length=255, null=True, blank=True)
-    jigyosyo_name = models.CharField(max_length=255, null=True, blank=True)
-    jigyosyo_postal_code = models.CharField(max_length=255, null=True, blank=True)
-    jigyosyo_address = models.CharField(max_length=255, null=True, blank=True)
-    jigyosyo_tel_number = models.CharField(max_length=255, null=True, blank=True)
-    jigyosyo_fax_number = models.CharField(max_length=255, null=True, blank=True)
-    jigyosyo_repr_name = models.CharField(max_length=255, null=True, blank=True)
-    jigyosyo_repr_position = models.CharField(max_length=255, null=True, blank=True)
-    jigyosyo_kourou_url = models.CharField(max_length=255, null=True, blank=True)
-    jigyosyo_kourou_release_datetime = models.DateTimeField(null=True, blank=True)
-    jigyosyo_number_of_member = models.PositiveIntegerField(null=True, blank=True)
-    jigyosyo_exists_koyou_sekininsha = models.BooleanField(null=True, blank=True)
-    jigyosyo_is_use_kaigo_machine_subsidy = models.BooleanField(null=True, blank=True)
-    jigyosyo_is_use_other_subsidy = models.BooleanField(null=True, blank=True)
+    # 能力開発に関する項目
+    noukai_qualification_system_training_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="資格制度研修情報の相談"
+    )
+    noukai_qualification_system_training_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="資格制度研修情報の情報"
+    )
+    noukai_job_posting_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="能力開発にかかる求人求職の相談"
+    )
+    noukai_job_posting_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="能力開発にかかる求人求職の情報"
+    )
+    noukai_training_plan_curriculum_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="研修計画カリキュラム策定の相談"
+    )
+    noukai_training_plan_curriculum_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="研修計画カリキュラム策定の情報"
+    )
+    noukai_subsidy_system_for_skill_development_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="能力開発にかかる助成制度関係の相談"
+    )
+    noukai_subsidy_system_for_skill_development_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="能力開発にかかる助成制度関係の情報"
+    )
+    noukai_vocational_skill_development_promoter_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="職業能力開発推進者関係の相談"
+    )
+    noukai_vocational_skill_development_promoter_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="職業能力開発推進者関係の情報"
+    )
+    noukai_other_skill_development_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="能力開発に係るその他の相談"
+    )
+    noukai_other_skill_development_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="能力開発に係るその他の情報"
+    )
+
+    _management_is_sanjo = models.BooleanField(default=False)
+    _management_description = models.CharField(max_length=200, null=True, blank=True)
+
+    _jigyosyo_code = models.CharField(max_length=255, null=True, blank=True)
+    _jigyosyo_type = models.CharField(max_length=255, null=True, blank=True)
+    _jigyosyo_name = models.CharField(max_length=255, null=True, blank=True)
+    _jigyosyo_postal_code = models.CharField(max_length=255, null=True, blank=True)
+    _jigyosyo_address = models.CharField(max_length=255, null=True, blank=True)
+    _jigyosyo_tel_number = models.CharField(max_length=255, null=True, blank=True)
+    _jigyosyo_fax_number = models.CharField(max_length=255, null=True, blank=True)
+    _jigyosyo_repr_name = models.CharField(max_length=255, null=True, blank=True)
+    _jigyosyo_repr_position = models.CharField(max_length=255, null=True, blank=True)
+    _jigyosyo_kourou_url = models.CharField(max_length=255, null=True, blank=True)
+    _jigyosyo_kourou_release_datetime = models.DateTimeField(null=True, blank=True)
+    _jigyosyo_number_of_member = models.PositiveIntegerField(null=True, blank=True)
+    _jigyosyo_exists_koyou_sekininsha = models.BooleanField(null=True, blank=True)
+    _jigyosyo_is_use_kaigo_machine_subsidy = models.BooleanField(null=True, blank=True)
+    _jigyosyo_is_use_other_subsidy = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
-        return f"訪問履歴: {(self.jigyosyo_name if self.jigyosyo_name else 'No Jigyosyo')} - {self.visit_datetime.strftime('%Y-%m-%d')}"
+        return f"訪問履歴: {(self._jigyosyo_name if self._jigyosyo_name else 'No Jigyosyo')} - {self.visit_date.strftime('%Y-%m-%d')}"
 
     def save(self, *args, **kwargs):
         if self.management:
-            self.management_is_sanjo = self.management.is_sanjo
-            self.management_description = self.management.description
+            self._management_is_sanjo = (
+                self._management_is_sanjo or self.management.is_sanjo
+            )
+            self._management_description = (
+                self._management_description or self.management.description
+            )
 
             jigyosyo = self.management.jigyosyo
             if jigyosyo:
-                self.jigyosyo_code = jigyosyo.jigyosyo_code
-                self.jigyosyo_type = jigyosyo.type
-                self.jigyosyo_name = jigyosyo.name
-                self.jigyosyo_postal_code = jigyosyo.postal_code
-                self.jigyosyo_address = jigyosyo.address
-                self.jigyosyo_tel_number = jigyosyo.tel_number
-                self.jigyosyo_fax_number = jigyosyo.fax_number
-                self.jigyosyo_repr_name = jigyosyo.repr_name
-                self.jigyosyo_repr_position = jigyosyo.repr_position
-                self.jigyosyo_kourou_url = jigyosyo.kourou_jigyosyo_url
-                self.jigyosyo_kourou_release_datetime = jigyosyo.kourou_release_datetime
-                self.jigyosyo_number_of_member = jigyosyo.number_of_member
-                self.jigyosyo_exists_koyou_sekininsha = jigyosyo.exists_koyou_sekininsha
-                self.jigyosyo_is_use_kaigo_machine_subsidy = (
-                    jigyosyo.is_use_kaigo_machine_subsidy
+                self._jigyosyo_code = self._jigyosyo_code or jigyosyo.jigyosyo_code
+                self._jigyosyo_type = self._jigyosyo_type or jigyosyo.type
+                self._jigyosyo_name = self._jigyosyo_name or jigyosyo.name
+                self._jigyosyo_postal_code = (
+                    self._jigyosyo_postal_code or jigyosyo.postal_code
                 )
-                self.jigyosyo_is_use_other_subsidy = jigyosyo.is_use_other_subsidy
+                self._jigyosyo_address = self._jigyosyo_address or jigyosyo.address
+                self._jigyosyo_tel_number = (
+                    self._jigyosyo_tel_number or jigyosyo.tel_number
+                )
+                self._jigyosyo_fax_number = (
+                    self._jigyosyo_fax_number or jigyosyo.fax_number
+                )
+                self._jigyosyo_repr_name = (
+                    self._jigyosyo_repr_name or jigyosyo.repr_name
+                )
+                self._jigyosyo_repr_position = (
+                    self._jigyosyo_repr_position or jigyosyo.repr_position
+                )
+                self._jigyosyo_kourou_url = (
+                    self._jigyosyo_kourou_url or jigyosyo.kourou_jigyosyo_url
+                )
+                self._jigyosyo_kourou_release_datetime = (
+                    self._jigyosyo_kourou_release_datetime
+                    or jigyosyo.kourou_release_datetime
+                )
+                self._jigyosyo_number_of_member = (
+                    self._jigyosyo_number_of_member or jigyosyo.number_of_member
+                )
+                self._jigyosyo_exists_koyou_sekininsha = (
+                    self._jigyosyo_exists_koyou_sekininsha
+                    or jigyosyo.exists_koyou_sekininsha
+                )
+                self._jigyosyo_is_use_kaigo_machine_subsidy = (
+                    self._jigyosyo_is_use_kaigo_machine_subsidy
+                    or jigyosyo.is_use_kaigo_machine_subsidy
+                )
+                self._jigyosyo_is_use_other_subsidy = (
+                    self._jigyosyo_is_use_other_subsidy or jigyosyo.is_use_other_subsidy
+                )
 
         super().save(*args, **kwargs)
