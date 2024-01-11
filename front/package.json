@@ -10,13 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@date-io/date-fns": "^3.0.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.2",
     "@mui/lab": "^5.0.0-alpha.157",
     "@mui/material": "^5.14.12",
     "@mui/x-data-grid": "^6.18.3",
+    "@mui/x-date-pickers": "^6.19.0",
     "axios": "^1.5.1",
+    "date-fns": "^3.2.0",
     "draft-js": "^0.11.7",
     "lodash": "^4.17.21",
     "material-react-table": "^2.1.0",

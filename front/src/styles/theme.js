@@ -17,5 +17,32 @@ export const customTheme = createTheme({
         },
       },
     },
+    MuiMenu: {
+      styleOverrides: {
+        paper: {
+          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.05)",
+          border: "1px solid lightgrey",
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            border: "2px solid rgba(120, 100, 255, 0.7)", // ホバー時に枠線を強調
+          },
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          boxShadow: "none",
+          "&:hover": {
+            boxShadow: "none",
+          },
+        },
+      },
+    },
   },
 });
