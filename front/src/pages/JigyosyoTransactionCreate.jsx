@@ -19,10 +19,7 @@ import {
   AUXILIARY_FIELDS,
 } from "@/constants/transaction-fields";
 import CustomDropdown from "../components/CustomDropdown";
-import { HEADER_HEIGHT } from "@/constants/styles";
 import { useNavigate } from "react-router-dom";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
 import CustomTextField from "@/components/CustomTextField";
 
 function JigyosyoTransactionForm() {
@@ -37,31 +34,20 @@ function JigyosyoTransactionForm() {
   const theme = useTheme();
   const MINIMUM_VISIT_MEMO_LINES = 3;
 
-  const handleSearchChange = (e) => {
-    setSearchCode(e.target.value);
-  };
-
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpenSnackbar(false);
-  };
-
-  const handleSearch = async (code) => {
-    // jigyosyo_code フィールドの値を取得
+  const handleSearch = async (e) => {
     const jigyosyoCode = formData["_jigyosyo_code"];
+    const jigyosyoName = formData["_jigyosyo_name"];
+    const jigyosyoAddress = formData["_jigyosyo_address"];
     console.log("jigyosyocode : ", jigyosyoCode);
-
-    if (!jigyosyoCode) {
-      console.log("事業所コードが入力されていません。");
-      return;
-    }
+    console.log("e is =>", jigyosyoCode);
+    const query = jigyosyoCode || jigyosyoName || jigyosyoAddress;
+    console.log("query is", query);
 
     try {
       const response = await axiosInstance.get(
-        `http://localhost:8000/api/search/jigyosyo/?q=${code}`
+        `http://localhost:8000/api/search/jigyosyo/?q=${query}`
       );
+      console.log("responsedata =>", response.data);
       setSearchResults(response.data);
     } catch (error) {
       console.error("APIからデータを取得中にエラーが発生しました:", error);
