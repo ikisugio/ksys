@@ -37,8 +37,9 @@ class JigyosyoManagementSearchView(APIView):
 
         common_search_criteria = (
             Q(name__icontains=query)
-            | Q(type__icontains=query)
-            | Q(company__name__icontains=query)
+            | Q(jigyosyo_code__contains=query)
+            | Q(address__contains=query)
+            | Q(company__name__contains=query)
         )
 
         if request.user.groups.filter(name="本部").exists():
@@ -49,11 +50,14 @@ class JigyosyoManagementSearchView(APIView):
                 address__icontains=prefecture_name
             )
 
-        jigyosyos = Jigyosyo.objects.filter(search_criteria).prefetch_related('management').distinct()
+        jigyosyos = (
+            Jigyosyo.objects.filter(search_criteria)
+            .prefetch_related("management")
+            .distinct()
+        )
 
         serializer = JigyosyoSerializer(jigyosyos, many=True)
         return Response(serializer.data)
-
 
 
 class JigyosyoTransactionSearchView(APIView):

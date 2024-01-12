@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import axiosInstance from "@/services/axios";
 import SaveIcon from "@mui/icons-material/Save";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -17,12 +18,82 @@ import {
   TRANSACTION_FIELDS,
   AUXILIARY_FIELDS,
 } from "@/constants/transaction-fields";
+import CustomDropdown from "../components/CustomDropdown";
 import { HEADER_HEIGHT } from "@/constants/styles";
+import { useNavigate } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import CustomTextField from "@/components/CustomTextField";
 
 function JigyosyoTransactionForm() {
   const [formData, setFormData] = useState({});
+  const [searchCode, setSearchCode] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedResult, setSelectedResult] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+  const navigate = useNavigate();
   const theme = useTheme();
   const MINIMUM_VISIT_MEMO_LINES = 3;
+
+  const handleSearchChange = (e) => {
+    setSearchCode(e.target.value);
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
+  const handleSearch = async (code) => {
+    // jigyosyo_code フィールドの値を取得
+    const jigyosyoCode = formData["_jigyosyo_code"];
+    console.log("jigyosyocode : ", jigyosyoCode);
+
+    if (!jigyosyoCode) {
+      console.log("事業所コードが入力されていません。");
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.get(
+        `http://localhost:8000/api/search/jigyosyo/?q=${code}`
+      );
+      setSearchResults(response.data);
+    } catch (error) {
+      console.error("APIからデータを取得中にエラーが発生しました:", error);
+    }
+  };
+
+  const handleResultSelect = (selected) => {
+    let updatedFormData = { ...formData };
+    console.log("updateformdate:", updatedFormData);
+    console.log("selected:", selected);
+
+    updatedFormData["_jigyosyo_code"] = selected.jigyosyo_code;
+    updatedFormData["_jigyosyo_name"] = selected.name;
+    updatedFormData["_jigyosyo_postal_code"] = selected.postal_code;
+    updatedFormData["_jigyosyo_address"] = selected.address;
+    updatedFormData["_jigyosyo_tel_number"] = selected.tel_number;
+    updatedFormData["_jigyosyo_fax_number"] = selected.fax_number;
+    updatedFormData["_jigyosyo_repr_name"] = selected.repr_name;
+    updatedFormData["_jigyosyo_repr_position"] = selected.repr_position;
+    updatedFormData["_jigyosyo_kourou_url"] = selected.kourou_jigyosyo_url;
+    updatedFormData["_jigyosyo_kourou_release_datetime"] =
+      selected.kourou_release_datetime;
+
+    if (selected.company) {
+      updatedFormData["companyName"] = selected.company.name;
+      updatedFormData["companyPostalCode"] = selected.company.postal_code;
+      // 他の company 関連のフィールドについても同様に処理
+    }
+
+    setFormData(updatedFormData);
+    setSearchResults([]);
+  };
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -44,6 +115,28 @@ function JigyosyoTransactionForm() {
   };
 
   const createInputField = (field) => {
+    if (field.name === "_jigyosyo_code") {
+      return (
+        <div key={field.name} style={{ position: "relative" }}>
+          <CustomTextField
+            field={field}
+            formData={formData}
+            handleChange={handleChange}
+          />
+          <CustomDropdown
+            options={searchResults}
+            onSelect={(selected) => {
+              handleResultSelect(selected);
+              setSearchResults([]);
+            }}
+            isOpen={searchResults.length > 0}
+            setIsOpen={(isOpen) =>
+              setSearchResults(isOpen ? searchResults : [])
+            }
+          />
+        </div>
+      );
+    }
     switch (field.type) {
       case "text":
         if (field.name === "visit_memo") {
@@ -95,7 +188,7 @@ function JigyosyoTransactionForm() {
               <Button
                 variant="contained"
                 component="label"
-                style={{ marginRight: "1em" }} // ボタンの右に余白を追加
+                style={{ marginRight: "1em" }}
               >
                 ファイルを選択
                 <input
@@ -179,9 +272,124 @@ function JigyosyoTransactionForm() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    const dataToSubmit = {
+      management: formData.management || null,
+      visit_date: formData.visit_date || null,
+      visit_memo: formData.visit_memo || null,
+      file: formData.file || null,
+      history: formData.history || null,
+      keikei_kubun: formData.keikei_kubun || null,
+      support_status: formData.support_status || null,
+      support_means: formData.support_means || null,
+      is_recruiting_on_hw: formData.is_recruiting_on_hw || false,
+      is_recruiting_on_expect_hw: formData.is_recruiting_on_expect_hw || false,
+      is_going_to_recruit: formData.is_going_to_recruit || false,
+      is_accepting_intern: formData.is_accepting_intern || false,
+      will_inform_hw: formData.will_inform_hw || false,
+      will_inform_prefecture: formData.will_inform_prefecture || false,
+      will_inform_others: formData.will_inform_others || false,
+      done_explain_support: formData.done_explain_support || false,
+      done_knowing_problem: formData.done_knowing_problem || false,
+      with_tool_utilization: formData.with_tool_utilization || false,
+      with_employment_consultant: formData.with_employment_consultant || false,
+      with_health_counselor: formData.with_health_counselor || false,
+      with_training_coordinator: formData.with_training_coordinator || false,
+      with_alone_on_hw: formData.with_alone_on_hw || false,
+      with_staff_on_hw: formData.with_staff_on_hw || false,
+      koyou_job_posting_consult: formData.koyou_job_posting_consult || false,
+      koyou_job_posting_inform: formData.koyou_job_posting_inform || false,
+      koyou_working_conditions_consult:
+        formData.koyou_working_conditions_consult || false,
+      koyou_working_conditions_inform:
+        formData.koyou_working_conditions_inform || false,
+      koyou_welfare_benefits_consult:
+        formData.koyou_welfare_benefits_consult || false,
+      koyou_welfare_benefits_inform:
+        formData.koyou_welfare_benefits_inform || false,
+      koyou_workplace_communication_consult:
+        formData.koyou_workplace_communication_consult || false,
+      koyou_workplace_communication_inform:
+        formData.koyou_workplace_communication_inform || false,
+      koyou_subsidies_consult: formData.koyou_subsidies_consult || false,
+      koyou_subsidies_inform: formData.koyou_subsidies_inform || false,
+      koyou_care_services_consult:
+        formData.koyou_care_services_consult || false,
+      koyou_care_services_inform: formData.koyou_care_services_inform || false,
+      koyou_workplace_environment_consult:
+        formData.koyou_workplace_environment_consult || false,
+      koyou_workplace_environment_inform:
+        formData.koyou_workplace_environment_inform || false,
+      koyou_skill_development_consult:
+        formData.koyou_skill_development_consult || false,
+      koyou_skill_development_inform:
+        formData.koyou_skill_development_inform || false,
+      koyou_employment_management_responsibility_consult:
+        formData.koyou_employment_management_responsibility_consult || false,
+      koyou_employment_management_responsibility_inform:
+        formData.koyou_employment_management_responsibility_inform || false,
+      koyou_other_consult: formData.koyou_other_consult || false,
+      koyou_other_inform: formData.koyou_other_inform || false,
+      noukai_qualification_system_training_consult:
+        formData.noukai_qualification_system_training_consult || false,
+      noukai_qualification_system_training_inform:
+        formData.noukai_qualification_system_training_inform || false,
+      noukai_job_posting_consult: formData.noukai_job_posting_consult || false,
+      noukai_job_posting_inform: formData.noukai_job_posting_inform || false,
+      noukai_training_plan_curriculum_consult:
+        formData.noukai_training_plan_curriculum_consult || false,
+      noukai_training_plan_curriculum_inform:
+        formData.noukai_training_plan_curriculum_inform || false,
+      noukai_subsidy_system_for_skill_development_consult:
+        formData.noukai_subsidy_system_for_skill_development_consult || false,
+      noukai_subsidy_system_for_skill_development_inform:
+        formData.noukai_subsidy_system_for_skill_development_inform || false,
+      noukai_vocational_skill_development_promoter_consult:
+        formData.noukai_vocational_skill_development_promoter_consult || false,
+      noukai_vocational_skill_development_promoter_inform:
+        formData.noukai_vocational_skill_development_promoter_inform || false,
+      noukai_other_skill_development_consult:
+        formData.noukai_other_skill_development_consult || false,
+      noukai_other_skill_development_inform:
+        formData.noukai_other_skill_development_inform || false,
+      _management_is_sanjo: formData._management_is_sanjo || false,
+      _management_description: formData._management_description || null,
+      _jigyosyo_type: formData._jigyosyo_type || null,
+      _jigyosyo_postal_code: formData._jigyosyo_postal_code || null,
+      _jigyosyo_address: formData._jigyosyo_address || null,
+      _jigyosyo_tel_number: formData._jigyosyo_tel_number || null,
+      _jigyosyo_fax_number: formData._jigyosyo_fax_number || null,
+      _jigyosyo_repr_name: formData._jigyosyo_repr_name || null,
+      _jigyosyo_repr_position: formData._jigyosyo_repr_position || null,
+      _jigyosyo_kourou_url: formData._jigyosyo_kourou_url || null,
+      _jigyosyo_kourou_release_datetime:
+        formData._jigyosyo_kourou_release_datetime || null,
+      _jigyosyo_number_of_member: formData._jigyosyo_number_of_member || null,
+      _jigyosyo_exists_koyou_sekininsha:
+        formData._jigyosyo_exists_koyou_sekininsha || false,
+      _jigyosyo_is_use_kaigo_machine_subsidy:
+        formData._jigyosyo_is_use_kaigo_machine_subsidy || false,
+      _jigyosyo_is_use_other_subsidy:
+        formData._jigyosyo_is_use_other_subsidy || false,
+    };
+
+    try {
+      const response = await axiosInstance.post(
+        "jigyosyo-transaction/",
+        formData
+      );
+      // 送信成功時の処理
+      setSnackbarMessage("送信に成功しました！");
+      setSnackbarSeverity("success");
+      setOpenSnackbar(true);
+      navigate("/transaction/list");
+    } catch (error) {
+      console.error("送信エラー:", error);
+      setSnackbarMessage("送信に失敗しました。");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    }
   };
 
   const visitMemoField = TRANSACTION_FIELDS.find(
@@ -226,9 +434,10 @@ function JigyosyoTransactionForm() {
             style={{
               padding: "0 3em",
               height: "100%",
-              overflow: "auto",
-              direction: "rtl", // RTL 方向性を設定
-              borderRight: "2px solid lightgrey", // 右側に境界線を追加
+              overflowY: "auto",
+              overflowX: "hidden",
+              direction: "rtl",
+              borderRight: "2px solid lightgrey",
             }}
           >
             <div style={{ direction: "ltr" }}>
@@ -284,23 +493,37 @@ function JigyosyoTransactionForm() {
           </Grid>
         </Grid>
 
-        {/* 送信ボタン */}
-        <IconButton
-          type="submit"
-          color="primary"
+        <div
           style={{
             position: "absolute",
-            borderRadius: "5%",
-            right: 50,
             bottom: 15,
-            backgroundColor: theme.palette.primary.main,
-            fontSize: "large",
+            left: 0, // 左端に配置
+            right: 0, // 右端に配置
+            display: "flex",
+            justifyContent: "space-between", // 左右にボタンを寄せる
+            alignItems: "center",
+            padding: "0 50px", // 左右に余白を設定
           }}
-          elevation={0}
         >
-          <span style={{ padding: "0 0.2em", color: "white" }}>保存</span>
-          <SaveIcon style={{ paddingRight: "0.1em", color: "white" }} />
-        </IconButton>
+          {/* 検索ボタン */}
+          <Button variant="contained" color="primary" onClick={handleSearch}>
+            検索
+          </Button>
+
+          {/* 保存ボタン */}
+          <IconButton
+            type="submit"
+            color="primary"
+            style={{
+              borderRadius: "5%",
+              backgroundColor: theme.palette.primary.main,
+              fontSize: "large",
+            }}
+          >
+            <span style={{ padding: "0 0.2em", color: "white" }}>保存</span>
+            <SaveIcon style={{ paddingRight: "0.1em", color: "white" }} />
+          </IconButton>
+        </div>
       </form>
     </div>
   );

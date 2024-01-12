@@ -334,13 +334,13 @@ export const AUXILIARY_FIELDS = [
     isDisplay: true,
     type: "text",
   },
+  { name: "_jigyosyo_name", label: "事業所名", isDisplay: true, type: "text" },
   {
-    name: "_jigyosyo_type",
-    label: "事業所タイプ",
+    name: "_company_type",
+    label: "法人種別",
     isDisplay: true,
     type: "text",
   },
-  { name: "_jigyosyo_name", label: "事業所名", isDisplay: true, type: "text" },
   {
     name: "_jigyosyo_postal_code",
     label: "事業所郵便番号",
