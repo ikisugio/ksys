@@ -1,0 +1,16 @@
+.styled-drawer {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 100%; /* ドロワーの幅 */
+  background-color: white;
+  box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.5);
+  transform: translateX(100%); /* 初期状態では画面外 */
+  transition: transform 5s ease-in-out;
+}
+
+/* ドロワーが表示されるときのスタイル */
+.showDrawer.styled-drawer {
+  transform: translateX(40%); /* 画面内にスライドイン */
+}

@@ -1,41 +1,63 @@
-import React, { useRef, useState } from "react";
+import {
+  listUser,
+  createUser,
+  retrieveUser,
+  updateUser,
+  destroyUser,
+} from "@/api/userApi";
+import { useState } from "react";
+import DisplayUserList from "@/components/exp/DisplayUserList";
+import EditUserForm from "@/components/exp/EditUserForm";
+import "@/styles/drawer.css";
 
-function TextInputWithFocusButton() {
-  const inputNameEl = useRef(null);
-  const titleEl = useRef(null);
-  const [title, setTitle] = useState("initial title");
+const InquiryForm = () => {
+  const [users, setUsers] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
+  const [showDrawer, setShowDrawer] = useState(false);
 
-  const onButtonClick = () => {
-    console.log(inputEl.current.value);
-    setTitle(inputEl.current.value);
-    console.log("title el is ", titleEl.current.innerText);
-    inputEl.current.focus();
+  const handleFetchButtonClick = async () => {
+    const response = await listUser();
+    setUsers(response);
   };
 
-  const name = "";
+  const handleEdit = (user) => {
+    setEditingUser(user);
+    setShowDrawer(true);
+  };
+
+  const handleSave = (updatedUser) => {
+    setUsers(
+      users.map((user) => (user.id === updatedUser.id ? updatedUser : user))
+    );
+    setEditingUser(null);
+    setShowDrawer(false);
+  };
+
+  const handleCancel = () => {
+    setEditingUser(null);
+    setShowDrawer(false);
+  };
 
   return (
-    <>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <h1 ref={titleEl} style={{ textAlign: "center" }}>
-          {name && title}
-        </h1>
-        <div style={{ display: "flex", gap: "0.5em" }}>
-          <label htmlFor="name">Name:</label>
-          <input ref={inputNameEl} id="name" name="name"></input>
+    <div style={{ maxHeight: "80vh", overflow: "auto" }}>
+      <button onClick={handleFetchButtonClick}>Fetch</button>
+      <button onClick={() => console.log("showDrawer:", showDrawer)}>
+        check
+      </button>
+      <DisplayUserList users={users} onEdit={handleEdit} />
+      {showDrawer && (
+        <div className={`styled-drawer ${showDrawer ? "showDrawer" : ""}`}>
+          <EditUserForm
+            user={editingUser}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
         </div>
-        <div style={{ display: "flex", gap: "0.5em" }}>
-          <label htmlFor="email">Email:</label>
-          <input id="email" name="email"></input>
-        </div>
-        <div style={{ display: "flex", gap: "0.5em" }}>
-          <label htmlFor="pass">Password:</label>
-          <input id="pass" name="pass"></input>
-        </div>
-      </div>
-    </>
+      )}
+      {editingUser ? <div>test on</div> : <div>fuga off</div>}
+      {showDrawer ? <div>1111test on</div> : <div>1111fuga off</div>}
+    </div>
   );
-}
+};
 
-const InquireForm = TextInputWithFocusButton;
-export default InquireForm;
+export default InquiryForm;

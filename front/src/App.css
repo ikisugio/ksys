@@ -1,10 +1,9 @@
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   overflow-y: hidden;
   overflow-x: hidden;
   min-height: 100vh;
 }
-
 
 .unselectable {
   -webkit-user-select: none; /* Safari用 */
@@ -12,7 +11,6 @@ body {
   -ms-user-select: none; /* Internet Explorer/Edge用 */
   user-select: none; /* 標準の構文 */
 }
-
 
 .listItemContent {
   display: flex;
@@ -32,7 +30,6 @@ body {
   font-weight: 500 !important;
 }
 
-
 :root {
   --primary-main: rgba(120, 100, 255, 0.3);
   --primary-dark: rgba(120, 100, 255, 0.5); /* 濃い色を少し調整 */
@@ -47,7 +44,6 @@ body {
 ::-webkit-scrollbar-track {
   background: #f1f1f1 !important;
 }
-
 
 ::-webkit-scrollbar-thumb {
   background: var(--primary-main) !important;
