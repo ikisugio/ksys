@@ -78,6 +78,7 @@ class Jigyosyo(models.Model, SaveUserMixin):
         null=True,
         blank=True,
     )
+    custom_code = models.CharField(max_length=255, unique=True, null=True, blank=True)
     type = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     postal_code = models.CharField(max_length=255, null=True, blank=True)
@@ -297,6 +298,7 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
     _management_description = models.CharField(max_length=200, null=True, blank=True)
 
     _jigyosyo_code = models.CharField(max_length=255, null=True, blank=True)
+    _jigyosyo_custom_code = models.CharField(max_length=255, null=True, blank=True)
     _jigyosyo_type = models.CharField(max_length=255, null=True, blank=True)
     _jigyosyo_name = models.CharField(max_length=255, null=True, blank=True)
     _jigyosyo_postal_code = models.CharField(max_length=255, null=True, blank=True)

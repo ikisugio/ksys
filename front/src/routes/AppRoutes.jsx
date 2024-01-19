@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import JigyosyoTransactionList from "@/pages/JigyosyoTransactionList";
 import JigyosyoTransactionCreate from "@/pages/JigyosyoTransactionCreate";
+import JigyosyoTransactionEdit from "@/pages/JigyosyoTransactionEdit";
 import JigyosyoSearch from "@/pages/JigyosyoSearch";
 import JigyosyoAdd from "@/pages/JigyosyoAdd";
 import FAQView from "@/pages/FAQView";
@@ -15,6 +16,10 @@ const AppRoutes = ({ setLoggedIn }) => {
       <Route
         path="/transaction/create"
         element={<JigyosyoTransactionCreate />}
+      />
+      <Route
+        path="/transaction/edit/:id"
+        element={<JigyosyoTransactionEdit />}
       />
       <Route path="/jigyosyo/search" element={<JigyosyoSearch />} />
       <Route path="/jigyosyo/add" element={<JigyosyoAdd />} />

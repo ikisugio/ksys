@@ -79,9 +79,11 @@ class JigyosyoTransactionSearchView(APIView):
                 | Q(jigyosyo__type__icontains=query)
                 | Q(jigyosyo__company__name__icontains=query)
             )
-            transactions = JigyosyoTransaction.objects.filter(
-                search_criteria
-            ).distinct()
+            transactions = (
+                JigyosyoTransaction.objects.filter(search_criteria)
+                .distinct()
+                .order_by("-id")
+            )
         else:
             group = request.user.groups.first()
             if group is None:
@@ -98,9 +100,11 @@ class JigyosyoTransactionSearchView(APIView):
                 | Q(jigyosyo__company__name__icontains=query)
                 & Q(jigyosyo__update_user__groups__name=prefecture_name)
             )
-            transactions = JigyosyoTransaction.objects.filter(
-                search_criteria
-            ).distinct()
+            transactions = (
+                JigyosyoTransaction.objects.filter(search_criteria)
+                .distinct()
+                .order_by("-id")
+            )
 
         serializer = JigyosyoTransactionSerializer(transactions, many=True)
         return Response(serializer.data)
@@ -416,11 +420,11 @@ class JigyosyoTransactionListView(APIView):
 
     def get(self, request):
         if request.user.is_superuser:
-            transactions = JigyosyoTransaction.objects.all()
+            transactions = JigyosyoTransaction.objects.all().order_by("-id")
         else:
             transactions = JigyosyoTransaction.objects.filter(
                 jigyosyo__update_user=request.user.username
-            )
+            ).order_by("-id")
         serializer = JigyosyoTransactionSerializer(transactions, many=True)
         return Response(serializer.data)
 
@@ -443,21 +447,21 @@ class JigyosyoTransactionDetailView(APIView):
 
     def get(self, request, pk):
         transaction = self.get_object(pk)
-        if (
-            request.user.username != transaction.jigyosyo.update_user
-            and not request.user.is_superuser
-        ):
-            return Response(status=status.HTTP_403_FORBIDDEN)
+        # if (
+        #     request.user.username != transaction.jigyosyo.update_user
+        #     and not request.user.is_superuser
+        # ):
+        #     return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = JigyosyoTransactionSerializer(transaction)
         return Response(serializer.data)
 
     def put(self, request, pk):
         transaction = self.get_object(pk)
-        if (
-            request.user.username != transaction.jigyosyo.update_user
-            and not request.user.is_superuser
-        ):
-            return Response(status=status.HTTP_403_FORBIDDEN)
+        # if (
+        #     request.user.username != transaction.jigyosyo.update_user
+        #     and not request.user.is_superuser
+        # ):
+        #     return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = JigyosyoTransactionSerializer(transaction, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -466,10 +470,10 @@ class JigyosyoTransactionDetailView(APIView):
 
     def delete(self, request, pk):
         transaction = self.get_object(pk)
-        if (
-            request.user.username != transaction.jigyosyo.update_user
-            and not request.user.is_superuser
-        ):
-            return Response(status=status.HTTP_403_FORBIDDEN)
+        # if (
+        #     request.user.username != transaction.jigyosyo.update_user
+        #     and not request.user.is_superuser
+        # ):
+        #     return Response(status=status.HTTP_403_FORBIDDEN)
         transaction.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

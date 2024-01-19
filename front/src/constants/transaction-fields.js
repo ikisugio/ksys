@@ -334,6 +334,12 @@ export const AUXILIARY_FIELDS = [
     isDisplay: true,
     type: "text",
   },
+  {
+    name: "_jigyosyo_custom_code",
+    label: "支部独自コード",
+    isDisplay: true,
+    type: "text",
+  },
   { name: "_jigyosyo_name", label: "事業所名", isDisplay: true, type: "text" },
   {
     name: "_company_type",

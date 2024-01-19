@@ -50,7 +50,7 @@ class JigyosyoManagementSerializer(serializers.ModelSerializer):
 
 
 class JigyosyoTransactionSerializer(serializers.ModelSerializer):
-    management = JigyosyoManagementSerializer()
+    management = JigyosyoManagementSerializer(required=False)
 
     class Meta:
         model = JigyosyoTransaction
