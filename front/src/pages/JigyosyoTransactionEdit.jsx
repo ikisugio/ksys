@@ -470,8 +470,8 @@ function JigyosyoTransactionEdit() {
     console.log('送信するデータ:', dataToSubmit);
 
     try {
-      const response = await axiosInstance.post(
-        "jigyosyo-transaction/",
+      const response = await axiosInstance.put(
+        `jigyosyo-transaction/${id}/`,
         dataToSubmit
       );
       // 送信成功時の処理
