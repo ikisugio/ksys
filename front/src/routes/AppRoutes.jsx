@@ -8,6 +8,7 @@ import FAQView from "@/pages/FAQView";
 import InruiryForm from "@/pages/InquiryForm";
 import VersionInfo from "@/pages/VersionInfo";
 import Login from "@/pages/Login";
+import ListTransactionByJigyosyo from "@/pages/ListTransactionByJigyosyo";
 
 const AppRoutes = ({ setLoggedIn }) => {
   return (
@@ -26,6 +27,7 @@ const AppRoutes = ({ setLoggedIn }) => {
       <Route path="/faq" element={<FAQView />} />
       <Route path="/inquiry" element={<InruiryForm />} />
       <Route path="/version" element={<VersionInfo />} />
+      <Route path="/list-transaction-by-jigyosyo" element={<ListTransactionByJigyosyo />} />
       <Route
         path="/login"
         element={<Login onLoginSuccess={() => setLoggedIn(true)} />}

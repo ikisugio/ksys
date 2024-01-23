@@ -108,9 +108,9 @@ function JigyosyoTransactionForm() {
     }
   };
 
-  const handleResultSelect = (selected) => {
+  const handleSearchResultSelect = (selected) => {
     let updatedFormData = { ...formData };
-    console.log("updateformdate:", updatedFormData);
+    console.log("updateFormData:", updatedFormData);
     console.log("selected:", selected);
 
     updatedFormData["_jigyosyo_code"] = selected.jigyosyo_code;
@@ -167,7 +167,7 @@ function JigyosyoTransactionForm() {
           <CustomDropdown
             options={searchResults}
             onSelect={(selected) => {
-              handleResultSelect(selected);
+              handleSearchResultSelect(selected);
               setSearchResults([]);
             }}
             isOpen={searchResults.length > 0}
