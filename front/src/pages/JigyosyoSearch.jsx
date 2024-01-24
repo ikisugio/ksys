@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Chip, Menu, MenuItem } from "@mui/material";
 import axiosInstance from "@/services/axios";
 import { API_URL } from "@/constants/urls";
@@ -174,12 +174,12 @@ const JigyosyoSearch = () => {
           onRowClick={handleRowClick}
           transformDataForDisplay={transformDataForDisplay}
         />
-        {selectedRow && (
+        {/* {selectedRow && (
           <DrawerButton
             leftData={transformDataForDisplay(selectedRow)}
             rightData={transactionData}
           />
-        )}
+        )} */}
       </div>
     </Box>
   );

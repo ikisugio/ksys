@@ -33,25 +33,22 @@ const dummyData = dummyTransactionDataLong;
 const MyDataGrid = ({ rows, columns, loading, transformDataForDisplay }) => {
   const theme = useTheme();
   const [selectedRow, setSelectedRow] = useState(null);
+  const [mainData, setMainData] = useState(null);
   const [drawerWidth, setDrawerWidth] = useState(DETAIL_VIEW_WIDTH_RATIO);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleRowClick = (params) => {
     const transformedRowData = transformDataForDisplay(params.row);
+    const { jigyosyoCode, jigyosyoCustomeCode } = params.row;
+    const mainData = { jigyosyoCode, jigyosyoCustomeCode }
     setSelectedRow(transformedRowData);
+    setMainData(mainData)
     setIsDrawerOpen(true);
   };
 
   const handleDrawerClose = () => {
     setIsDrawerOpen(false);
   };
-  const handleSliderChange = (event, newValue) => {
-    setDrawerWidth(newValue);
-  };
-
-  const renderSlideDrawerButton = (params) => (
-    <button onClick={() => handleRowClick(params)}>Open Drawer</button>
-  );
 
   const renderDrawerButton = (params) => (
     <button onClick={() => handleRowClick(params.row)}>Open Drawer</button>
@@ -66,7 +63,7 @@ const MyDataGrid = ({ rows, columns, loading, transformDataForDisplay }) => {
       sortable: false,
       filterable: false,
     },
-    ...columns, // 他の列定義
+    ...columns,
   ];
 
   const hoveredColor = alpha(theme.palette.primary.main, 0.8);
@@ -186,6 +183,7 @@ const MyDataGrid = ({ rows, columns, loading, transformDataForDisplay }) => {
               isOpen={Boolean(selectedRow)}
               leftData={selectedRow}
               rightData={dummyData}
+              mainData={mainData}
               onClose={() => setSelectedRow(null)}
             />
           </Drawer>

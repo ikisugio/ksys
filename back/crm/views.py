@@ -65,46 +65,43 @@ class JigyosyoTransactionSearchView(APIView):
 
     def get(self, request):
         query = request.query_params.get("q", None)
+        jigyosyo_code = request.query_params.get("_jigyosyo_code", None)
+        jigyosyo_custom_code = request.query_params.get("_jigyosyo_custom_code", None)
 
-        if not query:
+        if not any([query, jigyosyo_code, jigyosyo_custom_code]):
             return Response(
-                {"detail": "Query parameter q is required."},
+                {"detail": "At least one query parameter (q, _jigyosyo_code, _jigyosyo_custom_code) is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if request.user.groups.filter(name="本部").exists():
-            search_criteria = (
+        search_criteria = Q()
+
+        if query:
+            search_criteria |= (
                 Q(content__icontains=query)
                 | Q(jigyosyo__name__icontains=query)
                 | Q(jigyosyo__type__icontains=query)
                 | Q(jigyosyo__company__name__icontains=query)
             )
-            transactions = (
-                JigyosyoTransaction.objects.filter(search_criteria)
-                .distinct()
-                .order_by("-id")
-            )
+
+        if jigyosyo_code:
+            search_criteria &= Q(_jigyosyo_code=jigyosyo_code)
+
+        if jigyosyo_custom_code:
+            search_criteria &= Q(_jigyosyo_custom_code=jigyosyo_custom_code)
+
+        if request.user.groups.filter(name="本部").exists():
+            transactions = JigyosyoTransaction.objects.filter(search_criteria).distinct().order_by("-id")
         else:
             group = request.user.groups.first()
             if group is None:
-                # Handle the case where the group is None, e.g., return an error response
                 return Response(
                     {"detail": "User is not associated with any group."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            prefecture_name = request.user.groups.first().name
-            search_criteria = (
-                Q(content__icontains=query)
-                | Q(jigyosyo__name__icontains=query)
-                | Q(jigyosyo__type__icontains=query)
-                | Q(jigyosyo__company__name__icontains=query)
-                & Q(jigyosyo__update_user__groups__name=prefecture_name)
-            )
-            transactions = (
-                JigyosyoTransaction.objects.filter(search_criteria)
-                .distinct()
-                .order_by("-id")
-            )
+            prefecture_name = group.name
+            search_criteria &= Q(jigyosyo__update_user__groups__name=prefecture_name)
+            transactions = JigyosyoTransaction.objects.filter(search_criteria).distinct().order_by("-id")
 
         serializer = JigyosyoTransactionSerializer(transactions, many=True)
         return Response(serializer.data)

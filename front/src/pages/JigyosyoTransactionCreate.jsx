@@ -129,7 +129,6 @@ function JigyosyoTransactionForm() {
     if (selected.company) {
       updatedFormData["companyName"] = selected.company.name;
       updatedFormData["companyPostalCode"] = selected.company.postal_code;
-      // 他の company 関連のフィールドについても同様に処理
     }
 
     setFormData(updatedFormData);

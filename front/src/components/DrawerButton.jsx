@@ -1,14 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import MyTimeline from "@/components/MyTimeline";
 import DrawerCard from "@/components/DrawerCard";
 import TimelineCard from "@/components/TimelineCard";
+import axiosInstance from "@/services/axios"
 
-const DrawerButton = ({ isOpen, leftData, rightData, onClose }) => {
+const DrawerButton = ({ isOpen, leftData, rightData, mainData, onClose }) => {
   const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const [fetchedData, setFetchedData] = useState(null);
+  console.log("leftData:", leftData);
   console.log("rightData:", rightData);
+  console.log("mainData: ", mainData);
+  console.log("jigyosyoCode: ", mainData.jigyosyoCode);
+
+
+  useEffect(() => {
+    if (mainData && mainData.jigyosyoCode) {
+      const fetchTransactions = async () => {
+        try {
+          const response = await axiosInstance.get(`search/jigyosyo-transaction/?_jigyosyo_code=${mainData.jigyosyoCode}`);
+          setFetchedData(response.data);
+        } catch (error) {
+          console.error("Error fetching transactions:", error);
+        }
+      };
+
+      fetchTransactions();
+    }
+  }, [mainData]);
 
   const drawerStyle = {
     width: "85vw",
