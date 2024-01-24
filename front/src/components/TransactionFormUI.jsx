@@ -20,14 +20,21 @@ import {
   AUXILIARY_FIELDS,
 } from "@/constants/transaction-fields";
 import CustomDropdown from "../components/CustomDropdown";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CustomTextField from "@/components/CustomTextField";
-import initialFormData from "@/constants/initialFormData"
+import initialFormData from "@/constants/initialFormData";
+import submitJigyosyoTransaction from "@/utilities/submitJigyosyoTransaction";
+import createJigyosyoTransactionField from "@/utilities/createJigyosyoTransactionField";
 
-
-
-function JigyosyoTransactionEdit() {
+const TransactionFormUI = (
+  requestMethod,
+  handleSearch,
+  handleSearchResultSelect
+) => {
   const [formData, setFormData] = useState(initialFormData);
+  const [searchCode, setSearchCode] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedResult, setSelectedResult] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
@@ -35,58 +42,42 @@ function JigyosyoTransactionEdit() {
   const navigate = useNavigate();
   const theme = useTheme();
   const MINIMUM_VISIT_MEMO_LINES = 3;
-  const { id } = useParams();
 
-
-
-  useEffect(() => {
-    const fetchTransactionData = async () => {
-      try {
-        const response = await axiosInstance.get(`http://localhost:8000/api/jigyosyo-transaction/${id}`);
-        setFormData(response.data);
-      } catch (error) {
-        console.error("エラー発生:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (id) {
-      fetchTransactionData();
-    } else {
-      setIsLoading(false);
-    }
-  }, [id]);
-
-  if (isLoading) {
-    return <CircularProgress />;
-  }
-
-
-  const handleChange = (e) => {
-    const { name, value, checked, type } = e.target;
-    let newFormData = {
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    };
-
-    if (name === "visit_memo") {
-      const lineCount = value.split("\n").length;
-      const minRows = MINIMUM_VISIT_MEMO_LINES;
-      newFormData = {
-        ...newFormData,
-        visit_memo_rows: lineCount > minRows ? lineCount : minRows,
-      };
-    }
-
-    setFormData(newFormData);
+  const navigator = {
+    navigate,
+    setOpenSnackbar,
+    setSnackbarMessage,
+    setSnackbarSeverity,
   };
-
-
+  const createInputField = (field) => {
+    createJigyosyoTransactionField(field);
+  };
+  const visitMemoField = TRANSACTION_FIELDS.find(
+    (field) => field.name === "visit_memo"
+  );
+  const fileField = TRANSACTION_FIELDS.find((field) => field.type === "file");
+  const fieldsWithoutVisitMemoAndFile = TRANSACTION_FIELDS.filter(
+    (field) => field.name !== "visit_memo" && field.type !== "file"
+  );
+  const orderedFields = [
+    ...fieldsWithoutVisitMemoAndFile,
+    fileField,
+    visitMemoField,
+  ];
+  const normalFields = orderedFields.filter(
+    (field) => field.type !== "checkbox" && field.name !== "visit_memo"
+  );
+  const checkboxFields = orderedFields.filter(
+    (field) => field.type === "checkbox"
+  );
 
   return (
     <div style={{ position: "relative" }}>
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={(e) =>
+          submitJigyosyoTransaction(requestMethod)(e, formData, navigator)
+        }
+      >
         <Grid
           container
           justifyContent="space-around"
@@ -199,5 +190,6 @@ function JigyosyoTransactionEdit() {
       </form>
     </div>
   );
-}
-export default JigyosyoTransactionEdit;
+};
+
+export default TransactionFormUI;
