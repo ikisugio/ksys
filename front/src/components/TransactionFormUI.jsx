@@ -14,6 +14,10 @@ import {
   InputLabel,
   FormControl,
   CircularProgress,
+  Typography,
+  Paper,
+  Box,
+  Switch,
 } from "@mui/material";
 import {
   TRANSACTION_FIELDS,
@@ -256,15 +260,15 @@ const TransactionFormUI = ({
       case "checkbox":
         return (
           <FormControlLabel
-            key={field.name}
             control={
-              <Checkbox
+              <Switch
                 name={field.name}
                 checked={!!formData[field.name]}
                 onChange={handleChange}
               />
             }
             label={field.label}
+            style={{ marginTop: "1em", marginBottom: "1em" }}
           />
         );
       default:
@@ -309,6 +313,32 @@ const TransactionFormUI = ({
 
     setFormData(newFormData);
   };
+
+  const groupCheckboxFields = () => {
+    const checkboxFields = TRANSACTION_FIELDS.filter(
+      (field) => field.type === "checkbox"
+    );
+    const groupedFields = {};
+
+    checkboxFields.forEach((field) => {
+      const mLabel = field.mLabelGroup || "未分類";
+      const sLabel = field.sLabelGroup || "未分類";
+
+      if (!groupedFields[mLabel]) {
+        groupedFields[mLabel] = {};
+      }
+
+      if (!groupedFields[mLabel][sLabel]) {
+        groupedFields[mLabel][sLabel] = [];
+      }
+
+      groupedFields[mLabel][sLabel].push(field);
+    });
+
+    return groupedFields;
+  };
+
+  const checkboxGroups = groupCheckboxFields();
 
   return (
     <div style={{ position: "relative" }}>
@@ -372,22 +402,70 @@ const TransactionFormUI = ({
               </Grid>
 
               {/* チェックボックスフィールド */}
-              <Grid
-                container
-                spacing={1}
-                justifyContent="flex-end"
-                style={{ paddingTop: "1.5em", paddingBottom: "1em" }}
-              >
-                <Grid item xs={5.8}>
-                  {checkboxFields
-                    .filter((_, index) => index % 2 === 0)
-                    .map(createInputField)}
-                </Grid>
-                <Grid item xs={5.8}>
-                  {checkboxFields
-                    .filter((_, index) => index % 2 !== 0)
-                    .map(createInputField)}
-                </Grid>
+              <Grid container item xs={12} spacing={2}>
+                {Object.entries(checkboxGroups).map(
+                  ([mLabelGroup, sLabelGroups], index) => {
+                    const isSpecialGroup =
+                      mLabelGroup === "雇用管理に係る支援" ||
+                      mLabelGroup === "能力開発に係る支援";
+
+                    return (
+                      <Grid key={mLabelGroup} item xs={isSpecialGroup ? 6 : 12}>
+                        <Box
+                          style={{
+                            margin: "10px 0",
+                            padding: "15px",
+                            border: "1px solid lightgrey",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          <Typography
+                            variant="h6"
+                            style={{ fontWeight: "bold", marginBottom: "10px" }}
+                          >
+                            {mLabelGroup}
+                          </Typography>
+                          {Object.entries(sLabelGroups).map(
+                            ([sLabelGroup, fields], sIndex) => (
+                              <Box key={sLabelGroup}>
+                                {sIndex > 0 && (
+                                  <hr style={{ margin: "10px 0" }} />
+                                )}{" "}
+                                {/* 中項目間の仕切り線 */}
+                                <Typography
+                                  variant="subtitle1"
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginLeft: "0.3em",
+                                  }}
+                                >
+                                  {sLabelGroup}
+                                </Typography>
+                                <Grid container spacing={1}>
+                                  {fields.map((field) => (
+                                    <Grid item xs={6} key={field.name}>
+                                      <FormControlLabel
+                                        control={
+                                          <Switch
+                                            name={field.name}
+                                            checked={!!formData[field.name]}
+                                            onChange={handleChange}
+                                          />
+                                        }
+                                        label={field.label}
+                                        style={{ marginLeft: "0.5em" }}
+                                      />
+                                    </Grid>
+                                  ))}
+                                </Grid>
+                              </Box>
+                            )
+                          )}
+                        </Box>
+                      </Grid>
+                    );
+                  }
+                )}
               </Grid>
             </Grid>
 
@@ -400,12 +478,12 @@ const TransactionFormUI = ({
           style={{
             position: "absolute",
             bottom: 15,
-            left: 0, // 左端に配置
-            right: 0, // 右端に配置
+            left: 0,
+            right: 0,
             display: "flex",
-            justifyContent: "space-between", // 左右にボタンを寄せる
+            justifyContent: "space-between",
             alignItems: "center",
-            padding: "0 50px", // 左右に余白を設定
+            padding: "0 50px",
           }}
         >
           {/* 検索ボタン */}
@@ -414,18 +492,9 @@ const TransactionFormUI = ({
           </Button>
 
           {/* 保存ボタン */}
-          <IconButton
-            type="submit"
-            color="primary"
-            style={{
-              borderRadius: "5%",
-              backgroundColor: theme.palette.primary.main,
-              fontSize: "large",
-            }}
-          >
-            <span style={{ padding: "0 0.2em", color: "white" }}>保存</span>
-            <SaveIcon style={{ paddingRight: "0.1em", color: "white" }} />
-          </IconButton>
+          <Button type="submit" variant="contained" color="primary">
+            保存
+          </Button>
         </div>
       </form>
     </div>
