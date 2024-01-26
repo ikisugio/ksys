@@ -33,3 +33,8 @@ HOUJIN_TYPE_CHOICES = [
     ("municipality", "市町村等公共機関"),
     ("koushu_member", "講習等参加者"),
 ]
+JIGYOSYO_INFO_CHOICES = [
+    ("under_fifty", "５０人以下"),
+    ("before_establishment", "開業前"),
+    ("within_three_establishment", "開業３年未満"),
+]

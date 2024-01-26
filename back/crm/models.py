@@ -90,9 +90,7 @@ class Jigyosyo(models.Model, SaveUserMixin):
     kourou_jigyosyo_url = models.CharField(max_length=255, null=True, blank=True)
     kourou_release_datetime = models.DateTimeField(null=True, blank=True)
     number_of_member = models.PositiveIntegerField(null=True, blank=True)
-    exists_koyou_sekininsha = models.BooleanField(null=True, blank=True)
-    is_use_kaigo_machine_subsidy = models.BooleanField(null=True, blank=True)
-    is_use_other_subsidy = models.BooleanField(null=True, blank=True)
+    koyoukanri_sekinin_status = models.CharField(max_length=255, null=True, blank=True)
 
     history = HistoricalRecords()
     objects = CustomHistoryManager()
@@ -140,14 +138,27 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
     file = models.FileField(null=True, blank=True)
     history = HistoricalRecords()
 
+    support_means = models.CharField(
+        max_length=100, choices=constants.SUPPORT_MEANS_CHOICES, null=True, blank=True
+    )
     keikei_kubun = models.CharField(
         max_length=100, choices=constants.KEIKEI_KUBUN_CHOICES, null=True, blank=True
     )
     support_status = models.CharField(
         max_length=100, choices=constants.SUPPORT_STATUS_CHOICES, null=True, blank=True
     )
-    support_means = models.CharField(
-        max_length=100, choices=constants.SUPPORT_MEANS_CHOICES, null=True, blank=True
+    is_under_fifty = models.BooleanField(null=True, blank=True, verbose_name="５０人以下")
+    is_before_establishment = models.BooleanField(
+        null=True, blank=True, verbose_name="開業前"
+    )
+    is_within_three_years_since_estabrishment = models.BooleanField(
+        null=True, blank=True, verbose_name="開業３年未満"
+    )
+    exists_koyoukanri = models.BooleanField(
+        null=True, blank=True, verbose_name="雇用管理責任者の有無"
+    )
+    exists_sekininkousyu = models.BooleanField(
+        null=True, blank=True, verbose_name="責任者講習経験者の有無"
     )
     is_recruiting_on_hw = models.BooleanField(
         null=True, blank=True, verbose_name="ＨＷに募集中"
@@ -310,9 +321,9 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
     _jigyosyo_kourou_url = models.CharField(max_length=255, null=True, blank=True)
     _jigyosyo_kourou_release_datetime = models.DateTimeField(null=True, blank=True)
     _jigyosyo_number_of_member = models.PositiveIntegerField(null=True, blank=True)
-    _jigyosyo_exists_koyou_sekininsha = models.BooleanField(null=True, blank=True)
-    _jigyosyo_is_use_kaigo_machine_subsidy = models.BooleanField(null=True, blank=True)
-    _jigyosyo_is_use_other_subsidy = models.BooleanField(null=True, blank=True)
+    _jigyosyo_koyoukanri_sekinin_status = models.CharField(
+        max_length=255, null=True, blank=True
+    )
 
     def __str__(self):
         return f"訪問履歴: {(self._jigyosyo_name if self._jigyosyo_name else 'No Jigyosyo')} - {self.visit_date.strftime('%Y-%m-%d')}"

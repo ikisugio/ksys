@@ -30,19 +30,23 @@ function CustomLoadingOverlay() {
 
 const dummyData = dummyTransactionDataLong;
 
-const MyDataGrid = ({ rows, columns, loading, transformDataForDisplay }) => {
+const MyDataGrid = ({
+  rows,
+  columns,
+  loading,
+  transformDataForDisplay,
+  DrawerContent,
+  onDrawerOpen,
+  ...rest
+}) => {
   const theme = useTheme();
-  const [selectedRow, setSelectedRow] = useState(null);
   const [mainData, setMainData] = useState(null);
   const [drawerWidth, setDrawerWidth] = useState(DETAIL_VIEW_WIDTH_RATIO);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleRowClick = (params) => {
-    const transformedRowData = transformDataForDisplay(params.row);
-    const { jigyosyoCode, jigyosyoCustomeCode } = params.row;
-    const mainData = { jigyosyoCode, jigyosyoCustomeCode }
-    setSelectedRow(transformedRowData);
-    setMainData(mainData)
+    setSelectedRow(params.row);
     setIsDrawerOpen(true);
   };
 
@@ -176,16 +180,19 @@ const MyDataGrid = ({ rows, columns, loading, transformDataForDisplay }) => {
         {selectedRow && (
           <Drawer
             anchor="right"
-            open={Boolean(selectedRow)}
-            onClose={() => setSelectedRow(null)}
+            open={isDrawerOpen}
+            onClose={handleDrawerClose}
           >
-            <DrawerButton
-              isOpen={Boolean(selectedRow)}
-              leftData={selectedRow}
-              rightData={dummyData}
-              mainData={mainData}
-              onClose={() => setSelectedRow(null)}
-            />
+            <div style={{ width: "80vw", maxWidth: "80vw" }}>
+              {DrawerContent ? (
+                <DrawerContent selectedRowData={selectedRow} />
+              ) : (
+                <div style={{ padding: "1em" }}>
+                  <h3>Row Details</h3>
+                  <div>{JSON.stringify(selectedRow, null, 2)}</div>
+                </div>
+              )}
+            </div>
           </Drawer>
         )}
       </div>

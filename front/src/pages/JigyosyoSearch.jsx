@@ -3,14 +3,14 @@ import { Box, Chip, Menu, MenuItem } from "@mui/material";
 import axiosInstance from "@/services/axios";
 import { API_URL } from "@/constants/urls";
 import MyDataGrid from "@/components/MyDataGrid";
+import DrawerButton from "@/components/DrawerButton";
 import SearchBar from "@/components/SearchBar";
 import SliderFilter from "@/components/SliderFilter";
 import Drawer from "@mui/material/Drawer";
 import { searchDataColumns } from "@/constants/columns";
 import { dummyTransactionData } from "@/constants/dummy";
 import { filterLabels } from "@/constants/labels";
-
-const transactionData = dummyTransactionData;
+import TransactionViewerByJigyosyo from "@/components/TransactionViewerByJigyosyo";
 
 const JigyosyoSearch = () => {
   const [data, setData] = useState([]);
@@ -20,15 +20,6 @@ const JigyosyoSearch = () => {
 
   const handleFilterSelect = (filterValue) => {
     console.log("Selected Filter: ", filterValue);
-  };
-
-  const handleRowClick = (params) => {
-    console.log("tokc");
-    setSelectedRow(params.row);
-    if (params.row) {
-      setSelectedRow(params.row);
-      console.log("Transformed data: ", transformDataForDisplay(params.row));
-    }
   };
 
   const fetchData = (searchTerm) => {
@@ -70,10 +61,6 @@ const JigyosyoSearch = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  };
-
-  const handleSearchChange = (event) => {
-    setQuery(event.target.value);
   };
 
   const handleSearchSubmit = (event) => {
@@ -171,8 +158,8 @@ const JigyosyoSearch = () => {
           rows={data}
           columns={searchDataColumns}
           loading={isLoading}
-          onRowClick={handleRowClick}
           transformDataForDisplay={transformDataForDisplay}
+          DrawerContent={TransactionViewerByJigyosyo}
         />
         {/* {selectedRow && (
           <DrawerButton

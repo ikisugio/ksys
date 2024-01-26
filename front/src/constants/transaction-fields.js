@@ -409,7 +409,10 @@ export const TRANSACTION_FIELDS = [
     isDisplay: true,
     type: "checkbox",
   },
-];
+].map((field) => ({
+  ...field,
+  groupId: field.sLabelGroup || field.groupId,
+}));
 
 export const AUXILIARY_FIELDS = [
   {
@@ -512,4 +515,7 @@ export const AUXILIARY_FIELDS = [
     isDisplay: true,
     type: "checkbox",
   },
-];
+].map((field) => ({
+  ...field,
+  groupId: field.sLabelGroup || field.groupId,
+}));

@@ -39,6 +39,8 @@ const JigyosyoTransactionList = () => {
     fetchTransactions();
   }, []);
 
+  console.log("TRANSACTION_FIELDS", TRANSACTION_FIELDS);
+
   const convertValueToLabel = (value, choices) => {
     const choice = choices.find((choice) => choice.value === value);
     return choice ? choice.label : value;
@@ -72,7 +74,6 @@ const JigyosyoTransactionList = () => {
             item.support_means,
             SUPPORT_MEANS_CHOICES
           ),
-          // その他の変換が必要なフィールドも同様に変換
         }));
         setTransactions(formattedData);
       })
@@ -129,13 +130,13 @@ const JigyosyoTransactionList = () => {
         <>
           <IconButton
             onClick={() => handleDeleteClick(params.row)}
-            style={{ color: "rgba(200, 10, 50, 0.6)" }} // 削除ボタンは赤色
+            style={{ color: "rgba(200, 100, 130, 0.9)" }}
           >
             <DeleteIcon />
           </IconButton>
           <IconButton
             onClick={() => handleEdit(params.row)}
-            style={{ color: "rgba(20, 150, 60, 0.6)" }} // 編集ボタンは緑色
+            style={{ color: "rgba(140, 200, 100, 0.9)" }}
           >
             <EditIcon />
           </IconButton>
@@ -160,10 +161,17 @@ const JigyosyoTransactionList = () => {
         <DialogTitle>削除確認</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {`事業所名: ${transactionToDelete?._jigyosyo_name || ""}, 訪問日: ${
-              transactionToDelete?.visit_date || ""
-            }`}
-            を削除してもよろしいですか？
+            {`事業所名: ${transactionToDelete?._jigyosyo_name || ""}`}
+          </DialogContentText>
+          <DialogContentText>
+            {`訪問日: ${transactionToDelete?.visit_date || ""}`}
+          </DialogContentText>
+          <DialogContentText>
+            {`訪問メモ: ${transactionToDelete?.visit_memo || ""}`}
+          </DialogContentText>
+          <DialogContentText>
+            <br />
+            {`こちらを削除してもよろしいですか？`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

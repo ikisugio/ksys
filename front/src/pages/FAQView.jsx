@@ -1,10 +1,12 @@
-import DrawerButton from "@/components/DrawerButton";
+import DrawerButton from "@/components/TransactionViewerByJigyosyo";
+import TransactionViewerByJigyosyo from "../components/TransactionViewerByJigyosyo";
 
 const FaqView = () => {
   return (
-    <div>
-      <DrawerButton></DrawerButton>
-    </div>
+    <TransactionViewerByJigyosyo
+      transaction={"transacttion test"}
+      arg1={"test arg111"}
+    ></TransactionViewerByJigyosyo>
   );
 };
 
