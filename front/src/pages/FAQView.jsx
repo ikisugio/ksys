@@ -1,13 +1,12 @@
-import DrawerButton from "@/components/TransactionViewerByJigyosyo";
-import TransactionViewerByJigyosyo from "../components/TransactionViewerByJigyosyo";
+import a from "@/constants/TRANSACTION_LIST_FIELDS";
 
-const FaqView = () => {
+const FAQView = () => {
+  console.log(a)
   return (
-    <TransactionViewerByJigyosyo
-      transaction={"transacttion test"}
-      arg1={"test arg111"}
-    ></TransactionViewerByJigyosyo>
-  );
-};
+    <div>
+      aiueo
+    </div>
+  )
+}
 
-export default FaqView;
+export default FAQView

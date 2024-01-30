@@ -16,6 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axiosInstance from "@/services/axios";
 import { API_URL } from "@/constants/urls";
+import TRANSACTION_LIST_FIELDS from "@/constants/TRANSACTION_LIST_FIELDS";
 import MyDataGrid from "@/components/MyDataGrid";
 import {
   TRANSACTION_FIELDS,
@@ -48,9 +49,9 @@ const JigyosyoTransactionList = () => {
 
   const renderBooleanCell = (params) => {
     if (params.value === true) {
-      return <CheckCircleOutlineIcon color="success" />; // trueの場合はチェックマーク
+      return <CheckCircleOutlineIcon color="success" />;
     } else if (params.value === false || params.value === undefined) {
-      return <RemoveCircleOutlineIcon color="disabled" />; // falseまたはundefinedの場合はヘルプアイコン
+      return <RemoveCircleOutlineIcon color="disabled" />;
     }
   };
 
@@ -143,20 +144,19 @@ const JigyosyoTransactionList = () => {
         </>
       ),
     },
-    ...TRANSACTION_FIELDS.concat(AUXILIARY_FIELDS)
-      .filter((field) => field.name !== "management")
-      .map((field) => ({
-        field: field.name,
-        headerName: field.label,
-        width: 150,
-        type: field.type,
-        renderCell: renderBooleanCell,
-      })),
+    ...TRANSACTION_LIST_FIELDS.filter(
+      (object) => object.field !== "actions"
+    ).map((field) => ({
+      ...field,
+      renderCell: field.type === "checkbox" ? renderBooleanCell : undefined,
+    })),
   ];
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
       <MyDataGrid rows={transactions} columns={columns} loading={isLoading} />
+      {console.log("TRANSACTIONS: ", transactions)}
+      {console.log("COLUMNS: ", columns)}
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>削除確認</DialogTitle>
         <DialogContent>

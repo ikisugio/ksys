@@ -6,19 +6,19 @@ import {
 
 export const TRANSACTION_FIELDS = [
   // CharField, DateField, TextField, FileField
-  {
-    name: "management",
-    label: "管理",
-    isDisplay: true,
-    type: "select",
-    options: KEIKEI_KUBUN_CHOICES,
-  },
+
   { name: "visit_date", label: "訪問日", isDisplay: true, type: "date" },
   { name: "visit_memo", label: "訪問メモ", isDisplay: true, type: "text" },
   { name: "file", label: "ファイル", isDisplay: true, type: "file" },
-  { name: "history", label: "履歴", isDisplay: true, type: "text" },
 
   // CharField with choices
+  {
+    name: "support_means",
+    label: "支援方法",
+    isDisplay: true,
+    type: "select",
+    options: SUPPORT_MEANS_CHOICES,
+  },
   {
     name: "keikei_kubun",
     label: "系型区分",
@@ -33,15 +33,43 @@ export const TRANSACTION_FIELDS = [
     type: "select",
     options: SUPPORT_STATUS_CHOICES,
   },
-  {
-    name: "support_means",
-    label: "支援方法",
-    isDisplay: true,
-    type: "select",
-    options: SUPPORT_MEANS_CHOICES,
-  },
 
   // BooleanField
+  {
+    name: "is_under_fifty",
+    label: "５０人以下",
+    isDisplay: true,
+    type: "checkbox",
+    sLabelGroup: "事業所情報",
+  },
+  {
+    name: "is_before_establishment",
+    label: "開業前",
+    isDisplay: true,
+    type: "checkbox",
+    sLabelGroup: "事業所情報",
+  },
+  {
+    name: "is_within_three_years_since_estabrishment",
+    label: "開業三年未満",
+    isDisplay: true,
+    type: "checkbox",
+    sLabelGroup: "事業所情報",
+  },
+  {
+    name: "is_dedicated",
+    label: "専任済み",
+    isDisplay: true,
+    type: "checkbox",
+    sLabelGroup: "雇用管理責任者",
+  },
+  {
+    name: "is_participated",
+    label: "過去に受講者有",
+    isDisplay: true,
+    type: "checkbox",
+    sLabelGroup: "雇用管理責任者",
+  },
   {
     name: "is_recruiting_on_hw",
     label: "ＨＷに募集中",
@@ -427,6 +455,7 @@ export const AUXILIARY_FIELDS = [
     isDisplay: true,
     type: "text",
   },
+  { name: "_company_name", label: "法人名", isDisplay: true, type: "text" },
   { name: "_jigyosyo_name", label: "事業所名", isDisplay: true, type: "text" },
   {
     name: "_company_type",
@@ -460,20 +489,20 @@ export const AUXILIARY_FIELDS = [
   },
   {
     name: "_jigyosyo_repr_name",
-    label: "事業所代表者名",
+    label: "代表者名",
     isDisplay: true,
     type: "text",
   },
   {
     name: "_jigyosyo_repr_position",
     label: "事業所代表者役職",
-    isDisplay: true,
+    isDisplay: false,
     type: "text",
   },
   {
     name: "_jigyosyo_kourou_url",
     label: "厚生労働省URL",
-    isDisplay: true,
+    isDisplay: false,
     type: "text",
   },
   {
@@ -485,7 +514,7 @@ export const AUXILIARY_FIELDS = [
   {
     name: "_jigyosyo_number_of_member",
     label: "職員数",
-    isDisplay: true,
+    isDisplay: false,
     type: "text",
   },
   {
@@ -505,7 +534,7 @@ export const AUXILIARY_FIELDS = [
   },
   {
     name: "_management_description",
-    label: "事業所管理情報",
+    label: "雇用管理者専任状況",
     isDisplay: true,
     type: "text",
   },

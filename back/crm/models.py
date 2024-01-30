@@ -154,6 +154,10 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
     is_within_three_years_since_estabrishment = models.BooleanField(
         null=True, blank=True, verbose_name="開業３年未満"
     )
+    is_dedicated = models.BooleanField(null=True, blank=True, verbose_name="専任済み")
+    is_participated = models.BooleanField(
+        null=True, blank=True, verbose_name="過去に受講者あり"
+    )
     exists_koyoukanri = models.BooleanField(
         null=True, blank=True, verbose_name="雇用管理責任者の有無"
     )
@@ -381,3 +385,22 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
                 )
 
         super().save(*args, **kwargs)
+
+
+class TransactionStaffDetail(models.Model):
+    transaction = models.ForeignKey(
+        JigyosyoTransaction, on_delete=models.CASCADE, related_name="staff_details"
+    )
+    staff_name = models.CharField(max_length=255, verbose_name="スタッフ名")
+    POSITION_CHOICES = (
+        ("branch_manager", "支部長"),
+        ("instructor", "インストラクター"),
+        ("advisor", "アドバイザー"),
+        ("other", "その他"),
+    )
+    position = models.CharField(
+        max_length=50, choices=POSITION_CHOICES, verbose_name="役職"
+    )
+
+    def __str__(self):
+        return f"{self.staff_name} ({self.position}) - {self.transaction}"

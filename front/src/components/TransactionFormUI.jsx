@@ -26,8 +26,11 @@ import {
 import CustomDropdown from "../components/CustomDropdown";
 import { useNavigate } from "react-router-dom";
 import CustomTextField from "@/components/CustomTextField";
+import StaffDetailInput from "@/components/StaffDetailInput";
 import INITIAL_FORM_DATA from "@/constants/initialFormData";
 import submitJigyosyoTransaction from "@/utilities/submitJigyosyoTransaction";
+
+const initialStaffDetails = [{ staff_name: "", position: "" }];
 
 const TransactionFormUI = ({
   requestMethod,
@@ -38,6 +41,7 @@ const TransactionFormUI = ({
   console.log("id", id);
   console.log("initialData", initialFormData);
   const [formData, setFormData] = useState(initialFormData);
+  const [staffDetails, setStaffDetails] = useState(initialStaffDetails);
   const [searchCode, setSearchCode] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
@@ -388,6 +392,12 @@ const TransactionFormUI = ({
             xs={7}
             style={{ padding: "0 3em", height: "100%", overflow: "auto" }}
           >
+            <Grid item xs={12}>
+              <StaffDetailInput
+                staffDetails={staffDetails}
+                setStaffDetails={setStaffDetails}
+              />
+            </Grid>
             <Grid container spacing={2}>
               {/* 通常の入力フィールドを2つのサブカラムに分割 */}
               <Grid item xs={6}>
