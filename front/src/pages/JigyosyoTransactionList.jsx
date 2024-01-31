@@ -41,6 +41,7 @@ const JigyosyoTransactionList = () => {
   }, []);
 
   console.log("TRANSACTION_FIELDS", TRANSACTION_FIELDS);
+  console.log("transactions", transactions);
 
   const convertValueToLabel = (value, choices) => {
     const choice = choices.find((choice) => choice.value === value);
@@ -131,13 +132,13 @@ const JigyosyoTransactionList = () => {
         <>
           <IconButton
             onClick={() => handleDeleteClick(params.row)}
-            style={{ color: "rgba(200, 100, 130, 0.9)" }}
+            // style={{ color: "rgba(100, 30, 40, 0.5)" }}
           >
             <DeleteIcon />
           </IconButton>
           <IconButton
             onClick={() => handleEdit(params.row)}
-            style={{ color: "rgba(140, 200, 100, 0.9)" }}
+            // style={{ color: "rgba(30, 100, 50, 0.5)" }}
           >
             <EditIcon />
           </IconButton>

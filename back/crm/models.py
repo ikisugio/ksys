@@ -36,7 +36,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, SaveUserMixin):
 
 class Company(models.Model, SaveUserMixin):
     company_code = models.CharField(max_length=255, null=True, blank=True, unique=True)
-    shubetsu = models.CharField(max_length=255, null=True, blank=True)
+    type = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     name_kana = models.CharField(max_length=255, null=True, blank=True)
     postal_code = models.CharField(max_length=255, null=True, blank=True)
@@ -154,9 +154,17 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
     is_within_three_years_since_estabrishment = models.BooleanField(
         null=True, blank=True, verbose_name="開業３年未満"
     )
-    is_dedicated = models.BooleanField(null=True, blank=True, verbose_name="専任済み")
+    is_dedicated = models.BooleanField(
+        null=True, blank=True, verbose_name="雇用管理責任者選任の有無"
+    )
     is_participated = models.BooleanField(
-        null=True, blank=True, verbose_name="過去に受講者あり"
+        null=True, blank=True, verbose_name="責任者講習受講の有無"
+    )
+    is_use_kaigo_machine_subsidy = models.BooleanField(
+        null=True, blank=True, verbose_name="介護機器助成金の使用"
+    )
+    is_use_other_subsidy = models.BooleanField(
+        null=True, blank=True, verbose_name="その他の助成金の使用"
     )
     exists_koyoukanri = models.BooleanField(
         null=True, blank=True, verbose_name="雇用管理責任者の有無"
@@ -246,11 +254,17 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
     koyou_care_services_inform = models.BooleanField(
         null=True, blank=True, verbose_name="介護サービスの情報"
     )
-    koyou_workplace_environment_consult = models.BooleanField(
-        null=True, blank=True, verbose_name="職場環境の相談"
+    koyou_workplace_environment_philosophy_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="職場環境（理念）の相談"
     )
-    koyou_workplace_environment_inform = models.BooleanField(
-        null=True, blank=True, verbose_name="職場環境の情報"
+    koyou_workplace_environment_philosophy_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="職場環境（理念）の情報"
+    )
+    koyou_workplace_environment_ict_consult = models.BooleanField(
+        null=True, blank=True, verbose_name="職場環境（ICT）の相談"
+    )
+    koyou_workplace_environment_ict_inform = models.BooleanField(
+        null=True, blank=True, verbose_name="職場環境（ICT）の情報"
     )
     koyou_skill_development_consult = models.BooleanField(
         null=True, blank=True, verbose_name="能力開発の相談"
@@ -314,17 +328,40 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
 
     _jigyosyo_code = models.CharField(max_length=255, null=True, blank=True)
     _jigyosyo_custom_code = models.CharField(max_length=255, null=True, blank=True)
-    _jigyosyo_type = models.CharField(max_length=255, null=True, blank=True)
+    _company_name = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name="法人名"
+    )
     _jigyosyo_name = models.CharField(max_length=255, null=True, blank=True)
+    _jigyosyo_type = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name="サービス種別"
+    )
+    _company_type = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name="法人種別"
+    )
+    _jigyosyo_number_of_member = models.PositiveIntegerField(
+        null=True, blank=True, verbose_name="職員数"
+    )
+    _jigyosyo_established_date = models.DateField(
+        null=True, blank=True, verbose_name="事業所開業日"
+    )
+    _jigyosyo_address = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name="事業所住所"
+    )
+    _jigyosyo_tel_number = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name="事業所電話番号"
+    )
+    _jigyosyo_repr_name = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name="事業所代表者名"
+    )
+    _management_koyoukanri_memo = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name="雇用管理者専任状況"
+    )
+
     _jigyosyo_postal_code = models.CharField(max_length=255, null=True, blank=True)
-    _jigyosyo_address = models.CharField(max_length=255, null=True, blank=True)
-    _jigyosyo_tel_number = models.CharField(max_length=255, null=True, blank=True)
     _jigyosyo_fax_number = models.CharField(max_length=255, null=True, blank=True)
-    _jigyosyo_repr_name = models.CharField(max_length=255, null=True, blank=True)
     _jigyosyo_repr_position = models.CharField(max_length=255, null=True, blank=True)
     _jigyosyo_kourou_url = models.CharField(max_length=255, null=True, blank=True)
     _jigyosyo_kourou_release_datetime = models.DateTimeField(null=True, blank=True)
-    _jigyosyo_number_of_member = models.PositiveIntegerField(null=True, blank=True)
     _jigyosyo_koyoukanri_sekinin_status = models.CharField(
         max_length=255, null=True, blank=True
     )

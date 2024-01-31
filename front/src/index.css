@@ -19,3 +19,14 @@ label {
 .wave-hover:hover {
   animation: wave 0.6s ease-in-out;
 }
+
+@media print {
+  .datagrid-container {
+    overflow: visible;
+    width: auto;
+  }
+  .datagrid {
+    width: 100% !important;
+    table-layout: auto !important;
+  }
+}

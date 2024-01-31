@@ -82,7 +82,10 @@ const MyDataGrid = ({
         height: "73vh",
       }}
     >
-      <div style={{ width: "90vw", overflowX: "auto" }}>
+      <div
+        style={{ width: "90vw", overflowX: "auto" }}
+        className="datagrid-container"
+      >
         <style>
           {`
           ::-webkit-scrollbar {
@@ -112,6 +115,7 @@ const MyDataGrid = ({
         </div>
         <div style={{ height: "calc(100% - 13px)" }}>
           <DataGrid
+            className="datagrid"
             resizableColumns={true}
             localeText={jaJP.components.MuiDataGrid.defaultProps.localeText}
             rows={rows}

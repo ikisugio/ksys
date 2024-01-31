@@ -323,10 +323,11 @@ const TransactionFormUI = ({
       (field) => field.type === "checkbox"
     );
     const groupedFields = {};
+    const NON_EXISTS_STRING = "";
 
     checkboxFields.forEach((field) => {
-      const mLabel = field.mLabelGroup || "未分類";
-      const sLabel = field.sLabelGroup || "未分類";
+      const mLabel = field.mLabelGroup || NON_EXISTS_STRING;
+      const sLabel = field.sLabelGroup || NON_EXISTS_STRING;
 
       if (!groupedFields[mLabel]) {
         groupedFields[mLabel] = {};
@@ -343,6 +344,7 @@ const TransactionFormUI = ({
   };
 
   const checkboxGroups = groupCheckboxFields();
+  console.log("formData", formData);
 
   return (
     <div style={{ position: "relative" }}>
@@ -416,8 +418,8 @@ const TransactionFormUI = ({
                 {Object.entries(checkboxGroups).map(
                   ([mLabelGroup, sLabelGroups], index) => {
                     const isSpecialGroup =
-                      mLabelGroup === "雇用管理に係る支援" ||
-                      mLabelGroup === "能力開発に係る支援";
+                      mLabelGroup === "雇用管理に係る支援（全員入力）" ||
+                      mLabelGroup === "アドバイザーによる支援";
 
                     return (
                       <Grid key={mLabelGroup} item xs={isSpecialGroup ? 6 : 12}>
