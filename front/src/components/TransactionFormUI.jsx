@@ -25,6 +25,7 @@ import {
 } from "@/constants/transaction-fields";
 import CustomDropdown from "../components/CustomDropdown";
 import { useNavigate } from "react-router-dom";
+import ManagementDisplayTable from "@/components/ManagementDisplayTable";
 import CustomTextField from "@/components/CustomTextField";
 import StaffDetailInput from "@/components/StaffDetailInput";
 import INITIAL_FORM_DATA from "@/constants/initialFormData";
@@ -346,6 +347,15 @@ const TransactionFormUI = ({
   const checkboxGroups = groupCheckboxFields();
   console.log("formData", formData);
 
+  const formatDataForTable = (fields, formData) => {
+    return fields
+      .filter(field => field.isDisplay)
+      .map(field => ({
+        label: field.label,
+        value: formData[field.name] || '',
+      }));
+  };
+
   return (
     <div style={{ position: "relative" }}>
       <form
@@ -371,20 +381,19 @@ const TransactionFormUI = ({
             item
             xs={5}
             style={{
-              padding: "0 3em",
+              padding: "2em 1em",
               height: "100%",
               overflowY: "auto",
               overflowX: "hidden",
               direction: "rtl",
               borderRight: "2px solid lightgrey",
+              overflow: "visible",
             }}
           >
-            <div style={{ direction: "ltr" }}>
-              {" "}
-              {/* 内容は LTR 方向性 */}
-              {AUXILIARY_FIELDS.filter((field) => field.isDisplay).map(
-                createInputField
-              )}
+            <div style={{ direction: "ltr"}}> {/* 内容はLTR方向性 */}
+              <ManagementDisplayTable
+                data={formatDataForTable(AUXILIARY_FIELDS, formData)}
+              />
             </div>
           </Grid>
 
@@ -392,7 +401,7 @@ const TransactionFormUI = ({
           <Grid
             item
             xs={7}
-            style={{ padding: "0 3em", height: "100%", overflow: "auto" }}
+            style={{ padding: "2em", height: "100%", overflow: "auto", margin: "0" }}
           >
             <Grid item xs={12}>
               <StaffDetailInput

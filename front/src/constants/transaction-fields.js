@@ -444,12 +444,6 @@ export const TRANSACTION_FIELDS = [
 
 export const AUXILIARY_FIELDS = [
   {
-    name: "search_field",
-    label: "検索",
-    isDisplay: true,
-    type: "text",
-  },
-  {
     name: "_jigyosyo_code",
     label: "事業所コード",
     isDisplay: true,
@@ -457,7 +451,7 @@ export const AUXILIARY_FIELDS = [
   },
   {
     name: "_jigyosyo_custom_code",
-    label: "支部独自コード",
+    label: "独自コード",
     isDisplay: true,
     type: "text",
   },
@@ -538,21 +532,21 @@ export const AUXILIARY_FIELDS = [
   {
     name: "_jigyosyo_exists_koyou_sekininsha",
     label: "事業所に雇用責任者が存在するか",
-    isDisplay: true,
+    isDisplay: false,
   },
   {
     name: "_jigyosyo_is_use_kaigo_machine_subsidy",
     label: "介護機器助成金の使用",
-    isDisplay: true,
+    isDisplay: false,
   },
   {
     name: "_jigyosyo_is_use_other_subsidy",
     label: "その他の助成金の使用",
-    isDisplay: true,
+    isDisplay: false,
   },
   {
     name: "_management_description",
-    label: "雇用管理者専任状況",
+    label: "専任状況",
     isDisplay: true,
     type: "text",
   },
@@ -565,4 +559,4 @@ export const AUXILIARY_FIELDS = [
 ].map((field) => ({
   ...field,
   groupId: field.sLabelGroup || field.groupId,
-}));
+})).filter(field => field.isDisplay);

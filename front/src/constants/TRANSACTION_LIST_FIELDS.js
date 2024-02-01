@@ -537,7 +537,7 @@ const TRANSACTION_LIST_FIELDS = [
   },
   {
     field: "_management_is_sanjo",
-    headerName: "賛助会員",
+    headerName: "賛助会員番号",
     width: 150,
     type: "checkbox",
     isDisplay: false,
