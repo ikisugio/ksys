@@ -45,6 +45,7 @@ const TransactionFormUI = ({
   console.log("initialData", initialFormData);
   const [formData, setFormData] = useState(initialFormData);
   const [staffDetails, setStaffDetails] = useState(initialStaffDetails);
+  const [isOpenCustomDropdown, setIsOpenCustomDropdown] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
@@ -73,8 +74,10 @@ const TransactionFormUI = ({
       );
       console.log("responsedata =>", response.data);
       setSearchResults(response.data);
+      setIsOpenCustomDropdown(true);
     } catch (error) {
       console.error("APIからデータを取得中にエラーが発生しました:", error);
+      setIsOpenCustomDropdown(false);
     }
   };
 
@@ -83,22 +86,11 @@ const TransactionFormUI = ({
   }
 
   const handleSearchResultSelect = (selected) => {
-    let updatedFormData = { ...formData };
-    console.log("updateFormData:", updatedFormData);
-    console.log("selected:", selected);
+    const updatedFormData = { 
+      ...formData,
 
-    updatedFormData["_jigyosyo_code"] = selected.jigyosyo_code;
-    updatedFormData["_jigyosyo_custom_code"] = selected.custom_code;
-    updatedFormData["_jigyosyo_name"] = selected.name;
-    updatedFormData["_jigyosyo_postal_code"] = selected.postal_code;
-    updatedFormData["_jigyosyo_address"] = selected.address;
-    updatedFormData["_jigyosyo_tel_number"] = selected.tel_number;
-    updatedFormData["_jigyosyo_fax_number"] = selected.fax_number;
-    updatedFormData["_jigyosyo_repr_name"] = selected.repr_name;
-    updatedFormData["_jigyosyo_repr_position"] = selected.repr_position;
-    updatedFormData["_jigyosyo_kourou_url"] = selected.kourou_jigyosyo_url;
-    updatedFormData["_jigyosyo_kourou_release_datetime"] =
-      selected.kourou_release_datetime;
+    };
+    console.log("selected:", selected);
 
     if (selected.company) {
       updatedFormData["companyName"] = selected.company.name;
@@ -106,7 +98,7 @@ const TransactionFormUI = ({
     }
 
     setFormData(updatedFormData);
-    setSearchResults([]);
+    setIsOpenCustomDropdown(false);
   };
 
   const createInputField = (field) => {
@@ -386,36 +378,39 @@ const TransactionFormUI = ({
           }}
         >
           <div style={{ direction: "ltr" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", marginBottom: "20px" }}>
-              <TextField
-                id="searchField"
-                label="検索"
-                variant="outlined"
-                style={{ flexGrow: 1, marginRight: "1em", marginTop: "0", marginBottom: "0", borderRadius: "5em"}}
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                InputProps={{
-                  style: {
-                    height: "40px",
-                    padding: '0 14px',
-                  },
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleSearch} edge="end">
-                        <SearchIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                InputLabelProps={{
-                  style: { lineHeight: "1em", top: "-0.25em" },
-                }}
-              />
+            <div className="flex items-center gap-2 mb-4">
+              <div style={{ position: 'relative' }}>
+                <TextField
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleSearch}>
+                          <SearchIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                {isOpenCustomDropdown && (
+                  <CustomDropdown
+                    options={searchResults}
+                    onSelect={handleSearchResultSelect}
+                    style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      right: 0,
+                      zIndex: 1000,
+                    }}
+                  />
+                )}
+              </div>
+
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleSearch}
-                style={{ height: "40px", width: "auto", marginRight: "1em" }}
+                className="px-4"
               >
                 検索
               </Button>
@@ -423,7 +418,7 @@ const TransactionFormUI = ({
                 variant="contained"
                 color="success"
                 onClick={handleModify}
-                style={{ height: "40px", width: "auto", backgroundColor: "#66BB66" }}
+                className="px-4 bg-green-500"
               >
                 修正
               </Button>

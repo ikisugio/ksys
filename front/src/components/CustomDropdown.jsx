@@ -1,55 +1,36 @@
 import { useState, useRef, useEffect } from "react";
 
-const CustomDropdown = ({ options, onSelect, isOpen, setIsOpen }) => {
-  const maxItemsToShow = 8;
-  const itemHeight = 40;
-  const [hoveredItem, setHoveredItem] = useState(null);
-  const dropdownRef = useRef(null);
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [setIsOpen]);
-
+const CustomDropdown = ({ options, onSelect, isOpen }) => {
   return (
-    <div ref={dropdownRef}>
+    <div>
       {isOpen && options.length > 0 && (
-        <ul
-          style={{
-            listStyleType: "none",
-            padding: 0,
-            margin: 0,
-            position: "absolute",
-            backgroundColor: "#fff",
-            boxShadow: "0",
-            width: "100%",
-            maxHeight: `${maxItemsToShow * itemHeight}px`,
-            overflowY: options.length > maxItemsToShow ? "scroll" : "hidden",
-            border: "1px solid lightgray",
-            borderRadius: "4px",
-            zIndex: 1000,
-          }}
-        >
-          {options.map((option) => (
+        <ul style={{
+          listStyleType: "none",
+          padding: 0,
+          margin: 0,
+          position: "absolute",
+          backgroundColor: "#fff",
+          border: "1px solid lightgray",
+          borderRadius: "4px",
+          zIndex: 1000,
+          width: "100%", // 必要に応じて調整
+          maxHeight: "200px", // 適宜調整
+          overflowY: "auto"
+        }}>
+          {options.map((option, index) => (
             <li
-              key={option.id}
+              key={index}
               onClick={() => onSelect(option)}
-              onMouseEnter={() => setHoveredItem(option.id)}
-              onMouseLeave={() => setHoveredItem(null)}
               style={{
                 padding: "10px",
                 cursor: "pointer",
-                backgroundColor:
-                  hoveredItem === option.id ? "lightgray" : "#fff",
+                backgroundColor: "#fff",
+                "&:hover": {
+                  backgroundColor: "lightgray",
+                }
               }}
             >
-              {option.name} ({option.jigyosyo_code})
+              {option.label}
             </li>
           ))}
         </ul>
@@ -57,5 +38,6 @@ const CustomDropdown = ({ options, onSelect, isOpen, setIsOpen }) => {
     </div>
   );
 };
+
 
 export default CustomDropdown;
