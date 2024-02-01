@@ -8,7 +8,7 @@ export const TRANSACTION_FIELDS = [
   // CharField, DateField, TextField, FileField
 
   { name: "visit_date", label: "訪問日", isDisplay: true, type: "date" },
-  { name: "visit_memo", label: "訪問メモ", isDisplay: true, type: "text" },
+  { name: "visit_memo", label: "支援内容・把握した課題等", isDisplay: true, type: "text" },
   { name: "file", label: "ファイル", isDisplay: true, type: "file" },
 
   // CharField with choices
@@ -58,14 +58,14 @@ export const TRANSACTION_FIELDS = [
   },
   {
     name: "is_dedicated",
-    label: "専任済み",
+    label: "選任済み",
     isDisplay: true,
     type: "checkbox",
     sLabelGroup: "雇用管理責任者",
   },
   {
     name: "is_participated",
-    label: "過去に受講者有",
+    label: "過去に受講経験あり",
     isDisplay: true,
     type: "checkbox",
     sLabelGroup: "雇用管理責任者",
@@ -169,14 +169,14 @@ export const TRANSACTION_FIELDS = [
   {
     name: "with_alone_on_hw",
     label: "単独",
-    sLabelGroup: "労働局・ＨＷからの情報提供",
+    sLabelGroup: "労働局・ＨＷから情報を受けて実施した訪問",
     isDisplay: true,
     type: "checkbox",
   },
   {
     name: "with_staff_on_hw",
     label: "同行",
-    sLabelGroup: "労働局・ＨＷからの情報提供",
+    sLabelGroup: "労働局・ＨＷから情報を受けて実施した訪問",
     isDisplay: true,
     type: "checkbox",
   },
@@ -464,12 +464,6 @@ export const AUXILIARY_FIELDS = [
     type: "text",
   },
   {
-    name: "_company_type",
-    label: "法人種別",
-    isDisplay: true,
-    type: "text",
-  },
-  {
     name: "_jigyosyo_number_of_member",
     label: "職員数",
     isDisplay: true,
@@ -501,7 +495,7 @@ export const AUXILIARY_FIELDS = [
   },
   {
     name: "_jigyosyo_fax_number",
-    label: "FAX番号",
+    label: "ＦＡＸ番号",
     isDisplay: false,
     type: "text",
   },
@@ -519,7 +513,7 @@ export const AUXILIARY_FIELDS = [
   },
   {
     name: "_jigyosyo_kourou_url",
-    label: "厚生労働省URL",
+    label: "厚生労働省ＵＲＬ",
     isDisplay: false,
     type: "text",
   },
@@ -546,7 +540,7 @@ export const AUXILIARY_FIELDS = [
   },
   {
     name: "_management_description",
-    label: "専任状況",
+    label: "選任状況",
     isDisplay: true,
     type: "text",
   },

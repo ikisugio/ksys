@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "@/services/axios";
+import InputAdornment from '@mui/material/InputAdornment';
 import SaveIcon from "@mui/icons-material/Save";
+import SearchIcon from '@mui/icons-material/Search';
 import { useTheme } from "@mui/material/styles";
 import {
   TextField,
@@ -43,7 +45,7 @@ const TransactionFormUI = ({
   console.log("initialData", initialFormData);
   const [formData, setFormData] = useState(initialFormData);
   const [staffDetails, setStaffDetails] = useState(initialStaffDetails);
-  const [searchCode, setSearchCode] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -62,13 +64,8 @@ const TransactionFormUI = ({
   };
 
   const handleSearch = async (e) => {
-    const jigyosyoCode = formData["_jigyosyo_code"];
-    const jigyosyoName = formData["_jigyosyo_name"];
-    const jigyosyoAddress = formData["_jigyosyo_address"];
-    console.log("jigyosyocode : ", jigyosyoCode);
-    console.log("e is =>", jigyosyoCode);
-    const query = jigyosyoCode || jigyosyoName || jigyosyoAddress;
-    console.log("query is", query);
+    const query = searchText
+    console.log("handle search", query)
 
     try {
       const response = await axiosInstance.get(
@@ -80,6 +77,10 @@ const TransactionFormUI = ({
       console.error("APIからデータを取得中にエラーが発生しました:", error);
     }
   };
+
+  const handleModify = () => {
+    console.log("modify")
+  }
 
   const handleSearchResultSelect = (selected) => {
     let updatedFormData = { ...formData };
@@ -357,7 +358,7 @@ const TransactionFormUI = ({
   };
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{marginTop: "1em"}}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -368,40 +369,76 @@ const TransactionFormUI = ({
           container
           justifyContent="space-around"
           style={{
-            height: "80vh",
-            overflow: "hidden",
-            marginLeft: "0",
-            marginBottom: "4em",
-            paddingBottom: "1em",
-            borderBottom: "1px solid lightgrey",
+            height: "90vh",
           }}
         >
           {/* 左カラム */}
-          <Grid
-            item
-            xs={5}
-            style={{
-              padding: "2em 1em",
-              height: "100%",
-              overflowY: "auto",
-              overflowX: "hidden",
-              direction: "rtl",
-              borderRight: "2px solid lightgrey",
-              overflow: "visible",
-            }}
-          >
-            <div style={{ direction: "ltr"}}> {/* 内容はLTR方向性 */}
-              <ManagementDisplayTable
-                data={formatDataForTable(AUXILIARY_FIELDS, formData)}
+        <Grid
+          item
+          xs={5}
+          style={{
+            padding: "1em 2em",
+            height: "100%",
+            overflowY: "auto",
+            overflowX: "hidden",
+            borderRight: "2px solid lightgrey",
+            overflow: "visible",
+          }}
+        >
+          <div style={{ direction: "ltr" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", marginBottom: "20px" }}>
+              <TextField
+                id="searchField"
+                label="検索"
+                variant="outlined"
+                style={{ flexGrow: 1, marginRight: "1em", marginTop: "0", marginBottom: "0", borderRadius: "5em"}}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                InputProps={{
+                  style: {
+                    height: "40px",
+                    padding: '0 14px',
+                  },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleSearch} edge="end">
+                        <SearchIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                InputLabelProps={{
+                  style: { lineHeight: "1em", top: "-0.25em" },
+                }}
               />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSearch}
+                style={{ height: "40px", width: "auto", marginRight: "1em" }}
+              >
+                検索
+              </Button>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleModify}
+                style={{ height: "40px", width: "auto", backgroundColor: "#66BB66" }}
+              >
+                修正
+              </Button>
             </div>
-          </Grid>
+            <ManagementDisplayTable
+              data={formatDataForTable(AUXILIARY_FIELDS, formData)}
+            />
+          </div>
+        </Grid>
 
           {/* 右カラム */}
           <Grid
             item
             xs={7}
-            style={{ padding: "2em", height: "100%", overflow: "auto", margin: "0" }}
+            style={{ padding: "1em 2em", height: "100%", overflow: "auto", margin: "0" }}
           >
             <Grid item xs={12}>
               <StaffDetailInput
@@ -492,31 +529,11 @@ const TransactionFormUI = ({
 
             {/* visit_memo フィールド */}
             {createInputField(visitMemoField)}
+            <Button type="submit" variant="contained" color="primary" style={{ marginTop: "20px" }}>
+              保存
+            </Button>
           </Grid>
         </Grid>
-
-        <div
-          style={{
-            position: "absolute",
-            bottom: 15,
-            left: 0,
-            right: 0,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "0 50px",
-          }}
-        >
-          {/* 検索ボタン */}
-          <Button variant="contained" color="primary" onClick={handleSearch}>
-            検索
-          </Button>
-
-          {/* 保存ボタン */}
-          <Button type="submit" variant="contained" color="primary">
-            保存
-          </Button>
-        </div>
       </form>
     </div>
   );
