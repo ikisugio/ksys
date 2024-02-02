@@ -13,14 +13,14 @@ const CustomDropdown = ({ options, onSelect, isOpen }) => {
           border: "1px solid lightgray",
           borderRadius: "4px",
           zIndex: 1000,
-          width: "100%", // 必要に応じて調整
-          maxHeight: "200px", // 適宜調整
+          width: "100%",
+          maxHeight: "200px",
           overflowY: "auto"
         }}>
           {options.map((option, index) => (
             <li
               key={index}
-              onClick={() => onSelect(option)}
+              onClick={() => onSelect(option.value)}
               style={{
                 padding: "10px",
                 cursor: "pointer",

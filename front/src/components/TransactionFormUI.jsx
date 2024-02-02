@@ -35,6 +35,21 @@ import submitJigyosyoTransaction from "@/utilities/submitJigyosyoTransaction";
 
 const initialStaffDetails = [{ staff_name: "", position: "" }];
 
+const initialTableItems = [
+  { label: "事業所コード", value: "", name: "jigyosyo_code" },
+  { label: "独自コード", value: "", name: "custom_code" },
+  { label: "法人名", value: "", name: "company.name" },
+  { label: "事業所名", value: "", name: "name" },
+  { label: "サービス種別", value: "", name: "type" },
+  { label: "職員数", value: "", name: "number_of_member" },
+  { label: "開業日", value: "", name: "established_date" },
+  { label: "住所", value: "", name: "address" },
+  { label: "電話番号", value: "", name: "tel_number" },
+  { label: "代表者名", value: "", name: "repr_name" },
+  { label: "選任状況", value: "", name: "koyoukanri_sekinin_status" },
+  { label: "賛助会員", value: "", name: "supporting_member" }
+];
+
 const TransactionFormUI = ({
   requestMethod,
   id,
@@ -44,9 +59,11 @@ const TransactionFormUI = ({
   console.log("id", id);
   console.log("initialData", initialFormData);
   const [formData, setFormData] = useState(initialFormData);
+  const [tableItems, setTableItems] = useState(initialTableItems);
   const [staffDetails, setStaffDetails] = useState(initialStaffDetails);
   const [isOpenCustomDropdown, setIsOpenCustomDropdown] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [searchFormattedResults, setSearchFormattedResults] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -55,7 +72,7 @@ const TransactionFormUI = ({
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const theme = useTheme();
-  const MINIMUM_VISIT_MEMO_LINES = 3;
+  const MINIMUM_VISIT_MEMO_LINES = 10;
 
   const navigator = {
     navigate,
@@ -72,7 +89,13 @@ const TransactionFormUI = ({
       const response = await axiosInstance.get(
         `http://localhost:8000/api/search/jigyosyo/?q=${query}`
       );
+      const formattedResults = response.data.map(item => ({
+        label: `事業所コード: ${item.company.company_code}, 事業所名: ${item.company.name}`,
+        value: item,
+      }));
       console.log("responsedata =>", response.data);
+      setSearchFormattedResults(formattedResults);
+      console.log("searchFormattedResults: ", searchFormattedResults);
       setSearchResults(response.data);
       setIsOpenCustomDropdown(true);
     } catch (error) {
@@ -86,18 +109,40 @@ const TransactionFormUI = ({
   }
 
   const handleSearchResultSelect = (selected) => {
-    const updatedFormData = { 
-      ...formData,
+    console.log("SSSSS", selected);
+    console.log("LLLLL", tableItems);
+    const updatedTableItems = tableItems.map(item => {
+      switch (item.name) {
+        case "jigyosyo_code":
+          return { ...item, value: selected.jigyosyo_code };
+        case "custom_code":
+          return { ...item, value: selected.custom_code };
+        case "company.name":
+          return { ...item, value: selected.company.name };
+        case "name":
+          return { ...item, value: selected.name };
+        case "type":
+          return { ...item, value: selected.type };
+        case "number_of_member":
+          return { ...item, value: selected.numberOfMember };
+        case "established_date":
+          return { ...item, value: selected.establishedDate };
+        case "address":
+          return { ...item, value: selected.address };
+        case "tel_number":
+          return { ...item, value: selected.tel_number };
+        case "repr_name":
+          return { ...item, value: selected.repr_name };
+        case "koyoukanri_sekinin_status":
+          return { ...item, value: selected.koyoukanri_sekinin_status };
+        case "supporting_member":
+          return { ...item, value: selected.supportingMember };
+        default:
+          return item;
+      }
+    });
 
-    };
-    console.log("selected:", selected);
-
-    if (selected.company) {
-      updatedFormData["companyName"] = selected.company.name;
-      updatedFormData["companyPostalCode"] = selected.company.postal_code;
-    }
-
-    setFormData(updatedFormData);
+    setTableItems(updatedTableItems);
     setIsOpenCustomDropdown(false);
   };
 
@@ -111,7 +156,7 @@ const TransactionFormUI = ({
             handleChange={handleChange}
           />
           <CustomDropdown
-            options={searchResults}
+            options={searchFormattedResults}
             onSelect={(selected) => {
               handleSearchResultSelect(selected);
               setSearchResults([]);
@@ -390,10 +435,13 @@ const TransactionFormUI = ({
                       </InputAdornment>
                     ),
                   }}
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
                 />
                 {isOpenCustomDropdown && (
                   <CustomDropdown
-                    options={searchResults}
+                    isOpen={isOpenCustomDropdown}
+                    options={searchFormattedResults}
                     onSelect={handleSearchResultSelect}
                     style={{
                       position: 'absolute',
@@ -424,7 +472,7 @@ const TransactionFormUI = ({
               </Button>
             </div>
             <ManagementDisplayTable
-              data={formatDataForTable(AUXILIARY_FIELDS, formData)}
+              items={tableItems}
             />
           </div>
         </Grid>

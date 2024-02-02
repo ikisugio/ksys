@@ -323,7 +323,7 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
         null=True, blank=True, verbose_name="能力開発に係るその他の情報"
     )
 
-    _management_is_sanjo = models.BooleanField(default=False)
+    _management_is_sanjo = models.BooleanField(default=False, null=True, blank=True)
     _management_description = models.CharField(max_length=200, null=True, blank=True)
 
     _jigyosyo_code = models.CharField(max_length=255, null=True, blank=True)
