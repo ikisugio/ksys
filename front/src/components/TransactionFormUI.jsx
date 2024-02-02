@@ -90,7 +90,7 @@ const TransactionFormUI = ({
         `http://localhost:8000/api/search/jigyosyo/?q=${query}`
       );
       const formattedResults = response.data.map(item => ({
-        label: `事業所コード: ${item.company.company_code}, 事業所名: ${item.company.name}`,
+        label: `事業所コード : ${item.company.company_code}\n事業所名     : ${item.company.name}`,
         value: item,
       }));
       console.log("responsedata =>", response.data);
@@ -423,9 +423,10 @@ const TransactionFormUI = ({
           }}
         >
           <div style={{ direction: "ltr" }}>
-            <div className="flex items-center gap-2 mb-4">
-              <div style={{ position: 'relative' }}>
+            <div className="flex items-center w-full gap-2 mb-4">
+              <div style={{ flexGrow: 1, position: 'relative' }}>
                 <TextField
+                  fullWidth={true}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -434,6 +435,9 @@ const TransactionFormUI = ({
                         </IconButton>
                       </InputAdornment>
                     ),
+                    inputProps: {
+                      style: { fontSize: '20px', padding: "0.4em 1.0em" }
+                    }
                   }}
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
@@ -441,6 +445,7 @@ const TransactionFormUI = ({
                 {isOpenCustomDropdown && (
                   <CustomDropdown
                     isOpen={isOpenCustomDropdown}
+                    setIsOpen={setIsOpenCustomDropdown}
                     options={searchFormattedResults}
                     onSelect={handleSearchResultSelect}
                     style={{
@@ -458,7 +463,7 @@ const TransactionFormUI = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSearch}
-                className="px-4"
+                style={{ fontSize: '1.1em' }}
               >
                 検索
               </Button>
@@ -466,7 +471,7 @@ const TransactionFormUI = ({
                 variant="contained"
                 color="success"
                 onClick={handleModify}
-                className="px-4 bg-green-500"
+                style={{ fontSize: '1.1em' }}
               >
                 修正
               </Button>

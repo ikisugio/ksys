@@ -31,6 +31,13 @@ const submitJigyosyoTransaction =
       keikei_kubun: formData.keikei_kubun || null,
       support_status: formData.support_status || null,
       support_means: formData.support_means || null,
+      is_under_fifty: formData.is_under_fifty || false,
+      is_before_establishment: formData.is_before_establishment || false,
+      is_within_three_years_since_estabrishment: formData.is_within_three_years_since_estabrishment || false,
+      is_dedicated: formData.is_dedicated || false,
+      is_participated: formData.is_participated || false,
+      is_use_kaigo_machine_subsidy: formData.is_use_kaigo_machine_subsidy || false,
+      is_use_other_subsidy: formData.is_use_other_subsidy || false,
       is_recruiting_on_hw: formData.is_recruiting_on_hw || false,
       is_recruiting_on_expect_hw: formData.is_recruiting_on_expect_hw || false,
       is_going_to_recruit: formData.is_going_to_recruit || false,
@@ -65,10 +72,14 @@ const submitJigyosyoTransaction =
       koyou_care_services_consult:
         formData.koyou_care_services_consult || false,
       koyou_care_services_inform: formData.koyou_care_services_inform || false,
-      koyou_workplace_environment_consult:
-        formData.koyou_workplace_environment_consult || false,
-      koyou_workplace_environment_inform:
-        formData.koyou_workplace_environment_inform || false,
+      koyou_workplace_environment_philosophy_consult:
+        formData.koyou_workplace_environment_philosophy_consult || false,
+      koyou_workplace_environment_philosophy_inform:
+        formData.koyou_workplace_environment_philosophy_inform || false,
+      koyou_workplace_environment_ict_consult:
+        formData.koyou_workplace_environment_ict_consult || false,
+      koyou_workplace_environment_ict_inform:
+        formData.koyou_workplace_environment_ict_inform || false,
       koyou_skill_development_consult:
         formData.koyou_skill_development_consult || false,
       koyou_skill_development_inform:
