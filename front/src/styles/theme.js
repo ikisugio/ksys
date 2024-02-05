@@ -3,7 +3,12 @@ import { createTheme } from "@mui/material";
 export const customTheme = createTheme({
   palette: {
     primary: {
-      main: "rgba(120, 100, 255, 0.7)",
+      main: "rgba(120, 100, 200, 0.7)",
+      contrastText: "#fff",
+    },
+    success: {
+      main: "rgba(50, 150, 80, 0.7)",
+      contrastText: "#fff",
     },
   },
   components: {

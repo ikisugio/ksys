@@ -70,7 +70,7 @@ const MyDataGrid = ({
     ...columns,
   ];
 
-  const hoveredColor = alpha(theme.palette.primary.main, 0.8);
+  const hoveredColor = alpha(theme.palette.primary.main, 0.6);
   const selectedColor = alpha(theme.palette.primary.main, 0.3);
 
   return (

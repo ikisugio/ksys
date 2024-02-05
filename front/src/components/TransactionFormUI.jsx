@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "@/services/axios";
-import InputAdornment from '@mui/material/InputAdornment';
+import InputAdornment from "@mui/material/InputAdornment";
 import SaveIcon from "@mui/icons-material/Save";
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
 import { useTheme } from "@mui/material/styles";
 import {
   TextField,
@@ -47,7 +47,7 @@ const initialTableItems = [
   { label: "電話番号", value: "", name: "tel_number" },
   { label: "代表者名", value: "", name: "repr_name" },
   { label: "選任状況", value: "", name: "koyoukanri_sekinin_status" },
-  { label: "賛助会員", value: "", name: "supporting_member" }
+  { label: "賛助会員", value: "", name: "supporting_member" },
 ];
 
 const TransactionFormUI = ({
@@ -82,14 +82,14 @@ const TransactionFormUI = ({
   };
 
   const handleSearch = async (e) => {
-    const query = searchText
-    console.log("handle search", query)
+    const query = searchText;
+    console.log("handle search", query);
 
     try {
       const response = await axiosInstance.get(
         `http://localhost:8000/api/search/jigyosyo/?q=${query}`
       );
-      const formattedResults = response.data.map(item => ({
+      const formattedResults = response.data.map((item) => ({
         label: `事業所コード : ${item.company.company_code}\n事業所名     : ${item.company.name}`,
         value: item,
       }));
@@ -105,13 +105,13 @@ const TransactionFormUI = ({
   };
 
   const handleModify = () => {
-    console.log("modify")
-  }
+    console.log("modify");
+  };
 
   const handleSearchResultSelect = (selected) => {
     console.log("SSSSS", selected);
     console.log("LLLLL", tableItems);
-    const updatedTableItems = tableItems.map(item => {
+    const updatedTableItems = tableItems.map((item) => {
       switch (item.name) {
         case "jigyosyo_code":
           return { ...item, value: selected.jigyosyo_code };
@@ -387,15 +387,15 @@ const TransactionFormUI = ({
 
   const formatDataForTable = (fields, formData) => {
     return fields
-      .filter(field => field.isDisplay)
-      .map(field => ({
+      .filter((field) => field.isDisplay)
+      .map((field) => ({
         label: field.label,
-        value: formData[field.name] || '',
+        value: formData[field.name] || "",
       }));
   };
 
   return (
-    <div style={{marginTop: "1em"}}>
+    <div style={{ marginTop: "1em" }}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -410,83 +410,84 @@ const TransactionFormUI = ({
           }}
         >
           {/* 左カラム */}
-        <Grid
-          item
-          xs={5}
-          style={{
-            padding: "1em 2em",
-            height: "100%",
-            overflowY: "auto",
-            overflowX: "hidden",
-            borderRight: "2px solid lightgrey",
-            overflow: "visible",
-          }}
-        >
-          <div style={{ direction: "ltr" }}>
-            <div className="flex items-center w-full gap-2 mb-4">
-              <div style={{ flexGrow: 1, position: 'relative' }}>
-                <TextField
-                  fullWidth={true}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={handleSearch}>
-                          <SearchIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                    inputProps: {
-                      style: { fontSize: '20px', padding: "0.4em 1.0em" }
-                    }
-                  }}
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                />
-                {isOpenCustomDropdown && (
-                  <CustomDropdown
-                    isOpen={isOpenCustomDropdown}
-                    setIsOpen={setIsOpenCustomDropdown}
-                    options={searchFormattedResults}
-                    onSelect={handleSearchResultSelect}
-                    style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      right: 0,
-                      zIndex: 1000,
+          <Grid
+            item
+            xs={5}
+            style={{
+              padding: "1em 2em",
+              height: "100%",
+              overflowY: "auto",
+              overflowX: "hidden",
+              borderRight: "2px solid lightgrey",
+              overflow: "visible",
+            }}
+          >
+            <div style={{ direction: "ltr" }}>
+              <div className="flex items-center w-full gap-2 mb-4">
+                <div style={{ flexGrow: 1, position: "relative" }}>
+                  <TextField
+                    fullWidth={true}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleSearch}>
+                            <SearchIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      inputProps: {
+                        style: { fontSize: "20px", padding: "0.4em 1.0em" },
+                      },
                     }}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
                   />
-                )}
-              </div>
+                  {isOpenCustomDropdown && (
+                    <CustomDropdown
+                      isOpen={isOpenCustomDropdown}
+                      setIsOpen={setIsOpenCustomDropdown}
+                      options={searchFormattedResults}
+                      onSelect={handleSearchResultSelect}
+                      style={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        right: 0,
+                        zIndex: 1000,
+                      }}
+                    />
+                  )}
+                </div>
 
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSearch}
-                style={{ fontSize: '1.1em' }}
-              >
-                検索
-              </Button>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleModify}
-                style={{ fontSize: '1.1em' }}
-              >
-                修正
-              </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSearch}
+                >
+                  検索
+                </Button>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={handleModify}
+                >
+                  修正
+                </Button>
+              </div>
+              <ManagementDisplayTable items={tableItems} />
             </div>
-            <ManagementDisplayTable
-              items={tableItems}
-            />
-          </div>
-        </Grid>
+          </Grid>
 
           {/* 右カラム */}
           <Grid
             item
             xs={7}
-            style={{ padding: "1em 2em", height: "100%", overflow: "auto", margin: "0" }}
+            style={{
+              padding: "1em 2em",
+              height: "100%",
+              overflow: "auto",
+              margin: "0",
+            }}
           >
             <Grid item xs={12}>
               <StaffDetailInput
@@ -577,7 +578,12 @@ const TransactionFormUI = ({
 
             {/* visit_memo フィールド */}
             {createInputField(visitMemoField)}
-            <Button type="submit" variant="contained" color="primary" style={{ marginTop: "20px" }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              style={{ marginTop: "20px" }}
+            >
               保存
             </Button>
           </Grid>

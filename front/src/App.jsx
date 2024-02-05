@@ -1,5 +1,5 @@
-import { useState } from "react";
 import AppRoutes from "@/routes/AppRoutes";
+import { useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 import {
   MainContent,
@@ -8,10 +8,10 @@ import {
 } from "@/styles/component-styleds";
 import SideBar from "./components/SideBar";
 import { ThemeProvider } from "@mui/material";
-import "./App.css";
 import { customTheme } from "@/styles/theme";
 import AppBar from "@/components/AppBar";
 import { AuthProvider } from "@/hooks/AuthContext";
+import "./App.css";
 
 function App() {
   const [, setLoggedIn] = useState(false);

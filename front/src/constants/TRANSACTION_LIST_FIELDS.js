@@ -87,12 +87,14 @@ const TRANSACTION_LIST_FIELDS = [
     field: "is_use_kaigo_machine_subsidy",
     headerName: "介護機器助成金の使用",
     width: 170,
+    type: "checkbox",
     isDisplay: true,
   },
   {
     field: "is_use_other_subsidy",
     headerName: "その他の助成金の使用",
     width: 150,
+    type: "checkbox",
     isDisplay: true,
   },
   {

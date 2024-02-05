@@ -18,10 +18,6 @@ import axiosInstance from "@/services/axios";
 import { API_URL } from "@/constants/urls";
 import TRANSACTION_LIST_FIELDS from "@/constants/TRANSACTION_LIST_FIELDS";
 import MyDataGrid from "@/components/MyDataGrid";
-import {
-  TRANSACTION_FIELDS,
-  AUXILIARY_FIELDS,
-} from "@/constants/transaction-fields";
 import { useNavigate } from "react-router-dom";
 import {
   KEIKEI_KUBUN_CHOICES,
@@ -39,9 +35,6 @@ const JigyosyoTransactionList = () => {
   useEffect(() => {
     fetchTransactions();
   }, []);
-
-  console.log("TRANSACTION_FIELDS", TRANSACTION_FIELDS);
-  console.log("transactions", transactions);
 
   const convertValueToLabel = (value, choices) => {
     const choice = choices.find((choice) => choice.value === value);
