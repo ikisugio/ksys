@@ -147,7 +147,9 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
     support_status = models.CharField(
         max_length=100, choices=constants.SUPPORT_STATUS_CHOICES, null=True, blank=True
     )
-    is_under_fifty = models.BooleanField(null=True, blank=True, verbose_name="５０人以下")
+    is_under_fifty = models.BooleanField(
+        null=True, blank=True, verbose_name="５０人以下"
+    )
     is_before_establishment = models.BooleanField(
         null=True, blank=True, verbose_name="開業前"
     )
@@ -160,11 +162,14 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
     is_participated = models.BooleanField(
         null=True, blank=True, verbose_name="責任者講習受講の有無"
     )
-    is_use_kaigo_machine_subsidy = models.BooleanField(
-        null=True, blank=True, verbose_name="介護機器助成金の使用"
-    )
-    is_use_other_subsidy = models.BooleanField(
-        null=True, blank=True, verbose_name="その他の助成金の使用"
+    # is_use_kaigo_machine_subsidy = models.BooleanField(
+    #     null=True, blank=True, verbose_name="介護機器助成金の使用"
+    # )
+    # is_use_other_subsidy = models.BooleanField(
+    #     null=True, blank=True, verbose_name="助成金の活用状況"
+    # )
+    is_use_subsidy = models.BooleanField(
+        null=True, blank=True, verbose_name="助成金の活用状況"
     )
     exists_koyoukanri = models.BooleanField(
         null=True, blank=True, verbose_name="雇用管理責任者の有無"
@@ -255,16 +260,16 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
         null=True, blank=True, verbose_name="介護サービスの情報"
     )
     koyou_workplace_environment_philosophy_consult = models.BooleanField(
-        null=True, blank=True, verbose_name="職場環境（理念）の相談"
+        null=True, blank=True, verbose_name="理念・教育・環境の相談"
     )
     koyou_workplace_environment_philosophy_inform = models.BooleanField(
-        null=True, blank=True, verbose_name="職場環境（理念）の情報"
+        null=True, blank=True, verbose_name="理念・教育・環境の情報"
     )
     koyou_workplace_environment_ict_consult = models.BooleanField(
-        null=True, blank=True, verbose_name="職場環境（ICT）の相談"
+        null=True, blank=True, verbose_name="生産性向上（ICT）の相談"
     )
     koyou_workplace_environment_ict_inform = models.BooleanField(
-        null=True, blank=True, verbose_name="職場環境（ICT）の情報"
+        null=True, blank=True, verbose_name="生産性向上（ICT）の情報"
     )
     koyou_skill_development_consult = models.BooleanField(
         null=True, blank=True, verbose_name="能力開発の相談"

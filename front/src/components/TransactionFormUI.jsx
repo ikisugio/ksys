@@ -143,6 +143,26 @@ const TransactionFormUI = ({
     });
 
     setTableItems(updatedTableItems);
+
+    const updatedFormData = {
+      ...formData,
+      _jigyosyo_code: selected.jigyosyo_code,
+      _custom_code: selected.custom_code,
+      _company_name: selected.company.name,
+      _jigyosyo_name: selected.name,
+      _jigyosyo_type: selected.type,
+      _jigyosyo_number_of_member: selected._jigyosyo_number_of_member,
+      _jigyosyo_established_date: select._jigyosyo_established_date,
+      _jigyosyo_address: selected.address,
+      _jigyosyo_tel_number: selected.tel_number,
+      _jigyosyo_repr_name: selected.repr_name,
+      _management_koyoukanri_memo: selected._management_koyoukanri_memo,
+      _management_is_sanjo: selected._management_is_sanjo
+    };
+
+    setFormData(updatedFormData);
+    console.log("FFFFFFFFFFFFFFFFF", formData)
+
     setIsOpenCustomDropdown(false);
   };
 
@@ -353,7 +373,7 @@ const TransactionFormUI = ({
         visit_memo_rows: lineCount > minRows ? lineCount : minRows,
       };
     }
-
+    console.log("NEW_FORM_DATA", newFormData)
     setFormData(newFormData);
   };
 

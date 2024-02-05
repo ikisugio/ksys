@@ -13,6 +13,8 @@ const submitJigyosyoTransaction =
 
     const dataToSubmit = {
       _jigyosyo_code: formData._jigyosyo_code,
+      _custom_code: formData._jigyosyo_custom_code,
+      _company_name: formData._company_name,
       _jigyosyo_postal_code: formData._jigyosyo_postal_code || null,
       _jigyosyo_address: formData._jigyosyo_address || null,
       _jigyosyo_tel_number: formData._jigyosyo_tel_number || null,
@@ -23,6 +25,7 @@ const submitJigyosyoTransaction =
       _jigyosyo_kourou_release_datetime:
         formData._jigyosyo_kourou_release_datetime || null,
       _jigyosyo_name: formData._jigyosyo_name,
+      _jigyosyo_established_date: formData._jigyosyo_established_date
       // management: formData.management || null,
       visit_date: formData.visit_date || null,
       visit_memo: formData.visit_memo || null,
@@ -36,8 +39,9 @@ const submitJigyosyoTransaction =
       is_within_three_years_since_estabrishment: formData.is_within_three_years_since_estabrishment || false,
       is_dedicated: formData.is_dedicated || false,
       is_participated: formData.is_participated || false,
-      is_use_kaigo_machine_subsidy: formData.is_use_kaigo_machine_subsidy || false,
-      is_use_other_subsidy: formData.is_use_other_subsidy || false,
+      // is_use_kaigo_machine_subsidy: formData.is_use_kaigo_machine_subsidy || false,
+      // is_use_other_subsidy: formData.is_use_other_subsidy || false,
+      is_use_subsidy: formData.is_use_subsidy || false,
       is_recruiting_on_hw: formData.is_recruiting_on_hw || false,
       is_recruiting_on_expect_hw: formData.is_recruiting_on_expect_hw || false,
       is_going_to_recruit: formData.is_going_to_recruit || false,
@@ -112,6 +116,7 @@ const submitJigyosyoTransaction =
         formData.noukai_other_skill_development_consult || false,
       noukai_other_skill_development_inform:
         formData.noukai_other_skill_development_inform || false,
+      _management_koyoukanri_memo: formData._management_koyoukanri_memo || null,
       _management_is_sanjo: formData._management_is_sanjo || false,
       _management_description: formData._management_description || null,
       _jigyosyo_type: formData._jigyosyo_type || null,

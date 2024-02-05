@@ -144,7 +144,12 @@ export const TRANSACTION_FIELDS = [
     isDisplay: true,
     type: "checkbox",
   },
-
+  {
+    name: "is_use_subsidy",
+    label: "助成金の活用",
+    isDisplay: true,
+    type: "checkbox",
+  },
   {
     name: "with_employment_consultant",
     label: "雇用コンサル",
@@ -528,16 +533,7 @@ export const AUXILIARY_FIELDS = [
     label: "事業所に雇用責任者が存在するか",
     isDisplay: false,
   },
-  {
-    name: "_jigyosyo_is_use_kaigo_machine_subsidy",
-    label: "介護機器助成金の使用",
-    isDisplay: false,
-  },
-  {
-    name: "_jigyosyo_is_use_other_subsidy",
-    label: "その他の助成金の使用",
-    isDisplay: false,
-  },
+
   {
     name: "_management_description",
     label: "選任状況",
