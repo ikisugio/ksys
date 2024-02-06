@@ -8,7 +8,12 @@ export const TRANSACTION_FIELDS = [
   // CharField, DateField, TextField, FileField
 
   { name: "visit_date", label: "訪問日", isDisplay: true, type: "date" },
-  { name: "visit_memo", label: "支援内容・把握した課題等", isDisplay: true, type: "text" },
+  {
+    name: "visit_memo",
+    label: "支援内容・把握した課題等",
+    isDisplay: true,
+    type: "text",
+  },
   { name: "file", label: "ファイル", isDisplay: true, type: "file" },
 
   // CharField with choices
@@ -51,7 +56,7 @@ export const TRANSACTION_FIELDS = [
   },
   {
     name: "is_within_three_years_since_estabrishment",
-    label: "開業三年未満",
+    label: "開業３年未満",
     isDisplay: true,
     type: "checkbox",
     sLabelGroup: "事業所情報",
@@ -546,7 +551,9 @@ export const AUXILIARY_FIELDS = [
     isDisplay: true,
     type: "checkbox",
   },
-].map((field) => ({
-  ...field,
-  groupId: field.sLabelGroup || field.groupId,
-})).filter(field => field.isDisplay);
+]
+  .map((field) => ({
+    ...field,
+    groupId: field.sLabelGroup || field.groupId,
+  }))
+  .filter((field) => field.isDisplay);

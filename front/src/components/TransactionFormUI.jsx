@@ -74,12 +74,56 @@ const TransactionFormUI = ({
   const theme = useTheme();
   const MINIMUM_VISIT_MEMO_LINES = 10;
 
-  const navigator = {
-    navigate,
-    setOpenSnackbar,
-    setSnackbarMessage,
-    setSnackbarSeverity,
-  };
+  useEffect(() => {
+    console.log("initialFormData", initialFormData);
+    const updatedTableItems = tableItems.map((item) => {
+      let newValue = item.value;
+
+      switch (item.name) {
+        case "jigyosyo_code":
+          newValue = initialFormData["_jigyosyo_code"] || "";
+          break;
+        case "custom_code":
+          newValue = initialFormData["_jigyosyo_custom_code"] || "";
+          break;
+        case "company.name":
+          newValue = initialFormData["_company_name"] || "";
+          break;
+        case "name":
+          newValue = initialFormData["_jigyosyo_name"] || "";
+          break;
+        case "type":
+          newValue = initialFormData["_jigyosyo_type"] || "";
+          break;
+        case "number_of_member":
+          newValue = initialFormData["_jigyosyo_number_of_member"] || "";
+          break;
+        case "established_date":
+          newValue = initialFormData["_jigyosyo_established_date"] || "";
+          break;
+        case "address":
+          newValue = initialFormData["_jigyosyo_address"] || "";
+          break;
+        case "tel_number":
+          newValue = initialFormData["_jigyosyo_tel_number"] || "";
+          break;
+        case "repr_name":
+          newValue = initialFormData["_jigyosyo_repr_name"] || "";
+          break;
+        case "koyoukanri_sekinin_status":
+          newValue = initialFormData["_management_koyoukanri_memo"] || "";
+          break;
+        case "supporting_member":
+          newValue = initialFormData["_management_is_sanjo"] || "";
+          break;
+      }
+
+      return { ...item, value: newValue };
+    });
+
+    setTableItems(updatedTableItems);
+    console.log("updatedTableItems", updatedTableItems);
+  }, [initialFormData]);
 
   const handleSearch = async (e) => {
     const query = searchText;
@@ -89,8 +133,9 @@ const TransactionFormUI = ({
       const response = await axiosInstance.get(
         `http://localhost:8000/api/search/jigyosyo/?q=${query}`
       );
+      console.log("response_data", response.data);
       const formattedResults = response.data.map((item) => ({
-        label: `事業所コード : ${item.company.company_code}\n事業所名     : ${item.company.name}`,
+        label: `事業所 : ${item.name}\n住所     : ${item.address}`,
         value: item,
       }));
       console.log("responsedata =>", response.data);
@@ -111,36 +156,42 @@ const TransactionFormUI = ({
   const handleSearchResultSelect = (selected) => {
     console.log("SSSSS", selected);
     console.log("LLLLL", tableItems);
-    const updatedTableItems = tableItems.map((item) => {
-      switch (item.name) {
-        case "jigyosyo_code":
-          return { ...item, value: selected.jigyosyo_code };
-        case "custom_code":
-          return { ...item, value: selected.custom_code };
-        case "company.name":
-          return { ...item, value: selected.company.name };
-        case "name":
-          return { ...item, value: selected.name };
-        case "type":
-          return { ...item, value: selected.type };
-        case "number_of_member":
-          return { ...item, value: selected.numberOfMember };
-        case "established_date":
-          return { ...item, value: selected.establishedDate };
-        case "address":
-          return { ...item, value: selected.address };
-        case "tel_number":
-          return { ...item, value: selected.tel_number };
-        case "repr_name":
-          return { ...item, value: selected.repr_name };
-        case "koyoukanri_sekinin_status":
-          return { ...item, value: selected.koyoukanri_sekinin_status };
-        case "supporting_member":
-          return { ...item, value: selected.supportingMember };
-        default:
-          return item;
-      }
-    });
+
+    const updatedTableItems = tableItems.map((item) => ({
+      ...item,
+      value: selected[item.name] || item.value,
+    }));
+
+    // const updatedTableItems = tableItems.map((item) => {
+    //   switch (item.name) {
+    //     case "jigyosyo_code":
+    //       return { ...item, value: selected.jigyosyo_code };
+    //     case "custom_code":
+    //       return { ...item, value: selected.custom_code };
+    //     case "company.name":
+    //       return { ...item, value: selected.company.name };
+    //     case "name":
+    //       return { ...item, value: selected.name };
+    //     case "type":
+    //       return { ...item, value: selected.type };
+    //     case "number_of_member":
+    //       return { ...item, value: selected.numberOfMember };
+    //     case "established_date":
+    //       return { ...item, value: selected.establishedDate };
+    //     case "address":
+    //       return { ...item, value: selected.address };
+    //     case "tel_number":
+    //       return { ...item, value: selected.tel_number };
+    //     case "repr_name":
+    //       return { ...item, value: selected.repr_name };
+    //     case "koyoukanri_sekinin_status":
+    //       return { ...item, value: selected.koyoukanri_sekinin_status };
+    //     case "supporting_member":
+    //       return { ...item, value: selected.supportingMember };
+    //     default:
+    //       return item;
+    //   }
+    // });
 
     setTableItems(updatedTableItems);
 
@@ -152,16 +203,16 @@ const TransactionFormUI = ({
       _jigyosyo_name: selected.name,
       _jigyosyo_type: selected.type,
       _jigyosyo_number_of_member: selected._jigyosyo_number_of_member,
-      _jigyosyo_established_date: select._jigyosyo_established_date,
+      _jigyosyo_established_date: selected._jigyosyo_established_date,
       _jigyosyo_address: selected.address,
       _jigyosyo_tel_number: selected.tel_number,
       _jigyosyo_repr_name: selected.repr_name,
       _management_koyoukanri_memo: selected._management_koyoukanri_memo,
-      _management_is_sanjo: selected._management_is_sanjo
+      _management_is_sanjo: selected._management_is_sanjo,
     };
 
     setFormData(updatedFormData);
-    console.log("FFFFFFFFFFFFFFFFF", formData)
+    console.log("FFFFFFFFFFFFFFFFF", formData);
 
     setIsOpenCustomDropdown(false);
   };
@@ -373,7 +424,7 @@ const TransactionFormUI = ({
         visit_memo_rows: lineCount > minRows ? lineCount : minRows,
       };
     }
-    console.log("NEW_FORM_DATA", newFormData)
+    console.log("NEW_FORM_DATA", newFormData);
     setFormData(newFormData);
   };
 

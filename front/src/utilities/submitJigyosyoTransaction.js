@@ -25,7 +25,7 @@ const submitJigyosyoTransaction =
       _jigyosyo_kourou_release_datetime:
         formData._jigyosyo_kourou_release_datetime || null,
       _jigyosyo_name: formData._jigyosyo_name,
-      _jigyosyo_established_date: formData._jigyosyo_established_date
+      _jigyosyo_established_date: formData._jigyosyo_established_date,
       // management: formData.management || null,
       visit_date: formData.visit_date || null,
       visit_memo: formData.visit_memo || null,
@@ -36,7 +36,8 @@ const submitJigyosyoTransaction =
       support_means: formData.support_means || null,
       is_under_fifty: formData.is_under_fifty || false,
       is_before_establishment: formData.is_before_establishment || false,
-      is_within_three_years_since_estabrishment: formData.is_within_three_years_since_estabrishment || false,
+      is_within_three_years_since_estabrishment:
+        formData.is_within_three_years_since_estabrishment || false,
       is_dedicated: formData.is_dedicated || false,
       is_participated: formData.is_participated || false,
       // is_use_kaigo_machine_subsidy: formData.is_use_kaigo_machine_subsidy || false,

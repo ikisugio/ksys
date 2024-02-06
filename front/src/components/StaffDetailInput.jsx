@@ -30,7 +30,7 @@ const StaffDetailInput = ({ staffDetails, setStaffDetails }) => {
               {/* スタッフ名の幅を調整 */}
               <TextField
                 fullWidth
-                label="スタッフ名"
+                label="訪問した職員名"
                 value={detail.staff_name}
                 onChange={(e) =>
                   handleStaffDetailChange(index, "staff_name", e.target.value)

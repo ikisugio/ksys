@@ -35,7 +35,7 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class JigyosyoSerializer(serializers.ModelSerializer):
-    company = CompanySerializer()
+    company = CompanySerializer(required=False)
 
     class Meta:
         model = Jigyosyo
@@ -43,7 +43,7 @@ class JigyosyoSerializer(serializers.ModelSerializer):
 
 
 class JigyosyoManagementSerializer(serializers.ModelSerializer):
-    jigyosyo = JigyosyoSerializer()
+    jigyosyo = JigyosyoSerializer(required=False)
 
     class Meta:
         model = JigyosyoManagement

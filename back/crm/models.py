@@ -431,9 +431,9 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
 
 class TransactionStaffDetail(models.Model):
     transaction = models.ForeignKey(
-        JigyosyoTransaction, on_delete=models.CASCADE, related_name="staff_details"
+        JigyosyoTransaction, on_delete=models.CASCADE, related_name="staff_details", blank=True, null=True,
     )
-    staff_name = models.CharField(max_length=255, verbose_name="スタッフ名")
+    staff_name = models.CharField(max_length=255, verbose_name="スタッフ名", blank=True, null=True)
     POSITION_CHOICES = (
         ("branch_manager", "支部長"),
         ("instructor", "インストラクター"),
@@ -441,7 +441,11 @@ class TransactionStaffDetail(models.Model):
         ("other", "その他"),
     )
     position = models.CharField(
-        max_length=50, choices=POSITION_CHOICES, verbose_name="役職"
+        max_length=50,
+        choices=POSITION_CHOICES,
+        verbose_name="役職",
+        blank=True,
+        null=True,
     )
 
     def __str__(self):

@@ -22,6 +22,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.http import Http404
 from django.db.models import Q
 from django.contrib.auth.models import Group
+from drf_yasg.utils import swagger_auto_schema
 
 
 class JigyosyoManagementSearchView(APIView):
@@ -70,7 +71,9 @@ class JigyosyoTransactionSearchView(APIView):
 
         if not any([query, jigyosyo_code, jigyosyo_custom_code]):
             return Response(
-                {"detail": "At least one query parameter (q, _jigyosyo_code, _jigyosyo_custom_code) is required."},
+                {
+                    "detail": "At least one query parameter (q, _jigyosyo_code, _jigyosyo_custom_code) is required."
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -91,7 +94,11 @@ class JigyosyoTransactionSearchView(APIView):
             search_criteria &= Q(_jigyosyo_custom_code=jigyosyo_custom_code)
 
         if request.user.groups.filter(name="本部").exists():
-            transactions = JigyosyoTransaction.objects.filter(search_criteria).distinct().order_by("-id")
+            transactions = (
+                JigyosyoTransaction.objects.filter(search_criteria)
+                .distinct()
+                .order_by("-id")
+            )
         else:
             group = request.user.groups.first()
             if group is None:
@@ -101,7 +108,11 @@ class JigyosyoTransactionSearchView(APIView):
                 )
             prefecture_name = group.name
             search_criteria &= Q(jigyosyo__update_user__groups__name=prefecture_name)
-            transactions = JigyosyoTransaction.objects.filter(search_criteria).distinct().order_by("-id")
+            transactions = (
+                JigyosyoTransaction.objects.filter(search_criteria)
+                .distinct()
+                .order_by("-id")
+            )
 
         serializer = JigyosyoTransactionSerializer(transactions, many=True)
         return Response(serializer.data)
@@ -115,6 +126,7 @@ class CustomUserListView(APIView):
         serializer = CustomUserSerializer(users, many=True)
         return Response(serializer.data)
 
+    @swagger_auto_schema(request_body=CustomUserSerializer)
     def post(self, request):
         serializer = CustomUserSerializer(data=request.data)
         if serializer.is_valid():
@@ -173,6 +185,7 @@ class CompanyListView(APIView):
         serializer = CompanySerializer(companies, many=True)
         return Response(serializer.data)
 
+    @swagger_auto_schema(request_body=CompanySerializer)
     def post(self, request):
         serializer = CompanySerializer(data=request.data)
         if serializer.is_valid():
@@ -250,6 +263,7 @@ class JigyosyoListView(APIView):
     #     serializer = JigyosyoSerializer(jigyosyos, many=True)
     #     return Response(serializer.data)
 
+    @swagger_auto_schema(request_body=JigyosyoSerializer)
     def post(self, request):
         serializer = JigyosyoSerializer(data=request.data)
         if serializer.is_valid():
@@ -425,6 +439,7 @@ class JigyosyoTransactionListView(APIView):
         serializer = JigyosyoTransactionSerializer(transactions, many=True)
         return Response(serializer.data)
 
+    @swagger_auto_schema(request_body=JigyosyoTransactionSerializer)
     def post(self, request):
         serializer = JigyosyoTransactionSerializer(data=request.data)
         if serializer.is_valid():
@@ -452,6 +467,7 @@ class JigyosyoTransactionDetailView(APIView):
         serializer = JigyosyoTransactionSerializer(transaction)
         return Response(serializer.data)
 
+    # @swagger_auto_schema(request_body=JigyosyoTransactionSerializer)
     def put(self, request, pk):
         transaction = self.get_object(pk)
         # if (
