@@ -157,10 +157,18 @@ const TransactionFormUI = ({
     console.log("SSSSS", selected);
     console.log("LLLLL", tableItems);
 
-    const updatedTableItems = tableItems.map((item) => ({
-      ...item,
-      value: selected[item.name] || item.value,
-    }));
+    const updatedTableItems = tableItems.map((item) => {
+      if (item.name === "company.name") {
+        return {
+          ...item,
+          value: selected.company ? selected.company.name : item.value,
+        };
+      }
+      return {
+        ...item,
+        value: selected[item.name] || item.value,
+      };
+    });
 
     // const updatedTableItems = tableItems.map((item) => {
     //   switch (item.name) {

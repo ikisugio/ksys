@@ -79,7 +79,7 @@ const StaffDetailInput = ({ staffDetails, setStaffDetails }) => {
           startIcon={<AddIcon />}
           onClick={addStaffDetail}
         >
-          スタッフの詳細を追加
+          訪問した職員を追加
         </Button>
       </div>
     </div>
