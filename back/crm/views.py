@@ -41,6 +41,7 @@ class JigyosyoManagementSearchView(APIView):
             | Q(jigyosyo_code__contains=query)
             | Q(address__contains=query)
             | Q(company__name__contains=query)
+            | Q(tel_number__contains=query)
         )
 
         if request.user.groups.filter(name="本部").exists():
