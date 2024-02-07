@@ -133,6 +133,8 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
         null=True,
         blank=True,
     )
+    visit_staff = models.JSONField(default=list, blank=True, null=True)
+    receptionist = models.JSONField(default=list, blank=True, null=True)
     visit_date = models.DateField(null=True, blank=True)
     visit_memo = models.TextField(null=True, blank=True)
     file = models.FileField(null=True, blank=True)
@@ -147,16 +149,16 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
     support_status = models.CharField(
         max_length=100, choices=constants.SUPPORT_STATUS_CHOICES, null=True, blank=True
     )
-    tool_utilization_business_manual = models.BooleanField(
+    is_tool_utilization_business_manual = models.BooleanField(
         null=True, blank=True, verbose_name="業務推進マニュアル"
     )
-    tool_utilization_check_action = models.BooleanField(
+    is_tool_utilization_check_action = models.BooleanField(
         null=True, blank=True, verbose_name="CHECK&ACTION"
     )
-    tool_utilization_shibu_document = models.BooleanField(
+    is_tool_utilization_shibu_document = models.BooleanField(
         null=True, blank=True, verbose_name="支部作成の資料"
     )
-    tool_utilization_others = models.BooleanField(
+    is_tool_utilization_others = models.BooleanField(
         null=True,
         blank=True,
         verbose_name="その他（ツール内容は「支援内容・把握した課題等」に記載）",
@@ -444,24 +446,46 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
         super().save(*args, **kwargs)
 
 
-class TransactionStaffDetail(models.Model):
-    transaction = models.ForeignKey(
-        JigyosyoTransaction,
-        on_delete=models.CASCADE,
-        related_name="staff_details",
-        blank=True,
-        null=True,
-    )
-    staff_name = models.CharField(
-        max_length=255, verbose_name="スタッフ名", blank=True, null=True
-    )
-    position = models.CharField(
-        max_length=50,
-        choices=constants.POSITION_CHOICES,
-        verbose_name="役職",
-        blank=True,
-        null=True,
-    )
+# class TransactionStaffDetail(models.Model):
+#     transaction = models.ForeignKey(
+#         JigyosyoTransaction,
+#         on_delete=models.CASCADE,
+#         related_name="staff_details",
+#         blank=True,
+#         null=True,
+#     )
+#     staff_name = models.CharField(
+#         max_length=255, verbose_name="スタッフ名", blank=True, null=True
+#     )
+#     position = models.CharField(
+#         max_length=50,
+#         choices=constants.POSITION_CHOICES,
+#         verbose_name="役職",
+#         blank=True,
+#         null=True,
+#     )
 
-    def __str__(self):
-        return f"{self.staff_name} ({self.position}) - {self.transaction}"
+#     def __str__(self):
+#         return f"{self.staff_name} ({self.position}) - {self.transaction}"
+
+
+# class TransactionReceptionistDetail(models.Model):
+#     transaction = models.ForeignKey(
+#         JigyosyoTransaction,
+#         on_delete=models.CASCADE,
+#         related_name="receptionist_details",
+#         blank=True,
+#         null=True,
+#     )
+#     staff_name = models.CharField(
+#         max_length=255, verbose_name="対応者", blank=True, null=True
+#     )
+#     position = models.CharField(
+#         max_length=50,
+#         verbose_name="役職",
+#         blank=True,
+#         null=True,
+#     )
+
+#     def __str__(self):
+#         return f"{self.staff_name} ({self.position}) - {self.transaction}"
