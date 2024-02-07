@@ -20,7 +20,7 @@ SUPPORT_MEANS_CHOICES = [
     ("koushu_sanka", "講習等参加"),
     ("koushugo_shien", "講習後支援"),
 ]
-HOUJIN_TYPE_CHOICES = [
+COMPANY_TYPE_CHOICES = [
     ("public", "会社（民間事業者）"),
     ("welfare", "社会福祉法人"),
     ("medical", "医療法人"),
@@ -37,4 +37,10 @@ JIGYOSYO_INFO_CHOICES = [
     ("under_fifty", "５０人以下"),
     ("before_establishment", "開業前"),
     ("within_three_establishment", "開業３年未満"),
+]
+POSITION_CHOICES = [
+    ("branch_manager", "支部長"),
+    ("instructor", "インストラクター"),
+    ("advisor", "アドバイザー"),
+    ("others", "その他"),
 ]

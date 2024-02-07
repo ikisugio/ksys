@@ -147,6 +147,20 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
     support_status = models.CharField(
         max_length=100, choices=constants.SUPPORT_STATUS_CHOICES, null=True, blank=True
     )
+    tool_utilization_business_manual = models.BooleanField(
+        null=True, blank=True, verbose_name="業務推進マニュアル"
+    )
+    tool_utilization_check_action = models.BooleanField(
+        null=True, blank=True, verbose_name="CHECK&ACTION"
+    )
+    tool_utilization_shibu_document = models.BooleanField(
+        null=True, blank=True, verbose_name="支部作成の資料"
+    )
+    tool_utilization_others = models.BooleanField(
+        null=True,
+        blank=True,
+        verbose_name="その他（ツール内容は「支援内容・把握した課題等」に記載）",
+    )
     is_under_fifty = models.BooleanField(
         null=True, blank=True, verbose_name="５０人以下"
     )
@@ -203,9 +217,6 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
     )
     done_knowing_problem = models.BooleanField(
         null=True, blank=True, verbose_name="課題の把握"
-    )
-    with_tool_utilization = models.BooleanField(
-        null=True, blank=True, verbose_name="ツールの活用"
     )
     with_employment_consultant = models.BooleanField(
         null=True, blank=True, verbose_name="雇用コンサルと同行"
@@ -341,7 +352,11 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
         max_length=255, null=True, blank=True, verbose_name="サービス種別"
     )
     _company_type = models.CharField(
-        max_length=255, null=True, blank=True, verbose_name="法人種別"
+        max_length=255,
+        null=True,
+        blank=True,
+        verbose_name="法人種別",
+        choices=constants.COMPANY_TYPE_CHOICES,
     )
     _jigyosyo_number_of_member = models.PositiveIntegerField(
         null=True, blank=True, verbose_name="職員数"
@@ -431,18 +446,18 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
 
 class TransactionStaffDetail(models.Model):
     transaction = models.ForeignKey(
-        JigyosyoTransaction, on_delete=models.CASCADE, related_name="staff_details", blank=True, null=True,
+        JigyosyoTransaction,
+        on_delete=models.CASCADE,
+        related_name="staff_details",
+        blank=True,
+        null=True,
     )
-    staff_name = models.CharField(max_length=255, verbose_name="スタッフ名", blank=True, null=True)
-    POSITION_CHOICES = (
-        ("branch_manager", "支部長"),
-        ("instructor", "インストラクター"),
-        ("advisor", "アドバイザー"),
-        ("other", "その他"),
+    staff_name = models.CharField(
+        max_length=255, verbose_name="スタッフ名", blank=True, null=True
     )
     position = models.CharField(
         max_length=50,
-        choices=POSITION_CHOICES,
+        choices=constants.POSITION_CHOICES,
         verbose_name="役職",
         blank=True,
         null=True,
