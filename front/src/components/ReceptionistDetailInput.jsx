@@ -1,27 +1,21 @@
 import { TextField, Button, MenuItem, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
-const ReceptionistDetailInput = ({
-  receptionistDetails,
-  setReceptionistDetails,
-}) => {
-  const addReceptionistDetail = () => {
-    setReceptionistDetails([
-      ...receptionistDetails,
-      { receptionist_name: "", position: "" },
-    ]);
+const ReceptionistDetailInput = ({ staffDetails, setStaffDetails }) => {
+  const addStaffDetail = () => {
+    setStaffDetails([...staffDetails, { staff_name: "", position: "" }]);
   };
 
-  const removeReceptionistDetail = (index) => {
-    const newDetails = [...receptionistDetails];
+  const removeStaffDetail = (index) => {
+    const newDetails = [...staffDetails];
     newDetails.splice(index, 1);
-    setReceptionistDetails(newDetails);
+    setStaffDetails(newDetails);
   };
 
-  const handleReceptionistDetailChange = (index, field, value) => {
-    const newDetails = [...receptionistDetails];
+  const handleStaffDetailChange = (index, field, value) => {
+    const newDetails = [...staffDetails];
     newDetails[index][field] = value;
-    setReceptionistDetails(newDetails);
+    setStaffDetails(newDetails);
   };
 
   return (
@@ -29,21 +23,17 @@ const ReceptionistDetailInput = ({
       {" "}
       {/* コンポーネント全体の下マージンを追加 */}
       <Grid container spacing={2}>
-        {receptionistDetails.map((detail, index) => (
+        {staffDetails.map((detail, index) => (
           <Grid key={index} container item spacing={1} alignItems="center">
             <Grid item xs={6}>
               {" "}
               {/* スタッフ名の幅を調整 */}
               <TextField
                 fullWidth
-                label="訪問した職員名"
-                value={detail.receptionist_name}
+                label="対応者の氏名"
+                value={detail.staff_name}
                 onChange={(e) =>
-                  handleReceptionistDetailChange(
-                    index,
-                    "receptionist_name",
-                    e.target.value
-                  )
+                  handleStaffDetailChange(index, "staff_name", e.target.value)
                 }
               />
             </Grid>
@@ -52,27 +42,17 @@ const ReceptionistDetailInput = ({
               {/* 役職の幅を狭く調整 */}
               <TextField
                 fullWidth
-                select
                 label="役職"
                 value={detail.position}
                 onChange={(e) =>
-                  handleReceptionistDetailChange(
-                    index,
-                    "position",
-                    e.target.value
-                  )
+                  handleStaffDetailChange(index, "position", e.target.value)
                 }
-              >
-                <MenuItem value="branch_manager">支部長</MenuItem>
-                <MenuItem value="instructor">インストラクター</MenuItem>
-                <MenuItem value="advisor">アドバイザー</MenuItem>
-                <MenuItem value="other">その他</MenuItem>
-              </TextField>
+              ></TextField>
             </Grid>
             <Grid item>
               <Button
                 variant="outlined"
-                onClick={() => removeReceptionistDetail(index)}
+                onClick={() => removeStaffDetail(index)}
               >
                 削除
               </Button>
@@ -91,9 +71,9 @@ const ReceptionistDetailInput = ({
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={addReceptionistDetail}
+          onClick={addStaffDetail}
         >
-          訪問した職員を追加
+          対応者を追加
         </Button>
       </div>
     </div>

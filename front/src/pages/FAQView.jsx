@@ -1,40 +1,17 @@
-import React, { useState } from 'react';
-import CustomDropdown from '@/components/CustomDropdown';
+import { useEffect } from "react";
 
-const App = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
-
-  const options = [
-    { label: 'オプション 1', value: 1 },
-    { label: 'オプション 2', value: 2 },
-    { label: 'オプション 3', value: 3 },
-  ];
-
-  const handleSelect = (option) => {
-    setSelectedOption(option);
-    setIsOpen(false);
+export default function App() {
+  const handleSelect = (e) => {
+    console.log(e.currentTarget.value);
   };
-
-  const toggleDropdown = () => setIsOpen(!isOpen);
-
   return (
     <div>
-      <button onClick={toggleDropdown}>
-        {isOpen ? '閉じる' : '開く'}
-      </button>
-      <CustomDropdown
-        options={options}
-        onSelect={handleSelect}
-        isOpen={isOpen}
-      />
-      {selectedOption && (
-        <div>
-          選択されたオプション: {selectedOption.label}
-        </div>
-      )}
+      <div>hoge</div>
+      <select name="hoge" id="aiueo" onChange={handleSelect}>
+        <option value="option1">label1</option>
+        <option value="option2">label2</option>
+        <option value="option3">label3</option>
+      </select>
     </div>
   );
-};
-
-export default App;
+}

@@ -30,7 +30,7 @@ const StaffDetailInput = ({ staffDetails, setStaffDetails }) => {
               {/* スタッフ名の幅を調整 */}
               <TextField
                 fullWidth
-                label="訪問した職員名"
+                label="訪問職員の氏名"
                 value={detail.staff_name}
                 onChange={(e) =>
                   handleStaffDetailChange(index, "staff_name", e.target.value)
@@ -79,7 +79,7 @@ const StaffDetailInput = ({ staffDetails, setStaffDetails }) => {
           startIcon={<AddIcon />}
           onClick={addStaffDetail}
         >
-          訪問した職員を追加
+          訪問職員を追加
         </Button>
       </div>
     </div>

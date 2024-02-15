@@ -17,7 +17,7 @@ import {
 import {
   TRANSACTION_FIELDS,
   AUXILIARY_FIELDS,
-} from "@/constants/transaction-fields";
+} from "@/constants/TRANSACTION_FORM_UI_FIELDS";
 import CustomDropdown from "../components/CustomDropdown";
 import { useNavigate } from "react-router-dom";
 import CustomTextField from "@/components/CustomTextField";

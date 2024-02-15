@@ -24,16 +24,18 @@ import {
 import {
   TRANSACTION_FIELDS,
   AUXILIARY_FIELDS,
-} from "@/constants/transaction-fields";
+} from "@/constants/TRANSACTION_FORM_UI_FIELDS";
 import CustomDropdown from "../components/CustomDropdown";
 import { useNavigate } from "react-router-dom";
 import ManagementDisplayTable from "@/components/ManagementDisplayTable";
 import CustomTextField from "@/components/CustomTextField";
 import StaffDetailInput from "@/components/StaffDetailInput";
+import ReceptionistDetailInput from "@/components/ReceptionistDetailInput";
 import INITIAL_FORM_DATA from "@/constants/initialFormData";
 import submitJigyosyoTransaction from "@/utilities/submitJigyosyoTransaction";
 
 const initialStaffDetails = [{ staff_name: "", position: "" }];
+const initialReceptionistDetails = [{ receptionist_name: "", position: "" }];
 
 const initialTableItems = [
   { label: "事業所コード", value: "", name: "jigyosyo_code" },
@@ -61,6 +63,9 @@ const TransactionFormUI = ({
   const [formData, setFormData] = useState(initialFormData);
   const [tableItems, setTableItems] = useState(initialTableItems);
   const [staffDetails, setStaffDetails] = useState(initialStaffDetails);
+  const [receptionistDetails, setReceptionistDetails] = useState(
+    initialReceptionistDetails
+  );
   const [isOpenCustomDropdown, setIsOpenCustomDropdown] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchFormattedResults, setSearchFormattedResults] = useState(null);
@@ -572,6 +577,10 @@ const TransactionFormUI = ({
               <StaffDetailInput
                 staffDetails={staffDetails}
                 setStaffDetails={setStaffDetails}
+              />
+              <ReceptionistDetailInput
+                staffDetails={receptionistDetails}
+                setStaffDetails={setReceptionistDetails}
               />
             </Grid>
             <Grid container spacing={2}>
