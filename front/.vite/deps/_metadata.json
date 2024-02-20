@@ -1,0 +1,38 @@
+{
+  "hash": "73658239",
+  "browserHash": "dba67dd2",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "3c38a8f1",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "2a89bcb0",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.js",
+      "file": "react-router-dom.js",
+      "fileHash": "4f7beeeb",
+      "needsInterop": false
+    },
+    "@mui/material": {
+      "src": "../../node_modules/@mui/material/index.js",
+      "file": "@mui_material.js",
+      "fileHash": "40cb5546",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-X6XVNPPU": {
+      "file": "chunk-X6XVNPPU.js"
+    },
+    "chunk-BHZAVQOK": {
+      "file": "chunk-BHZAVQOK.js"
+    }
+  }
+}

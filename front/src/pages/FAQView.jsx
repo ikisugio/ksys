@@ -1,17 +1,15 @@
+import YearMonthPicker, { useYearMonth } from "@/components/YearMonthPicker";
 import { useEffect } from "react";
 
 export default function App() {
-  const handleSelect = (e) => {
-    console.log(e.currentTarget.value);
-  };
+  const { year, month } = useYearMonth();
+  useEffect(() => {
+    console.log(`year: ${year}`);
+    console.log(`month: ${month}`);
+  }, [year, month]);
   return (
-    <div>
-      <div>hoge</div>
-      <select name="hoge" id="aiueo" onChange={handleSelect}>
-        <option value="option1">label1</option>
-        <option value="option2">label2</option>
-        <option value="option3">label3</option>
-      </select>
+    <div className="flex flex-col justify-center">
+      <YearMonthPicker />
     </div>
   );
 }
