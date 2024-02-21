@@ -5,7 +5,7 @@ import {
   SelectValue,
   SelectTrigger,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function useYearMonth() {
   const now = new Date();
@@ -21,49 +21,43 @@ export function useYearMonth() {
 export default function YearMonthPicker() {
   const { year, setYear, month, setMonth, years, months } = useYearMonth();
 
+  useEffect(() => {
+    console.log(`year : ${typeof year}, ${year}`);
+    console.log(`month : ${typeof month}, ${month}`);
+  }, [year, month])
+
   return (
-    <div className="flex flex-col w-screen p-4 h-screen justify-center gap-4 items-center">
-      <h1 className="flex">
-        <h1 className="text"></h1>
-        <p className="flex gap-1">
-          <span className="w-10 text-end">{year}</span>
-          <span>年</span>
-        </p>
-        <p className="flex gap-1">
-          <span className="w-6 text-end">{month}</span>
-          <span className="pr-0">月</span>
-        </p>
-      </h1>
-      <div className="flex gap-2">
+    <div className="flex flex-col p-4 justify-center gap-4 items-center h-20">
+      <div className="flex gap-2 h-full">
         <Select
-          value={year}
+          value={String(year)}
           onValueChange={(value) => {
-            setYear(value);
+            setYear(Number(value));
           }}
         >
-          <SelectTrigger className="w-28">
-            <SelectValue placeholder="年" />
+          <SelectTrigger className="w-28 h-14 border-slate-300">
+            <SelectValue value={String(year)} placeholder="年" />
           </SelectTrigger>
           <SelectContent>
             {years.map((year) => (
-              <SelectItem value={year} key={year}>
+              <SelectItem value={String(year)} key={year}>
                 {year}年
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
         <Select
-          value={month}
+          value={String(month)}
           onValueChange={(value) => {
-            setMonth(value);
+            setMonth(Number(value));
           }}
         >
-          <SelectTrigger className="w-20">
+          <SelectTrigger className="w-24 h-14 border-slate-300">
             <SelectValue placeholder="月" />
           </SelectTrigger>
           <SelectContent>
             {months.map((month) => (
-              <SelectItem value={month} key={month}>
+              <SelectItem value={String(month)} key={month}>
                 {month}月
               </SelectItem>
             ))}

@@ -33,6 +33,7 @@ import StaffDetailInput from "@/components/StaffDetailInput";
 import ReceptionistDetailInput from "@/components/ReceptionistDetailInput";
 import INITIAL_FORM_DATA from "@/constants/initialFormData";
 import submitJigyosyoTransaction from "@/utilities/submitJigyosyoTransaction";
+import YearMonthPicker from "@/components/YearMonthPicker"
 
 const initialStaffDetails = [{ staff_name: "", position: "" }];
 const initialReceptionistDetails = [{ receptionist_name: "", position: "" }];
@@ -269,6 +270,10 @@ const TransactionFormUI = ({
       );
     }
     switch (field.type) {
+      case "yearMonth":
+        return (
+          <YearMonthPicker />
+        )
       case "text":
         if (field.name === "visit_memo") {
           return (

@@ -6,8 +6,6 @@ import {
 
 export const TRANSACTION_FIELDS = [
   // CharField, DateField, TextField, FileField
-
-  { name: "visit_date", label: "訪問日", isDisplay: true, type: "date" },
   {
     name: "visit_memo",
     label: "支援内容・把握した課題等",
@@ -15,7 +13,21 @@ export const TRANSACTION_FIELDS = [
     type: "text",
   },
 
+  { name: "visit_date", label: "訪問日", isDisplay: true, type: "date" },
+  { name: "report_month", label: "報告月", isDisplay: true, type: "yearMonth" },
+
+
   // CharField with choices
+  {
+    name: "has_support",
+    label: "支援の有無",
+    isDisplay: true,
+    type: "select",
+    options: [
+      {value: "true", label:"あり"},
+      {value: "false", label:"なし"},
+    ],
+  },
   {
     name: "support_means",
     label: "支援方法",
