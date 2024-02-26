@@ -40,7 +40,7 @@ function JigyosyoTransactionEdit() {
     const fetchTransactionData = async () => {
       try {
         const response = await axiosInstance.get(
-          `http://localhost:8000/api/jigyosyo-transaction/${id}`
+          `/jigyosyo-transaction/${id}`
         );
         setFormData(response.data);
       } catch (error) {
