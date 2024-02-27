@@ -284,21 +284,21 @@ class JigyosyoDetailView(APIView):
 
     def get(self, request, pk):
         jigyosyo = self.get_object(pk)
-        if (
-            request.user.username != jigyosyo.update_user
-            and not request.user.is_superuser
-        ):
-            return Response(status=status.HTTP_403_FORBIDDEN)
+        # if (
+        #     request.user.username != jigyosyo.update_user
+        #     and not request.user.is_superuser
+        # ):
+        #     return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = JigyosyoSerializer(jigyosyo)
         return Response(serializer.data)
 
     def put(self, request, pk):
         jigyosyo = self.get_object(pk)
-        if (
-            request.user.username != jigyosyo.update_user
-            and not request.user.is_superuser
-        ):
-            return Response(status=status.HTTP_403_FORBIDDEN)
+        # if (
+        #     request.user.username != jigyosyo.update_user
+        #     and not request.user.is_superuser
+        # ):
+        #     return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = JigyosyoSerializer(jigyosyo, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -307,11 +307,11 @@ class JigyosyoDetailView(APIView):
 
     def delete(self, request, pk):
         jigyosyo = self.get_object(pk)
-        if (
-            request.user.username != jigyosyo.update_user
-            and not request.user.is_superuser
-        ):
-            return Response(status=status.HTTP_403_FORBIDDEN)
+        # if (
+        #     request.user.username != jigyosyo.update_user
+        #     and not request.user.is_superuser
+        # ):
+        #     return Response(status=status.HTTP_403_FORBIDDEN)
         jigyosyo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

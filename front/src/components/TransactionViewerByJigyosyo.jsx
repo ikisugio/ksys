@@ -1,73 +1,74 @@
-import React, { useState, useEffect } from "react";
-import axiosInstance from "@/services/axios";
+import JigyosyoTransactionTable from "@/components/JigyosyoTransactionTable";
+import JigyosyoTransactionCard from "@/components/JigyosyoTransactionCard";
+import AxiosInstance from "@/services/axios";
+import { useState, useEffect } from "react";
 
-const TransactionViewerByJigyosyo = ({ selectedRowData: jigyosyoData }) => {
-  const [transactionData, setTransactionData] = useState(null);
+// const initialTableData = {
+//   businessCode: "123456",
+//   branchCode: "DEF-789",
+//   corporationName: "株式会社サンプル",
+//   businessName: "サンプル事業所",
+//   serviceType: "介護サービス",
+//   staffNumber: "20",
+//   capacity: "30",
+//   openingDate: "2020年4月1日",
+//   turnoverRate: "5%",
+//   postalCode: "123-4567",
+//   address: "東京都サンプル区サンプル町1-2-3",
+//   phoneNumber: "03-1234-5678",
+//   faxNumber: "03-8765-4321",
+//   url: "https://www.example.com",
+//   representativeName: "山田太郎",
+//   representativePosition: "代表取締役",
+//   sponsorMemberNumber: "S123456789",
+//   employmentManagerStatus: "配置済",
+// };
 
-  const testData = [
-    {
-      label1: "ラベル1",
-      value1: "データ1",
-      label2: "ラベル2",
-      value2: "データ2",
-    },
-    {
-      label1: "ラベル1",
-      value1: "データ3",
-      label2: "ラベル2",
-      value2: "データ4",
-    },
-  ];
+const cardDataList = [
+  {
+    date: "2024-01-01",
+    supportMethod: "オンライン会議",
+    consultant: "田中一郎",
+    supporter: "鈴木次郎",
+    attachment: "会議記録.pdf",
+    supportContent: "介護サービス改善に関する相談",
+  },
+  {
+    date: "2024-01-15",
+    supportMethod: "対面会議",
+    consultant: "佐藤三郎",
+    supporter: "高橋四郎",
+    attachment: "プロジェクト計画書.docx",
+    supportContent: "新規プロジェクト立ち上げに関する相談",
+  },
+  {
+    date: "2024-02-01",
+    supportMethod: "電話サポート",
+    consultant: "伊藤五郎",
+    supporter: "山本六郎",
+    attachment: "サポートログ.txt",
+    supportContent: "システム使用方法に関するサポート",
+  },
+];
+
+export default function Page({ selectedRowData: jigyosyoData }) {
+  const [tableData, setTableData] = useState({});
 
   useEffect(() => {
-    const fetchTransaction = async () => {
-      try {
-        const { jigyosyoCode } = jigyosyoData;
-        const response = await axiosInstance.get(
-          `search/jigyosyo-transaction/?_jigyosyo_code=${jigyosyoCode}`
-        );
-        setTransactionData(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchTransaction();
-  }, [jigyosyoData]);
-
-  const tableStyle = {
-    borderCollapse: "collapse",
-    width: "90%",
-    margin: "0 auto",
-    textAlign: "left",
-  };
-
-  const headerCellStyle = {
-    backgroundColor: "#4CAF50",
-    color: "white",
-    padding: "8px",
-  };
-
-  const bodyCellStyle = {
-    padding: "8px",
-    border: "1px solid #aaa",
-  };
+    AxiosInstance.get(`/jigyosyo/${jigyosyoData.id}`).then((res) => {
+      console.log("testTableData: ", res.data);
+      setTableData(res.data);
+    });
+  }, []);
 
   return (
-    <div>
-      <table style={tableStyle}>
-        <tbody>
-          {testData.map((row, index) => (
-            <tr key={index}>
-              <td style={bodyCellStyle}>{row.label1}</td>
-              <td style={bodyCellStyle}>{row.value1}</td>
-              <td style={bodyCellStyle}>{row.label2}</td>
-              <td style={bodyCellStyle}>{row.value2}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="flex flex-col h-screen overflow-y-auto">
+      <div className="py-4"></div>
+      <JigyosyoTransactionTable data={tableData} />
+      {cardDataList.map((cardData) => (
+        <JigyosyoTransactionCard data={cardData} />
+      ))}
+      <div className="my-6"></div>
     </div>
   );
-};
-
-export default TransactionViewerByJigyosyo;
+}

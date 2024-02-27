@@ -79,7 +79,7 @@ class Jigyosyo(models.Model, SaveUserMixin):
         blank=True,
     )
     custom_code = models.CharField(max_length=255, unique=True, null=True, blank=True)
-    type = models.CharField(max_length=255, null=True, blank=True)
+    service_type = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     postal_code = models.CharField(max_length=255, null=True, blank=True)
     address = models.CharField(max_length=255, null=True, blank=True)
@@ -90,7 +90,12 @@ class Jigyosyo(models.Model, SaveUserMixin):
     kourou_jigyosyo_url = models.CharField(max_length=255, null=True, blank=True)
     kourou_release_datetime = models.DateTimeField(null=True, blank=True)
     number_of_member = models.PositiveIntegerField(null=True, blank=True)
+    number_of_capacity = models.PositiveIntegerField(null=True, blank=True)
     koyoukanri_sekinin_status = models.CharField(max_length=255, null=True, blank=True)
+    established_date = models.DateField(null=True, blank=True)
+    turnover_rate = models.FloatField(null=True, blank=True)
+    url = models.CharField(max_length=255, null=True, blank=True)
+    sanjo_number = models.PositiveIntegerField(null=True, blank=True)
 
     history = HistoricalRecords()
     objects = CustomHistoryManager()
@@ -350,7 +355,7 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
         max_length=255, null=True, blank=True, verbose_name="法人名"
     )
     _jigyosyo_name = models.CharField(max_length=255, null=True, blank=True)
-    _jigyosyo_type = models.CharField(
+    _jigyosyo_service_type = models.CharField(
         max_length=255, null=True, blank=True, verbose_name="サービス種別"
     )
     _company_type = models.CharField(
@@ -403,7 +408,9 @@ class JigyosyoTransaction(models.Model, SaveUserMixin):
             jigyosyo = self.management.jigyosyo
             if jigyosyo:
                 self._jigyosyo_code = self._jigyosyo_code or jigyosyo.jigyosyo_code
-                self._jigyosyo_type = self._jigyosyo_type or jigyosyo.type
+                self._jigyosyo_service_type = (
+                    self._jigyosyo_service_type or jigyosyo.type
+                )
                 self._jigyosyo_name = self._jigyosyo_name or jigyosyo.name
                 self._jigyosyo_postal_code = (
                     self._jigyosyo_postal_code or jigyosyo.postal_code

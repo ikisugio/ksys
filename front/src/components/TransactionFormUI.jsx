@@ -33,7 +33,7 @@ import StaffDetailInput from "@/components/StaffDetailInput";
 import ReceptionistDetailInput from "@/components/ReceptionistDetailInput";
 import INITIAL_FORM_DATA from "@/constants/initialFormData";
 import submitJigyosyoTransaction from "@/utilities/submitJigyosyoTransaction";
-import YearMonthPicker from "@/components/YearMonthPicker"
+import YearMonthPicker from "@/components/YearMonthPicker";
 
 const initialStaffDetails = [{ staff_name: "", position: "" }];
 const initialReceptionistDetails = [{ receptionist_name: "", position: "" }];
@@ -43,7 +43,7 @@ const initialTableItems = [
   { label: "独自コード", value: "", name: "custom_code" },
   { label: "法人名", value: "", name: "company.name" },
   { label: "事業所名", value: "", name: "name" },
-  { label: "サービス種別", value: "", name: "type" },
+  { label: "サービス種別", value: "", name: "service_type" },
   { label: "職員数", value: "", name: "number_of_member" },
   { label: "開業日", value: "", name: "established_date" },
   { label: "住所", value: "", name: "address" },
@@ -99,7 +99,7 @@ const TransactionFormUI = ({
           newValue = initialFormData["_jigyosyo_name"] || "";
           break;
         case "type":
-          newValue = initialFormData["_jigyosyo_type"] || "";
+          newValue = initialFormData["_jigyosyo_service_type"] || "";
           break;
         case "number_of_member":
           newValue = initialFormData["_jigyosyo_number_of_member"] || "";
@@ -215,7 +215,7 @@ const TransactionFormUI = ({
       _custom_code: selected.custom_code,
       _company_name: selected.company.name,
       _jigyosyo_name: selected.name,
-      _jigyosyo_type: selected.type,
+      _jigyosyo_service_type: selected.service_type,
       _jigyosyo_number_of_member: selected._jigyosyo_number_of_member,
       _jigyosyo_established_date: selected._jigyosyo_established_date,
       _jigyosyo_address: selected.address,
@@ -271,9 +271,7 @@ const TransactionFormUI = ({
     }
     switch (field.type) {
       case "yearMonth":
-        return (
-          <YearMonthPicker />
-        )
+        return <YearMonthPicker />;
       case "text":
         if (field.name === "visit_memo") {
           return (

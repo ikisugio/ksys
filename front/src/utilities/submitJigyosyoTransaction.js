@@ -120,7 +120,7 @@ const submitJigyosyoTransaction =
       _management_koyoukanri_memo: formData._management_koyoukanri_memo || null,
       _management_is_sanjo: formData._management_is_sanjo || false,
       _management_description: formData._management_description || null,
-      _jigyosyo_type: formData._jigyosyo_type || null,
+      _jigyosyo_service_type: formData._jigyosyo_service_type || null,
       _jigyosyo_number_of_member: formData._jigyosyo_number_of_member || null,
       _jigyosyo_exists_koyou_sekininsha:
         formData._jigyosyo_exists_koyou_sekininsha || false,

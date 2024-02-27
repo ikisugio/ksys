@@ -26,6 +26,8 @@
     "clsx": "^2.1.0",
     "dayjs": "^1.11.10",
     "draft-js": "^0.11.7",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.320.0",
     "material-react-table": "^2.1.0",

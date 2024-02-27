@@ -5,7 +5,7 @@ import JigyosyoTransactionEdit from "@/pages/JigyosyoTransactionEdit";
 import JigyosyoSearch from "@/pages/JigyosyoSearch";
 import JigyosyoAdd from "@/pages/JigyosyoAdd";
 import FAQView from "@/pages/FAQView";
-import InruiryForm from "@/pages/InquiryForm";
+import InquiryForm from "@/pages/InquiryForm";
 import VersionInfo from "@/pages/VersionInfo";
 import Login from "@/pages/Login";
 import ListTransactionByJigyosyo from "@/pages/ListTransactionByJigyosyo";
@@ -25,9 +25,12 @@ const AppRoutes = ({ setLoggedIn }) => {
       <Route path="/jigyosyo/search" element={<JigyosyoSearch />} />
       <Route path="/jigyosyo/add" element={<JigyosyoAdd />} />
       <Route path="/faq" element={<FAQView />} />
-      <Route path="/inquiry" element={<InruiryForm />} />
+      <Route path="/inquiry" element={<InquiryForm />} />
       <Route path="/version" element={<VersionInfo />} />
-      <Route path="/list-transaction-by-jigyosyo" element={<ListTransactionByJigyosyo />} />
+      <Route
+        path="/list-transaction-by-jigyosyo"
+        element={<ListTransactionByJigyosyo />}
+      />
       <Route
         path="/login"
         element={<Login onLoginSuccess={() => setLoggedIn(true)} />}
