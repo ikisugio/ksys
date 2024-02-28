@@ -30,7 +30,6 @@ function App() {
               <AppBar toggleMenu={toggleMenu}></AppBar>
               <SideBar menuOpen={menuOpen} toggleMenu={toggleMenu}></SideBar>
               <MainContent menuOpen={menuOpen}>
-                {" "}
                 <AppContainer>
                   <AppRoutes setLoggedIn={setLoggedIn}></AppRoutes>
                 </AppContainer>
