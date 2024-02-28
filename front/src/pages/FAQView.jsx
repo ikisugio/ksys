@@ -1,7 +1,6 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
-// 印刷用コンポーネント
 const PrintContent = () => (
   <div style={{ textAlign: "center", padding: 20 }}>
     <h1>印刷用の特別なコンテンツ</h1>
@@ -11,16 +10,23 @@ const PrintContent = () => (
 
 const App = () => {
   const handlePrint = () => {
-    const printWindow = window.open("", "_blank", "width=600,height=400");
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+    const printWindow = window.open(
+      "",
+      "_blank",
+      `width=${screenWidth * 0.8},height=${screenHeight * 0.7}`
+    );
+    printWindow.document.body.innerHTML = "<div id='print-root'></div>";
 
-    // 新しいウィンドウにコンポーネントをレンダリング
-    ReactDOM.render(<PrintContent />, printWindow.document.body, () => {
-      printWindow.focus(); // 新しいウィンドウにフォーカスを移動
-      setTimeout(() => {
-        printWindow.print(); // 印刷ダイアログを開く
-        printWindow.close(); // 印刷後、ウィンドウを閉じる
-      }, 500); // 小さな遅延を設定してブラウザがダイアログを処理する時間を確保
-    });
+    const printContainer = printWindow.document.getElementById("print-root");
+    const printRoot = createRoot(printContainer);
+    printRoot.render(<PrintContent />)
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 300);
+
   };
 
   return (

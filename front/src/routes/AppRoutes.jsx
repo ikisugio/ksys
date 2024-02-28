@@ -7,6 +7,7 @@ import JigyosyoAdd from "@/pages/JigyosyoAdd";
 import FAQView from "@/pages/FAQView";
 import InquiryForm from "@/pages/InquiryForm";
 import VersionInfo from "@/pages/VersionInfo";
+import DownloadExcel from "@/pages/DownloadExcel";
 import Login from "@/pages/Login";
 import ListTransactionByJigyosyo from "@/pages/ListTransactionByJigyosyo";
 
@@ -31,6 +32,7 @@ const AppRoutes = ({ setLoggedIn }) => {
         path="/list-transaction-by-jigyosyo"
         element={<ListTransactionByJigyosyo />}
       />
+      <Route path="/excel" element={<DownloadExcel />} />
       <Route
         path="/login"
         element={<Login onLoginSuccess={() => setLoggedIn(true)} />}

@@ -75,6 +75,12 @@
   }
 }
 
+@page {
+  size: auto;
+  margin: 0mm;
+  orientation: portrait;
+}
+
 @media print {
   body * {
     visibility: hidden;
@@ -87,5 +93,8 @@
     position: absolute;
     left: 0;
     top: 0;
+  }
+  .no-print {
+    display: none;
   }
 }
