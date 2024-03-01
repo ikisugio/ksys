@@ -24,49 +24,61 @@ import { useState, useEffect } from "react";
 //   employmentManagerStatus: "配置済",
 // };
 
-const cardDataList = [
+const testCardDataList = [
   {
-    date: "2024-01-01",
-    supportMethod: "オンライン会議",
-    consultant: "田中一郎",
-    supporter: "鈴木次郎",
-    attachment: "会議記録.pdf",
-    supportContent: "介護サービス改善に関する相談",
+    visit_date: "2024-01-01",
+    support_means: "オンライン会議",
+    receptionist: "田中一郎",
+    visit_staff: "鈴木次郎",
+    file: "会議記録.pdf",
+    visit_memo: "介護サービス改善に関する相談",
   },
   {
-    date: "2024-01-15",
-    supportMethod: "対面会議",
-    consultant: "佐藤三郎",
-    supporter: "高橋四郎",
-    attachment: "プロジェクト計画書.docx",
-    supportContent: "新規プロジェクト立ち上げに関する相談",
+    visit_date: "2024-01-15",
+    support_means: "対面会議",
+    receptionist: "佐藤三郎",
+    visit_staff: "高橋四郎",
+    file: "プロジェクト計画書.docx",
+    visit_memo: "新規プロジェクト立ち上げに関する相談",
   },
   {
-    date: "2024-02-01",
-    supportMethod: "電話サポート",
-    consultant: "伊藤五郎",
-    supporter: "山本六郎",
-    attachment: "サポートログ.txt",
-    supportContent: "システム使用方法に関するサポート",
+    visit_date: "2024-02-01",
+    support_means: "電話サポート",
+    receptionist: "伊藤五郎",
+    visit_staff: "山本六郎",
+    file: "サポートログ.txt",
+    visit_memo: "システム使用方法に関するサポート",
   },
 ];
 
 export default function Page({ selectedRowData: jigyosyoData }) {
   const [tableData, setTableData] = useState({});
+  const [cardDataList, setCardDataList] = useState([]);
 
   useEffect(() => {
-    AxiosInstance.get(`/jigyosyo/${jigyosyoData.id}`).then((res) => {
-      console.log("testTableData: ", res.data);
-      setTableData(res.data);
-    });
+    AxiosInstance.get(`/jigyosyo/${jigyosyoData.id}`).then(
+      (jigyosyoResponse) => {
+        console.log("testTableData::: ", jigyosyoResponse.data);
+        setTableData(jigyosyoResponse.data);
+        const jigyosyoCode = jigyosyoResponse.data.jigyosyo_code;
+        console.log("TESTCARD", testCardDataList);
+        AxiosInstance.get(
+          `/search/jigyosyo-transaction/?_jigyosyo_code=${jigyosyoCode}`
+        ).then((transactionResponse) => {
+          console.log("transaction :::", transactionResponse.data);
+          setCardDataList(transactionResponse.data);
+          // setCardDataList(testCardDataList);
+        });
+      }
+    );
   }, []);
 
   return (
     <div className="flex flex-col h-screen overflow-y-auto">
       <div className="py-4"></div>
       <JigyosyoTransactionTable data={tableData} />
-      {cardDataList.map((cardData) => (
-        <JigyosyoTransactionCard data={cardData} />
+      {cardDataList.map((cardData, index) => (
+        <JigyosyoTransactionCard data={cardData} key={index} />
       ))}
       <div className="my-6"></div>
     </div>

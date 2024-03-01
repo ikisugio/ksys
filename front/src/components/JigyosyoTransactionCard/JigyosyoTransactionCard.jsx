@@ -1,23 +1,24 @@
 export default function JigyosyoTransactionCard({ data }) {
   const {
-    date,
-    supportMethod,
-    consultant,
-    supporter,
-    attachment,
-    supportContent,
+    visit_date,
+    support_means,
+    receptionist,
+    visit_staff,
+    file,
+    visit_memo,
   } = data;
+
   const rows = [
     [
-      { title: "年月日", data: date },
-      { title: "支援方法", data: supportMethod },
+      { title: "年月日", data: visit_date },
+      { title: "支援方法", data: support_means },
     ],
     [
-      { title: "相談者", data: consultant },
-      { title: "支援者", data: supporter },
+      { title: "相談者", data: receptionist },
+      { title: "支援者", data: visit_staff },
     ],
-    [{ title: "添付ファイル", data: attachment }],
-    [{ title: "支援内容", data: supportContent }],
+    [{ title: "添付ファイル", data: file }],
+    [{ title: "支援内容", data: visit_memo }],
   ];
 
   return (

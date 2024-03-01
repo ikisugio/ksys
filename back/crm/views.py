@@ -82,8 +82,7 @@ class JigyosyoTransactionSearchView(APIView):
 
         if query:
             search_criteria |= (
-                Q(content__icontains=query)
-                | Q(jigyosyo__name__icontains=query)
+                Q(jigyosyo__name__icontains=query)
                 | Q(jigyosyo__type__icontains=query)
                 | Q(jigyosyo__company__name__icontains=query)
             )

@@ -20,17 +20,13 @@ const StaffDetailInput = ({ staffDetails, setStaffDetails }) => {
 
   return (
     <div style={{ marginBottom: "16px" }}>
-      {" "}
-      {/* コンポーネント全体の下マージンを追加 */}
       <Grid container spacing={2}>
         {staffDetails.map((detail, index) => (
           <Grid key={index} container item spacing={1} alignItems="center">
             <Grid item xs={6}>
-              {" "}
-              {/* スタッフ名の幅を調整 */}
               <TextField
                 fullWidth
-                label="訪問職員の氏名"
+                label="相談担当者の氏名"
                 value={detail.staff_name}
                 onChange={(e) =>
                   handleStaffDetailChange(index, "staff_name", e.target.value)
@@ -38,8 +34,6 @@ const StaffDetailInput = ({ staffDetails, setStaffDetails }) => {
               />
             </Grid>
             <Grid item xs={4}>
-              {" "}
-              {/* 役職の幅を狭く調整 */}
               <TextField
                 fullWidth
                 select
@@ -73,13 +67,13 @@ const StaffDetailInput = ({ staffDetails, setStaffDetails }) => {
           marginTop: "1rem",
         }}
       >
-        {" "}
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={addStaffDetail}
+          className=""
         >
-          訪問職員を追加
+          相談担当者を追加
         </Button>
       </div>
     </div>

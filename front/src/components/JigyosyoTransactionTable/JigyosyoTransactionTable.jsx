@@ -37,7 +37,7 @@ export default function JigyosyoTransactionTable({ data }) {
         <div className={`flex w-full ${index > 0 ? "border-t-0" : ""}`}>
           {row.map((item, itemIndex) => (
             <div
-              className={`flex rounded  ${
+              className={`flex rounded ${
                 row.length > 1 ? "w-1/2" : "w-full"
               } border-2 border-gray-400 mt-1 ${
                 row.length > 1 && itemIndex > 0 ? "border-l-0" : ""

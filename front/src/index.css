@@ -83,7 +83,7 @@
 
 @media print {
   body * {
-    visibility: hidden;
+    /* visibility: hidden; */
   }
   .print-content,
   .print-content * {
