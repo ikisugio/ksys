@@ -80,8 +80,8 @@ const JigyosyoTransactionList = () => {
       });
   };
 
-  const [dialogOpen, setDialogOpen] = useState(false); // ダイアログの表示状態
-  const [transactionToDelete, setTransactionToDelete] = useState(null); // 削除するトランザクション
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [transactionToDelete, setTransactionToDelete] = useState(null);
 
   const handleDeleteClick = (transaction) => {
     setTransactionToDelete(transaction);
@@ -93,11 +93,9 @@ const JigyosyoTransactionList = () => {
   };
 
   const handleConfirmDelete = () => {
-    // 削除APIを呼び出し
     axiosInstance
       .delete(`${API_URL}/api/jigyosyo-transaction/${transactionToDelete.id}`)
       .then(() => {
-        // 削除成功時の処理
         fetchTransactions();
       })
       .catch((error) => {
@@ -124,15 +122,14 @@ const JigyosyoTransactionList = () => {
       renderCell: (params) => (
         <>
           <IconButton
-            onClick={() => handleDeleteClick(params.row)}
-            // style={{ color: "rgba(100, 30, 40, 0.5)" }}
+            onClick={(event) => {
+              event.stopPropagation();
+              handleDeleteClick(params.row);
+            }}
           >
             <DeleteIcon />
           </IconButton>
-          <IconButton
-            onClick={() => handleEdit(params.row)}
-            // style={{ color: "rgba(30, 100, 50, 0.5)" }}
-          >
+          <IconButton onClick={() => handleEdit(params.row)}>
             <EditIcon />
           </IconButton>
         </>

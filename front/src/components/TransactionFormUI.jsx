@@ -25,6 +25,10 @@ import {
   TRANSACTION_FIELDS,
   AUXILIARY_FIELDS,
 } from "@/constants/TRANSACTION_FORM_UI_FIELDS";
+import {
+  SUPPORT_MEANS_CHOICES_WITH_SUPPORT,
+  SUPPORT_MEANS_CHOICES_WITHOUT_SUPPORT,
+} from "@/constants/label-choices";
 import CustomDropdown from "../components/CustomDropdown";
 import { useNavigate } from "react-router-dom";
 import ManagementDisplayTable from "@/components/ManagementDisplayTable";
@@ -33,6 +37,7 @@ import StaffDetailInput from "@/components/StaffDetailInput";
 import ReceptionistDetailInput from "@/components/ReceptionistDetailInput";
 import INITIAL_FORM_DATA from "@/constants/initialFormData";
 import submitJigyosyoTransaction from "@/utilities/submitJigyosyoTransaction";
+import { useYearMonth } from "@/components/YearMonthPicker";
 import YearMonthPicker from "@/components/YearMonthPicker";
 
 const initialStaffDetails = [{ staff_name: "", position: "" }];
@@ -63,6 +68,10 @@ const TransactionFormUI = ({
   console.log("initialData", initialFormData);
   const [formData, setFormData] = useState(initialFormData);
   const [tableItems, setTableItems] = useState(initialTableItems);
+  const [hasSupport, setHasSupport] = useState("true");
+  const [supportMeansOptions, setSupportMeansOptions] = useState(
+    SUPPORT_MEANS_CHOICES_WITH_SUPPORT
+  );
   const [staffDetails, setStaffDetails] = useState(initialStaffDetails);
   const [receptionistDetails, setReceptionistDetails] = useState(
     initialReceptionistDetails
@@ -79,6 +88,19 @@ const TransactionFormUI = ({
   const navigate = useNavigate();
   const theme = useTheme();
   const MINIMUM_VISIT_MEMO_LINES = 10;
+
+  const navigation = {
+    navigate: useNavigate(),
+    setOpenSnackbar,
+    setSnackbarMessage,
+    setSnackbarSeverity,
+  };
+
+  const { year, setYear, month, setMonth, years, months } = useYearMonth();
+  useEffect(() => {
+    console.log(`year : ${typeof year}, ${year}`);
+    console.log(`month : ${typeof month}, ${month}`);
+  }, [year, month]);
 
   useEffect(() => {
     console.log("initialFormData", initialFormData);
@@ -131,6 +153,18 @@ const TransactionFormUI = ({
     console.log("updatedTableItems", updatedTableItems);
   }, [initialFormData]);
 
+  useEffect(() => {
+    setSupportMeansOptions(
+      hasSupport === "true"
+        ? SUPPORT_MEANS_CHOICES_WITH_SUPPORT
+        : SUPPORT_MEANS_CHOICES_WITHOUT_SUPPORT
+    );
+  }, [hasSupport]);
+
+  useEffect(() => {
+    console.log(`Updated supportMeansOptions: `, supportMeansOptions);
+  }, [supportMeansOptions]);
+
   const handleSearch = async (e) => {
     const query = searchText;
     console.log("handle search", query);
@@ -160,9 +194,6 @@ const TransactionFormUI = ({
   };
 
   const handleSearchResultSelect = (selected) => {
-    console.log("SSSSS", selected);
-    console.log("LLLLL", tableItems);
-
     const updatedTableItems = tableItems.map((item) => {
       if (item.name === "company.name") {
         return {
@@ -226,12 +257,34 @@ const TransactionFormUI = ({
     };
 
     setFormData(updatedFormData);
-    console.log("FFFFFFFFFFFFFFFFF", formData);
-
     setIsOpenCustomDropdown(false);
   };
 
   const createInputField = (field) => {
+    if (field.name === "support_means") {
+      return (
+        <FormControl
+          fullWidth
+          key={field.name}
+          margin="normal"
+          variant="outlined"
+        >
+          <InputLabel>{field.label}</InputLabel>
+          <Select
+            name={field.name}
+            value={formData[field.name] || ""}
+            onChange={handleChange}
+            label={field.label}
+          >
+            {supportMeansOptions.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      );
+    }
     if (field.name === "_jigyosyo_code") {
       return (
         <div key={field.name} style={{ position: "relative" }}>
@@ -271,7 +324,16 @@ const TransactionFormUI = ({
     }
     switch (field.type) {
       case "yearMonth":
-        return <YearMonthPicker />;
+        return (
+          <YearMonthPicker
+            year={year}
+            setYear={setYear}
+            month={month}
+            setMonth={setMonth}
+            years={years}
+            months={months}
+          />
+        );
       case "text":
         if (field.name === "visit_memo") {
           return (
@@ -427,6 +489,9 @@ const TransactionFormUI = ({
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
+    if (name === "has_support") {
+      setHasSupport(value);
+    }
     let newFormData = {
       ...formData,
       [name]: type === "checkbox" ? checked : value,
@@ -470,7 +535,6 @@ const TransactionFormUI = ({
   };
 
   const checkboxGroups = groupCheckboxFields();
-  console.log("formData", formData);
 
   const formatDataForTable = (fields, formData) => {
     return fields
@@ -486,7 +550,7 @@ const TransactionFormUI = ({
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          submitJigyosyoTransaction(requestMethod)(e, formData, navigator, id);
+          submitJigyosyoTransaction(requestMethod)(e, formData, navigation, id);
         }}
       >
         <Grid
@@ -648,6 +712,10 @@ const TransactionFormUI = ({
                                             name={field.name}
                                             checked={!!formData[field.name]}
                                             onChange={handleChange}
+                                            disabled={
+                                              field.requireSupport &&
+                                              hasSupport === "false"
+                                            }
                                           />
                                         }
                                         label={field.label}

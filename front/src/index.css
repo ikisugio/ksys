@@ -83,18 +83,25 @@
 
 @media print {
   body * {
-    /* visibility: hidden; */
+    visibility: hidden;
   }
   .print-content,
   .print-content * {
     visibility: visible;
   }
   .print-content {
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
+    width: 100vw;
+    /* height: 100vh; */
+    height: auto;
+    z-index: 1000;
   }
   .no-print {
     display: none;
+  }
+  .no-break {
+    page-break-inside: avoid;
   }
 }

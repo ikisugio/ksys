@@ -2,6 +2,7 @@ import JigyosyoTransactionTable from "@/components/JigyosyoTransactionTable";
 import JigyosyoTransactionCard from "@/components/JigyosyoTransactionCard";
 import AxiosInstance from "@/services/axios";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // const initialTableData = {
 //   businessCode: "123456",
@@ -54,6 +55,11 @@ const testCardDataList = [
 export default function Page({ selectedRowData: jigyosyoData }) {
   const [tableData, setTableData] = useState({});
   const [cardDataList, setCardDataList] = useState([]);
+  const navigate = useNavigate();
+
+  const handleEdit = (id) => {
+    navigate(`/transaction/edit/${id}`);
+  };
 
   useEffect(() => {
     AxiosInstance.get(`/jigyosyo/${jigyosyoData.id}`).then(
@@ -74,12 +80,23 @@ export default function Page({ selectedRowData: jigyosyoData }) {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen overflow-y-auto">
-      <div className="py-4"></div>
+    <div className="flex flex-col h-screen overflow-y-auto print-content">
+      <div className="py-0"></div>
       <JigyosyoTransactionTable data={tableData} />
-      {cardDataList.map((cardData, index) => (
-        <JigyosyoTransactionCard data={cardData} key={index} />
-      ))}
+      {cardDataList.length > 0 ? (
+        cardDataList.map((cardData, index) => (
+          <JigyosyoTransactionCard
+            data={cardData}
+            key={index}
+            onEdit={() => handleEdit(cardData.id)}
+          />
+        ))
+      ) : (
+        <div className="flex flex-col items-center">
+          <div>訪問履歴なし</div>
+        </div>
+      )}
+      {console.log(`CARDDD_DATALIST: ${cardDataList}`)}
       <div className="my-6"></div>
     </div>
   );

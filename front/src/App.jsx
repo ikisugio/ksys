@@ -6,6 +6,7 @@ import {
   GlobalScrollbarStyles,
   AppContainer,
 } from "@/styles/component-styleds";
+// import MainContent from "./styles/MainContent";
 import SideBar from "./components/SideBar";
 import { ThemeProvider } from "@mui/material";
 import { customTheme } from "@/styles/theme";
@@ -26,14 +27,16 @@ function App() {
       <ThemeProvider theme={customTheme}>
         <GlobalScrollbarStyles>
           <BrowserRouter>
-            <div className="App">
-              <AppBar toggleMenu={toggleMenu}></AppBar>
-              <SideBar menuOpen={menuOpen} toggleMenu={toggleMenu}></SideBar>
-              <MainContent menuOpen={menuOpen}>
-                <AppContainer>
+            <div className="App flex flex-col min-h-screen">
+              <div className="border-2">
+                <AppBar toggleMenu={toggleMenu}></AppBar>
+                <SideBar menuOpen={menuOpen} toggleMenu={toggleMenu}></SideBar>
+              </div>
+              <div className="mb-0">
+                <MainContent menuOpen={menuOpen}>
                   <AppRoutes setLoggedIn={setLoggedIn}></AppRoutes>
-                </AppContainer>
-              </MainContent>
+                </MainContent>
+              </div>
             </div>
           </BrowserRouter>
         </GlobalScrollbarStyles>

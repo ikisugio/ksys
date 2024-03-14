@@ -4,25 +4,23 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 export const AppBar = ({ toggleMenu }) => {
   return (
-    <StyledAppBar position="fixed">
-      <Toolbar>
-        <IconButton
-          edge="start"
-          color="default"
-          aria-label="menu"
-          onClick={toggleMenu}
-        >
-          <MenuIcon style={{ color: "#555" }} />
-        </IconButton>
-        <StyledTypography
-          variant="h6"
-          style={{ flexGrow: 1 }}
-          className="unselectable"
-        >
-          事業所管理システム
-        </StyledTypography>
-      </Toolbar>
-    </StyledAppBar>
+    <Toolbar>
+      <IconButton
+        edge="start"
+        color="default"
+        aria-label="menu"
+        onClick={toggleMenu}
+      >
+        <MenuIcon style={{ color: "#555" }} />
+      </IconButton>
+      <StyledTypography
+        variant="h6"
+        style={{ flexGrow: 1 }}
+        className="unselectable"
+      >
+        事業所管理システム
+      </StyledTypography>
+    </Toolbar>
   );
 };
 

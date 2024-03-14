@@ -10,7 +10,7 @@ const ManagementDisplayTable = ({ items }) => {
             >
               <th
                 scope="row"
-                className="w-24 py-1 px-2 text-lg text-gray-700 whitespace-nowrap dark:text-white border-r border-gray-300"
+                className="w-24 py-1 px-2 text-lg text-gray-700 whitespace-nowrap border-r border-gray-300 text-white bg-slate-700/90 font-normal"
               >
                 {item.label}
               </th>

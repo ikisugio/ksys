@@ -1,4 +1,4 @@
-export default function JigyosyoTransactionCard({ data }) {
+export default function JigyosyoTransactionCard({ data, onEdit }) {
   const {
     visit_date,
     support_means,
@@ -22,7 +22,7 @@ export default function JigyosyoTransactionCard({ data }) {
   ];
 
   return (
-    <div className="px-8 py-2">
+    <div className="px-8 py-2 no-break">
       <div className="w-full border-2 border-gray-400 rounded-lg p-1">
         {rows.map((row, index) => (
           <div className="flex p-1 gap-4">
@@ -32,7 +32,7 @@ export default function JigyosyoTransactionCard({ data }) {
                   index === rows.length - 1 ? "" : "border-b-2"
                 }`}
               >
-                <div className="bg-slate-700 rounded text-white p-1 w-24">
+                <div className="flex-shrink-0 bg-slate-700/70 rounded text-white p-1 w-24">
                   {item.title}
                 </div>
                 <div className="p-1 flex-grow">{item.data}</div>
@@ -40,6 +40,7 @@ export default function JigyosyoTransactionCard({ data }) {
             ))}
           </div>
         ))}
+        <button onClick={onEdit}>Edit</button>
       </div>
     </div>
   );

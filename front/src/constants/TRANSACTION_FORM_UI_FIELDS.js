@@ -16,7 +16,6 @@ export const TRANSACTION_FIELDS = [
   { name: "visit_date", label: "訪問日", isDisplay: true, type: "date" },
   { name: "report_month", label: "報告月", isDisplay: true, type: "yearMonth" },
 
-
   // CharField with choices
   {
     name: "has_support",
@@ -24,8 +23,8 @@ export const TRANSACTION_FIELDS = [
     isDisplay: true,
     type: "select",
     options: [
-      {value: "true", label:"あり"},
-      {value: "false", label:"なし"},
+      { value: "true", label: "あり" },
+      { value: "false", label: "なし" },
     ],
   },
   {
@@ -74,7 +73,7 @@ export const TRANSACTION_FIELDS = [
   },
   {
     name: "is_dedicated",
-    label: "雇用管理責任者選任",
+    label: "雇用管理責任者選任の有無",
     isDisplay: true,
     type: "checkbox",
     sLabelGroup: "有無状況",
@@ -82,7 +81,7 @@ export const TRANSACTION_FIELDS = [
   },
   {
     name: "is_participated",
-    label: "責任者講習受講経験",
+    label: "責任者講習受講経験の有無",
     isDisplay: true,
     type: "checkbox",
     sLabelGroup: "有無状況",
@@ -164,6 +163,7 @@ export const TRANSACTION_FIELDS = [
     name: "done_explain_support",
     label: "支援メニューの説明",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
     mLabelGroup: "支援状況",
   },
@@ -171,6 +171,7 @@ export const TRANSACTION_FIELDS = [
     name: "done_knowing_problem",
     label: "課題の把握",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
     mLabelGroup: "支援状況",
   },
@@ -180,6 +181,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "求人求職",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -188,6 +190,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "求人求職",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -196,6 +199,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "労働条件",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -204,6 +208,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "労働条件",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -212,6 +217,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "福利厚生",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -220,6 +226,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "福利厚生",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -228,6 +235,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "職場のコミュニケーション",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -236,6 +244,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "職場のコミュニケーション",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -244,6 +253,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "助成金",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -252,6 +262,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "助成金",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -260,6 +271,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "介護サービス",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -268,6 +280,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "介護サービス",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -276,6 +289,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "理念・教育・環境等",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -284,6 +298,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "理念・教育・環境等",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -292,6 +307,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "生産性向上（ICT等）",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -300,6 +316,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "生産性向上（ICT等）",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -308,6 +325,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "能力開発",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -316,6 +334,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "能力開発",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -324,6 +343,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "雇用管理責任者関係",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -332,6 +352,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "雇用管理責任者関係",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -340,6 +361,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "その他（雇用管理）",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -348,6 +370,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "その他（雇用管理）",
     mLabelGroup: "雇用管理に係る支援（全員入力）",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   // ... 能力開発に関する項目
@@ -357,6 +380,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "資格制度・研修情報等",
     mLabelGroup: "アドバイザーによる支援",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -365,6 +389,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "資格制度・研修情報等",
     mLabelGroup: "アドバイザーによる支援",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -373,6 +398,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "求人・求職関係",
     mLabelGroup: "アドバイザーによる支援",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -381,6 +407,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "求人・求職関係",
     mLabelGroup: "アドバイザーによる支援",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -389,6 +416,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "研修計画・カリキュラムの策定",
     mLabelGroup: "アドバイザーによる支援",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -397,6 +425,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "研修計画・カリキュラムの策定",
     mLabelGroup: "アドバイザーによる支援",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -405,6 +434,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "能力開発に係る助成制度関係",
     mLabelGroup: "アドバイザーによる支援",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -413,6 +443,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "能力開発に係る助成制度関係",
     mLabelGroup: "アドバイザーによる支援",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -421,6 +452,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "職業能力開発推進者関係",
     mLabelGroup: "アドバイザーによる支援",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -429,6 +461,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "職業能力開発推進者関係",
     mLabelGroup: "アドバイザーによる支援",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -437,6 +470,7 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "その他（アドバイザー）",
     mLabelGroup: "アドバイザーによる支援",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -445,12 +479,14 @@ export const TRANSACTION_FIELDS = [
     sLabelGroup: "その他（アドバイザー）",
     mLabelGroup: "アドバイザーによる支援",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
     name: "with_tool_utilization",
     label: "ツールの活用",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
     sLabelGroup: "支援状況",
   },
@@ -459,6 +495,7 @@ export const TRANSACTION_FIELDS = [
     label: "雇用管理コンサルタント",
     sLabelGroup: "専門家との同行",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -466,6 +503,7 @@ export const TRANSACTION_FIELDS = [
     label: "ヘルスカウンセラー",
     sLabelGroup: "専門家との同行",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -473,6 +511,7 @@ export const TRANSACTION_FIELDS = [
     label: "研修コーディネート",
     sLabelGroup: "専門家との同行",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -480,6 +519,7 @@ export const TRANSACTION_FIELDS = [
     label: "単独",
     sLabelGroup: "労働局・ＨＷから情報を受けて実施した訪問",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   {
@@ -487,6 +527,7 @@ export const TRANSACTION_FIELDS = [
     label: "同行",
     sLabelGroup: "労働局・ＨＷから情報を受けて実施した訪問",
     isDisplay: true,
+    requireSupport: true,
     type: "checkbox",
   },
   { name: "file", label: "ファイル", isDisplay: true, type: "file" },

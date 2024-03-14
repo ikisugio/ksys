@@ -11,10 +11,10 @@ import {
 
 export const MainContent = styled.div`
   transition: transform 0.3s ease, width 0.3s ease;
-  width: ${(props) =>
-    props.menuOpen ? `calc(100% - ${DRAWER_WIDTH}) * 1.0` : "100%"};
-  transform: ${(props) =>
-    props.menuOpen ? `translateX(${DRAWER_WIDTH})` : "translateX(0)"};
+  width: ${({ menuOpen }) =>
+    menuOpen ? `calc(100% - ${DRAWER_WIDTH}) * 1.0` : "100%"};
+  transform: ${({ menuOpen }) =>
+    menuOpen ? `translateX(${DRAWER_WIDTH})` : "translateX(0)"};
   overflow: auto;
 `;
 

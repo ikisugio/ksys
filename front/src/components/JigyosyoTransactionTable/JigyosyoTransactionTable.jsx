@@ -46,7 +46,7 @@ export default function JigyosyoTransactionTable({ data }) {
               <div
                 className={`${
                   row.length > 1 ? "w-2/6" : "w-1/6"
-                } bg-slate-700 text-white px-1`}
+                } bg-indigo-900/50 text-white px-1`}
               >
                 {item.title}
               </div>

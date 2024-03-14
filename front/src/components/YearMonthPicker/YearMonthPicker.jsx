@@ -13,21 +13,27 @@ export function useYearMonth() {
   const currentMonth = now.getMonth() + 1;
   const [year, setYear] = useState(currentYear);
   const [month, setMonth] = useState(currentMonth);
-  const years = Array.from({ length: currentYear - 1999 }, (_, k) => k + 2000);
+  const years = Array.from(
+    { length: currentYear - 1999 },
+    (_, k) => currentYear - k
+  );
   const months = Array.from({ length: 12 }, (_, k) => k + 1);
   return { year, setYear, month, setMonth, years, months };
 }
 
-export default function YearMonthPicker() {
-  const { year, setYear, month, setMonth, years, months } = useYearMonth();
-
-  useEffect(() => {
-    console.log(`year : ${typeof year}, ${year}`);
-    console.log(`month : ${typeof month}, ${month}`);
-  }, [year, month])
-
+export default function YearMonthPicker({
+  year,
+  setYear,
+  month,
+  setMonth,
+  years,
+  months,
+}) {
   return (
-    <div className="flex flex-col p-4 justify-center gap-4 items-center h-20">
+    <div className="flex p-4 justify-center gap-4 items-center h-20">
+      <label className="block text-sm text-gray-600 h-full text-top w-16">
+        報告月
+      </label>
       <div className="flex gap-2 h-full">
         <Select
           value={String(year)}
@@ -53,7 +59,7 @@ export default function YearMonthPicker() {
           }}
         >
           <SelectTrigger className="w-24 h-14 border-slate-300">
-            <SelectValue placeholder="月" />
+            <SelectValue value={String(month)} placeholder="月" />
           </SelectTrigger>
           <SelectContent>
             {months.map((month) => (
